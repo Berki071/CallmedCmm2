@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+          android:exitFadeDuration="@android:integer/config_shortAnimTime">
+
+    <item android:layout_width="wrap_content"
+          android:drawable="@drawable/rounded_bg_white_24dp"
+          android:state_checked="true"/>
+
+    <item android:drawable="@drawable/rounded_bg_white_24dp"
+          android:state_pressed="true"/>
+
+    <item android:drawable="@drawable/rounded_bg_light_grey_24dp"/>
+</selector>

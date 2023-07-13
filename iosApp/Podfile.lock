@@ -1,0 +1,25 @@
+PODS:
+  - AnyFormatKit (2.5.2)
+  - AnyFormatKitSwiftUI (0.5.3):
+    - AnyFormatKit (~> 2.5.2)
+  - SwiftUIPager (2.5.0)
+
+DEPENDENCIES:
+  - AnyFormatKit (~> 2.5.2)
+  - AnyFormatKitSwiftUI (~> 0.5.3)
+  - SwiftUIPager
+
+SPEC REPOS:
+  trunk:
+    - AnyFormatKit
+    - AnyFormatKitSwiftUI
+    - SwiftUIPager
+
+SPEC CHECKSUMS:
+  AnyFormatKit: b0dbb2a5f2fe7a0fc97f401f8a219a47ee63a335
+  AnyFormatKitSwiftUI: f46eb09de9f94c9842ffb0a56dc746c58b71a3b9
+  SwiftUIPager: b314d8923bef0bde743c904bb74fcc7a05fd3422
+
+PODFILE CHECKSUM: fa4bd6864f22b4fdbb78d9b4b947b069ae78793a
+
+COCOAPODS: 1.12.1

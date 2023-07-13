@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/nav_item_call_center"
+            android:checked="true"
+            android:icon="@drawable/ic_call_light_green_a200_24dp"
+            android:title="@string/callCenter" />
+
+        <item
+            android:id="@+id/nav_item_timetable"
+            android:checked="true"
+            android:icon="@drawable/ic_assignment_turned_in_white_24dp"
+            android:title="@string/timetable"
+            android:visible="false" />
+
+        <item
+            android:id="@+id/nav_item_online_consultation"
+            android:checked="true"
+            android:icon="@drawable/ic_videocam_black_24dp"
+            android:title="@string/onlineConsultation"
+            android:visible="false" />
+
+        <item
+            android:id="@+id/nav_item_chat"
+            android:checked="true"
+            android:icon="@drawable/ic_chat_pink_a200_24dp"
+            android:title="@string/nav_chat" />
+
+        <item
+            android:id="@+id/nav_item_settings"
+            android:checked="true"
+            android:icon="@drawable/ic_settings_light_green_a200_24dp"
+            android:title="@string/Settings" />
+        <item
+            android:id="@+id/nav_item_exit"
+            android:checked="true"
+            android:icon="@drawable/ic_exit_to_app_light_green_a200_24dp"
+            android:title="@string/exit" />
+    </group>
+</menu>

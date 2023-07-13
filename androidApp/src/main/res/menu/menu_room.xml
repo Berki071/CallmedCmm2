@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menuInfo"
+        android:icon="@drawable/ic_info_white_24dp"
+        android:title="Информация"
+        android:visible="true"
+     />
+    <item
+        android:id="@+id/menuInWork"
+        android:icon="@drawable/ic_info_white_24dp"
+        android:title="В работу"
+        android:visible="true"
+      />
+    <item
+        android:id="@+id/menuToArchive"
+        android:icon="@drawable/ic_info_white_24dp"
+        android:title="В архив"
+        android:visible="true"
+       />
+</menu>

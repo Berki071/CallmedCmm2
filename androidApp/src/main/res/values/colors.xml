@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#44a5f6</color>
+    <color name="colorPrimaryDark">#2395F5</color>
+    <color name="colorAccent">#ef5350</color>
+
+    <color name="greenText">#156608</color>
+    <color name="greenText2">#388E3C</color>
+
+    <!--base color-->
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="light_gray">#e0e0e0</color>
+    <color name="semi_gray">#9e9e9e</color>
+    <color name="dark_gray">#616161</color>
+    <color name="black_bg">#FF424242</color>
+    <color name="black_effective">#212121</color>
+    <color name="black">#000000</color>
+
+    <color name="err_connection_color">#ef5350</color>
+    <color name="bg_chat">#fff8e1</color>
+
+    <!--text color-->
+    <color name="text_light">#FFFFFF</color>
+    <color name="text_light_hint">#e0e0e0</color>
+    <color name="text_dark">#212121</color>
+    <color name="text_dark_hint">#212121</color>
+    <color name="text_semi_dark">#9e9e9e</color>
+    <color name="text_semi_dark_hint">#9e9e9e</color>
+
+    <!--calendar color-->
+    <color name="yellow">#ffee58</color>
+    <color name="orange">#ff9100</color>
+    <color name="red">#ef5350</color>
+    <color name="light_green">#81c784</color>
+    <color name="light_green_pressed">#66bb6a</color>
+
+    <color name="color_btn">#90caf9</color>
+
+    <color name="black40">#65000000</color>
+    <color name="black50">#80000000</color>
+    <color name="black65">#A6000000</color>
+
+    <color name="red_400">#EF5350</color>
+
+    <color name="colorSecondaryPrimary">#00B80C</color>
+    <color name="colorPrimary8">#14054ECA</color>
+    <color name="black22">#38000000</color>
+    <color name="black2">#05000000</color>
+
+    <color name="bg_side_menu">#1A3770D3</color>
+
+    <color name="deepRed">#CC0605</color>
+    <color name="deepRed30">#4DCC0605</color>
+
+    <color name="msgRight">#80CBC4</color>
+    <color name="msgLeft">#B39DDB</color>
+
+
+</resources>

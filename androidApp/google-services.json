@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "864684131129",
+    "firebase_url": "https://callmed1-9de2a.firebaseio.com",
+    "project_id": "callmed1-9de2a",
+    "storage_bucket": "callmed1-9de2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864684131129:android:062f8349ef62220d",
+        "android_client_info": {
+          "package_name": "com.medhelp.callmed2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864684131129-fp8dcpvgg03f6quanimqljrued1b4uu2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCETRjZ4aqhSRzbxSc_WXj19X0OfJmyy0c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/divider_size_1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ico"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/base_margin_8dp"
+                android:src="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/nameTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/base_margin_8dp"
+                android:layout_marginTop="@dimen/base_margin_8dp"
+                android:text="@string/hint_patient"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/ico"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/base_margin_8dp"
+                android:gravity="left"
+                app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/nameTitle"
+                />
+
+
+            <TextView
+                android:id="@+id/serviceTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtService"
+                app:layout_constraintTop_toBottomOf="@+id/name"
+                app:layout_constraintLeft_toRightOf="@+id/ico"
+                android:layout_marginLeft="@dimen/base_margin_8dp"
+                android:layout_marginTop="@dimen/base_margin_4dp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/service"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/serviceTitle"
+                android:layout_marginRight="@dimen/base_margin_8dp"/>
+
+            <TextView
+                android:id="@+id/dateStartTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Дата: "
+                app:layout_constraintTop_toBottomOf="@+id/service"
+                app:layout_constraintLeft_toRightOf="@+id/ico"
+                android:layout_marginLeft="@dimen/base_margin_8dp"
+                android:layout_marginTop="@dimen/base_margin_4dp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/dateStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/dateStartTitle"
+                android:layout_marginRight="@dimen/base_margin_8dp"/>
+
+
+            <TextView
+                android:id="@+id/timeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Время: "
+                app:layout_constraintTop_toBottomOf="@+id/dateStart"
+                app:layout_constraintLeft_toRightOf="@+id/ico"
+                android:layout_marginLeft="@dimen/base_margin_8dp"
+                android:layout_marginTop="@dimen/base_margin_4dp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/timeStartAndEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/timeTitle"
+                android:layout_marginRight="@dimen/base_margin_8dp"/>
+
+            <TextView
+                android:id="@+id/timerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="До начала онлайн-консультации осталось"
+                app:layout_constraintTop_toBottomOf="@+id/timeStartAndEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="@dimen/base_margin_8dp"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/timerTitle"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textSize="26sp"
+                android:textColor="@color/black"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

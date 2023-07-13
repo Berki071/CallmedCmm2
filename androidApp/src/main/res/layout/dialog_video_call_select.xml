@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="40dp"
+    app:cardCornerRadius="8dp"
+    tools:viewBindingIgnore="true"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarD"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ToolbarStyleMain"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+            <TextView
+                android:id="@+id/titleToolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_medium"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                />
+        </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/nameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/base_margin_8dp"
+            android:layout_marginTop="@dimen/base_margin_8dp"
+            android:text="@string/hint_patient"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarD" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/base_margin_8dp"
+            android:gravity="left"
+            app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/nameTitle"
+            />
+
+
+        <TextView
+            android:id="@+id/serviceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txtService"
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/base_margin_8dp"
+            android:layout_marginTop="@dimen/base_margin_4dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/service"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/serviceTitle"
+            android:layout_marginRight="@dimen/base_margin_8dp"/>
+
+        <TextView
+            android:id="@+id/dateStartTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Дата: "
+            app:layout_constraintTop_toBottomOf="@+id/service"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/base_margin_8dp"
+            android:layout_marginTop="@dimen/base_margin_4dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/dateStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dateStartTitle"
+            android:layout_marginRight="@dimen/base_margin_8dp"/>
+
+
+        <TextView
+            android:id="@+id/timeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Время: "
+            app:layout_constraintTop_toBottomOf="@+id/dateStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="@dimen/base_margin_8dp"
+            android:layout_marginTop="@dimen/base_margin_4dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/mainBtn"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/timeStartAndEnd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            app:layout_constraintLeft_toRightOf="@+id/nameTitle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/timeTitle"
+            android:layout_marginRight="@dimen/base_margin_8dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            >
+
+            <Button
+                android:id="@+id/btnNo"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="8dp"
+                android:text="@string/btnNo"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:background="@color/transparent"
+                android:fontFamily="@font/roboto_medium"
+                android:stateListAnimator="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/btnYes"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnYes"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:text="@string/btnYes"
+                android:layout_marginLeft="8dp"
+                android:background="@color/transparent"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/colorSecondaryPrimary"
+                android:textSize="18sp"
+                android:stateListAnimator="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/btnNo"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

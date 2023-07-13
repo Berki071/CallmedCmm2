@@ -1,0 +1,41 @@
+package com.medhelp.callmed2.data.model;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ScheduleResponce {
+    @SerializedName("imgError")
+    private boolean error;
+
+    @SerializedName("Message")
+    private String message;
+
+    @SerializedName("response")
+    private List<ScheduleItem> response = new ArrayList<>();
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public List<ScheduleItem> getResponse() {
+        return response;
+    }
+
+    public void setResponse(List<ScheduleItem> response) {
+        this.response = response;
+    }
+}

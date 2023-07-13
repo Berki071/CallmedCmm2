@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
+    tools:context=".ui.login.LoginActivity"
+    xmlns:mask="http://schemas.android.com/apk/res-auto"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/login_logo"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/company_logo"
+            android:src="@mipmap/sotr_ic_launcher"/>
+
+        <TextView
+            android:id="@+id/login_tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:gravity="center"
+            android:text="@string/login_header"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_20sp"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLL"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="Логин пользователя">
+            <br.com.sapereaude.maskedEditText.MaskedEditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rect_border_primary_2dp"
+                android:gravity="center_vertical|start"
+                android:hint="__________"
+                android:inputType="phone"
+                android:paddingLeft="8dp"
+                android:typeface="monospace"
+                app:keep_hint="true"
+                mask:allowed_chars="1234567890"
+                mask:mask="+7(###)###-##-##"
+                tools:ignore="MissingConstraints" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:background="@drawable/rect_border_primary_2dp"
+            android:cursorVisible="true"
+            android:gravity="start|center_vertical"
+            android:hint="@string/password"
+            android:inputType="number|numberPassword"
+            android:maxLength="30"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:textColor="@color/black_effective"
+            android:textColorHint="@color/semi_gray"
+            android:textSize="18sp"/>
+
+<!--        <CheckBox-->
+<!--            android:id="@+id/chb_login_save"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginTop="@dimen/activity_horizontal_margin"-->
+<!--            android:checked="true"-->
+<!--            android:text="@string/save_password"-->
+<!--            android:textColor="@color/semi_gray"/>-->
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="60dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="@string/action_login"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16sp" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

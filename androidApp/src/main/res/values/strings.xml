@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">Медицинский помощник.Сотрудник</string>
+
+    <string name="hint_progress">Данные обновляются, подождите…</string>
+    <string name="some_error">Произошла непредвиденная ошибка</string>
+    <string name="company_logo">Логотип компании</string>
+    <string name="login_header">Введите учетные данные</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="save_password">Запомнить пароль</string>
+    <string name="action_login">Войти</string>
+    <string name="api_default_error">Что-то пошло не так.</string>
+    <string name="connection_error">Отсутствует соединение с интернетом</string>
+    <string name="api_retry_error">Повторите позже…</string>
+    <string name="empty_data">Все поля дожны быть заполнены</string>
+    <string name="err_authorize">Неверное имя пользователя или пароль</string>
+    <string name="empty_screen_btn">Повторить</string>
+    <string name="empty_screen_text">Не у далось загрузить данные.\n Проверьте подключение \nк интернету и \nповторите попытку.</string>
+    <string name="callCenter">Call центр</string>
+    <string name="Settings">Настройки</string>
+    <string name="exit">Выход</string>
+    <string name="open_drawer">Drawer Open</string>
+    <string name="close_drawer">Drawer Close</string>
+    <string name="selected_IP">Выберите IP:</string>
+    <string name="noIp">Для продолжения работы необходимо выбрать IP адрес в настройках</string>
+    <string name="ok">OK</string>
+    <string name="error_server">Сервер временно не доступен, попробуйте повторить позже</string>
+
+    <string name="speciality">Специальность:</string>
+    <string name="experience">Стаж:</string>
+    <string name="additional">Дополнительно</string>
+
+    <string name="select">Выбрать</string>
+
+    <string name="nav_chat">Чат</string>
+    <string name="enterMessage">введите сообщение</string>
+
+    <string name="onlineConsultation">Онлайн-консультация</string>
+    <string name="stub_chat_video">Здесь будут отображаться Ваши текущие и предстоящие онлайн-консультации</string>
+
+    <string name="hint_patient">"Пациент: "</string>
+    <string name="txtService">"Услуга: "</string>
+
+    <string name="btn_close">Отмена</string>
+    <string name="confirm_btn_positive_ok">OK</string>
+    <string name="timetable">Расписание</string>
+
+    <string name="selectDate">Выберите дату</string>
+    <string name="selectConvenientTime">Предстоящие приемы:</string>
+    <string name="docteNotWork">В данный день нет записей.</string>
+
+    <!--play store-->
+    <string name="google_play_store_link">"https://play.google.com/store/apps/details?id="</string>
+    <string name="google_market_link">"market://details?id="</string>
+    <string name="view_timetable">Посмотреть расписание</string>
+
+    <!--Calendar-->
+    <array name="calendar_days_array">
+        <item>Вс</item>
+        <item>Пн</item>
+        <item>Вт</item>
+        <item>Ср</item>
+        <item>Чт</item>
+        <item>Пт</item>
+        <item>Сб</item>
+    </array>
+
+    <array name="calendar_months_array">
+        <item>ЯНВАРЬ</item>
+        <item>ФЕВРАЛЬ</item>
+        <item>МАРТ</item>
+        <item>АПРЕЛЬ</item>
+        <item>МАЙ</item>
+        <item>ИЮНЬ</item>
+        <item>ИЮЛЬ</item>
+        <item>АВГУСТ</item>
+        <item>СЕНТЯБРЬ</item>
+        <item>ОКТЯБРЬ</item>
+        <item>НОЯБРЬ</item>
+        <item>ДЕКАБРЬ</item>
+    </array>
+
+    <string name="app_search">Поиск услуг</string>
+    <string name="hint_ruble">р</string>
+    <string name="btn_record">Записаться</string>
+    <string name="action_search">Поиск</string>
+
+    <string name="close">Закрыть</string>
+    <string name="confirmEntry">Подтвердите запись</string>
+
+    <string name="btnNo">Нет</string>
+    <string name="btnYes">Да</string>
+
+    <string name="txtDoctor">"Доктор: " </string>
+    <string name="txtDate">"Дата: "</string>
+    <string name="txtTime">"Время: "</string>
+
+    <string name="understandably">Хорошо</string>
+    <string name="statistic_mcb">Статистика МКБ</string>
+
+</resources>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ico"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/icon2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Иванов Иван Иванович"
+        app:layout_constraintLeft_toRightOf="@+id/ico"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="8dp"
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        />
+
+    <TextView
+        android:id="@+id/birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="06.04.2020"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintTop_toBottomOf="@+id/fio"
+        app:layout_constraintLeft_toRightOf="@+id/ico"
+        app:layout_constraintRight_toLeftOf="@+id/phone"
+        app:layout_constraintBottom_toTopOf="@+id/shadow"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="10dp"
+        android:textColor="@color/colorSecondaryPrimary"
+        android:drawableStart="@drawable/ic_cake_black_24dp"
+        android:drawablePadding="4dp"
+        />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+7(999)999-99-99"
+        app:layout_constraintTop_toBottomOf="@+id/fio"
+        app:layout_constraintBottom_toTopOf="@+id/shadow"
+        app:layout_constraintLeft_toRightOf="@+id/birthday"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:textSize="10dp"
+        android:drawableStart="@drawable/ic_phone_black_24dp"
+        android:drawablePadding="4dp"
+        android:textColor="@color/colorSecondaryPrimary"/>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/black40"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

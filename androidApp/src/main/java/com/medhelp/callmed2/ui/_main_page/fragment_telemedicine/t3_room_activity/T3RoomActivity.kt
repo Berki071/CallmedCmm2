@@ -347,11 +347,11 @@ class T3RoomActivity: AppCompatActivity() {
 
                     if(isPossibleDeleteCheckMsgUserAfterSelect) {
                         if (it.otpravitel == "sotr" && recordItem!!.status != Constants.TelemedicineStatusRecord.complete.toString() /*&& it.viewKl == "false"*/) {
-                            val msg =
-                                if (it.type == MsgRoomType.TEXT.toString()) "Удалить собщение \"" + it.text + "\"?" else "Удалить файл?"
+//                            val msg =
+//                                if (it.type == MsgRoomType.TEXT.toString()) "Удалить собщение \"" + it.text + "\"?" else "Удалить файл?"
 
                             Different.showAlertInfo(
-                                this@T3RoomActivity, "Удаление!", msg,
+                                this@T3RoomActivity, "", "Удалить собщение?",
                                 object : Different.AlertInfoListener {
                                     override fun clickOk() {
                                         presenter.deleteMessageFromServer(it)

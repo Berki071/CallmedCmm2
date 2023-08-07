@@ -42,8 +42,11 @@ struct BottombarTelemedicine: View {
                     Spacer()
                         .frame(width: 8.0)
                     
-                    TextViewM(text: self.$mainPresenter.textFild)
-                        .padding(.all, 4.0)
+//                    TextViewM(text: self.$mainPresenter.textFild)
+//                        .padding(.all, 4.0)
+//                       // .background(Color.red)
+                    
+                    TextField("Введите сообщение", text: self.$mainPresenter.textFild, axis: .vertical)
                         //.background(Color.red)
                     
                     if(self.mainPresenter.textFild == ""){

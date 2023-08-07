@@ -76,6 +76,7 @@ struct T3ItemMsg: View {
                     .frame(width: 30)
             }
         }
+        .onTapGesture { }
         .onLongPressGesture(minimumDuration: 0.2) {
             self.clickRemuveItem(item)
         }

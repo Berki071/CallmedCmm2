@@ -370,19 +370,19 @@ class T3RoomPresenter: ObservableObject {
         
         if(isPossibleDeleteCheckMsgUserAfterSelect && self.recordTItem != nil) {
             if (item.otpravitel == "sotr" && self.recordTItem!.status != Constants.TelemedicineStatusRecord.complete()) {
-                var msg = ""
-                if (item.type == Constants.MsgRoomType.TEXT()) {
-                    msg = "Удалить собщение \"\(item.text!)\"?"
-                } else {
-                    msg = "Удалить файл?"
-                }
-                
-                self.isShowAlertStandart = StandartAlertData(titel: "Удаление!", text: msg, isShowCansel: true, someFuncOk: {() -> Void in
+//                var msg = ""
+//                if (item.type == Constants.MsgRoomType.TEXT()) {
+//                    msg = "Удалить собщение \"\(item.text!)\"?"
+//                } else {
+//                    msg = "Удалить файл?"
+//                }
+//
+                self.isShowAlertStandart = StandartAlertData(titel: "Удалить собщение?", text: "", isShowCansel: true, someFuncOk: {() -> Void in
                     self.isShowAlertStandart = nil
                     self.deleteMessageFromServer(item)
                 }, someFuncCancel: {() -> Void in
                     self.isShowAlertStandart = nil
-                } )
+                }, textBtnOk: "Удалить", textBtnCancel: "Отмена" )
             }
         }
     }

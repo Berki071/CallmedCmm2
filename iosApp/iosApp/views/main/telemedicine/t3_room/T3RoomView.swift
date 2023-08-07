@@ -148,6 +148,7 @@ struct T3RoomView: View {
                     }))
                     
                 }
+                .padding(.top, 48.0)
             
                 
                 //48.0

@@ -11,6 +11,7 @@ import com.medhelp.callmed2.databinding.ItemChatImgBinding
 import com.medhelp.callmed2.databinding.ItemChatMsgBinding
 import com.medhelp.callmed2.databinding.ItemChatMsgDateBinding
 import com.medhelp.callmed2.databinding.ItemChatMsgTariffBinding
+import com.medhelp.callmed2.databinding.ItemChatRecordAudioBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.utils.main.MDate
 import io.realm.kotlin.types.ObjectId
@@ -19,9 +20,8 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
 
     private var recyList: MutableList<MessageRoomItem> = ArrayList<MessageRoomItem>()
 
-    private val visibleThreshold = 10
-    private var isLoading = false
-
+//    private val visibleThreshold = 10
+//    private var isLoading = false
     init {
         recyList = list.asReversed()
     }
@@ -35,6 +35,7 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
             T3RoomActivity.MsgRoomType.TEXT.toString() -> T3RoomActivity.MsgRoomType.TEXT.id
             T3RoomActivity.MsgRoomType.IMG.toString() -> T3RoomActivity.MsgRoomType.IMG.id
             T3RoomActivity.MsgRoomType.FILE.toString() -> T3RoomActivity.MsgRoomType.FILE.id
+            T3RoomActivity.MsgRoomType.REC_AUD.toString() -> T3RoomActivity.MsgRoomType.REC_AUD.id
             else -> -1
         }
     }
@@ -66,6 +67,11 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
                 val bindingItem = ItemChatFileBinding.bind(view)
                 return T3RoomHolderFile(bindingItem, recyListener)
             }
+            T3RoomActivity.MsgRoomType.REC_AUD.id -> {
+                val view = LayoutInflater.from(contex).inflate(R.layout.item_chat_record_audio, parent, false)
+                val bindingItem = ItemChatRecordAudioBinding.bind(view)
+                return T3RoomHolderRecordAudio(bindingItem, recyListener)
+            }
         }
 
         val view = LayoutInflater.from(contex).inflate(R.layout.item_chat_msg_date, parent, false)
@@ -81,6 +87,7 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
             T3RoomActivity.MsgRoomType.TEXT.toString() -> (holder as RoomHolderMsg).onBinView(recyList[position])
             T3RoomActivity.MsgRoomType.IMG.toString() -> (holder as RoomHolderImg).onBinView(recyList[position])
             T3RoomActivity.MsgRoomType.FILE.toString() -> (holder as T3RoomHolderFile).onBinView(recyList[position])
+            T3RoomActivity.MsgRoomType.REC_AUD.toString() -> (holder as T3RoomHolderRecordAudio).onBinView(recyList[position])
         }
     }
     override fun getItemCount(): Int {
@@ -169,7 +176,7 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
                 }
             }
 
-            if (listMsg[i].type == T3RoomActivity.MsgRoomType.TEXT.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.IMG.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.FILE.toString()) {
+            if (listMsg[i].type == T3RoomActivity.MsgRoomType.TEXT.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.IMG.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.FILE.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.REC_AUD.toString()) {
                 var isExist: Int? = null
 
                 if(listMsg[i].idMessage != null) {
@@ -251,11 +258,19 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
         return if(recyList.size == 0) null else recyList[0]
     }
 
+
     interface RecyListener {
         fun finishLoading()
         fun clickedShowBigImage(item: MessageRoomItem)
         fun clickedShowFile(item: MessageRoomItem)
         //fun clickDeleteFile(item: MessageRoomItem)
         fun clickLongClick(item: MessageRoomItem?) : Boolean
+
+        fun getStateProximity() : T3RoomActivity.ProximitySensorState
+        fun addListenerProximityState(listener: ListenerStateProximity?)
+    }
+
+    interface ListenerStateProximity{
+        fun changeState(state: T3RoomActivity.ProximitySensorState?)
     }
 }

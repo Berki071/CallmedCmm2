@@ -24,7 +24,7 @@ class TimetableDocFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.i("Расписание доктора yна день")
+        Timber.i("Расписание доктора на день")
         val rootView = inflater.inflate(R.layout.fragment_timetable_doc, container, false)
         binding = FragmentTimetableDocBinding.bind(rootView)
 
@@ -39,7 +39,7 @@ class TimetableDocFragment : BaseFragment() {
 
             override fun onPageSelected(position: Int) {
                if(position == 0)
-                   Timber.i("Расписание доктора yна день")
+                   Timber.i("Расписание доктора на день")
                 else
                    Timber.i("Расписание доктора на месяц")
 

@@ -21,6 +21,8 @@ object Constants {
     const val REQUEST_CODE_FOR_UPDATE_APP = 156
 
     const val SENDER_ID_FCM_PATIENT = "933088839978"
+
+    const val MAX_DURATION_OF_ONE_AUDIO_MSG = 180 // в секундах
     enum class TelemedicineStatusRecord{
         wait, active, complete
     }

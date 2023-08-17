@@ -31,20 +31,20 @@ class TimetableOnDayPresenter(mainView: TimetableOnDayFragment) {
             val t2 = prefManager.accessToken
             val t3 = prefManager.currentUserId
 
-            mainView!!.showLoading()
+            mainView?.showLoading()
             val cd = CompositeDisposable()
             cd.add(networkManager
                 .allHospitalBranch
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response: SettingsAllBaranchHospitalList ->
-                    if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
-                        cd.dispose()
-                        return@subscribe
-                    }
+//                    if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
+//                        cd.dispose()
+//                        return@subscribe
+//                    }
                     Collections.sort(response.response)
-                    mainView!!.setHospitalBranch(response.response)
-                    mainView!!.hideLoading()
+                    mainView?.setHospitalBranch(response.response)
+                    mainView?.hideLoading()
                     cd.dispose()
                 }) { throwable: Throwable? ->
                     Timber.e(LoggingTree.getMessageForError(throwable, "TimetableOnDayPresenter/getAllHospitalBranch "))
@@ -53,15 +53,15 @@ class TimetableOnDayPresenter(mainView: TimetableOnDayFragment) {
                         cd.dispose()
                         return@subscribe
                     }
-                    mainView!!.hideLoading()
-                    mainView!!.showErrorScreen()
+                    mainView?.hideLoading()
+                    mainView?.showErrorScreen()
                     cd.dispose()
                 })
         }
 
     fun getDataFrom(branch: Int) {
         val date = arrayOfNulls<DateResponse>(1)
-        mainView!!.showLoading()
+        mainView?.showLoading()
         val cd = CompositeDisposable()
         cd.add(networkManager
             .currentDateApiCall
@@ -72,50 +72,52 @@ class TimetableOnDayPresenter(mainView: TimetableOnDayFragment) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response: VisitList ->
-                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
-                    cd.dispose()
-                    return@subscribe
-                }
-                mainView!!.setupCalendar(date[0]!!.today, response.response)
-                mainView!!.hideLoading()
+//                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
+//                    cd.dispose()
+//                    return@subscribe
+//                }
+                mainView?.setupCalendar(date[0]!!.today, response.response)
+                mainView?.hideLoading()
                 cd.dispose()
             }) { throwable: Throwable? ->
                 Timber.e(LoggingTree.getMessageForError(throwable, "TimetableOnDayPresenter/getDataFrom "))
 
-                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
-                    cd.dispose()
-                    return@subscribe
-                }
-                mainView!!.hideLoading()
-                mainView!!.showErrorScreen()
+                mainView?.hideLoading()
+                mainView?.showErrorScreen()
+
+//                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
+//                    cd.dispose()
+//                    return@subscribe
+//                }
+
                 cd.dispose()
             })
     }
 
     fun getDataFrom(branch: Int, date: String) {
-        mainView!!.showLoading()
+        mainView?.showLoading()
         val cd = CompositeDisposable()
         cd.add(networkManager
             .getAllReceptionApiCall(branch, date)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response: VisitList ->
-                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
-                    cd.dispose()
-                    return@subscribe
-                }
-                mainView!!.setupCalendar(date, response.response)
-                mainView!!.hideLoading()
+//                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
+//                    cd.dispose()
+//                    return@subscribe
+//                }
+                mainView?.setupCalendar(date, response.response)
+                mainView?.hideLoading()
                 cd.dispose()
             }) { throwable: Throwable? ->
                 Timber.e(LoggingTree.getMessageForError(throwable, "TimetableOnDayPresenter/getDataFrom "))
 
-                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
-                    cd.dispose()
-                    return@subscribe
-                }
-                mainView!!.hideLoading()
-                mainView!!.showErrorScreen()
+//                if (mainView == null || mainView!!.context==null || mainView!!.isDetached) {
+//                    cd.dispose()
+//                    return@subscribe
+//                }
+                mainView?.hideLoading()
+                mainView?.showErrorScreen()
                 cd.dispose()
             })
     }

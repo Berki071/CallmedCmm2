@@ -6,20 +6,24 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -30,23 +34,25 @@ import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.Constants
 import com.medhelp.callmed2.data.bg.service.MyFirebaseMessagingService
 import com.medhelp.callmed2.data.bg.service.PadForMyFirebaseMessagingService
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.ActivityT31RoomBinding
 import com.medhelp.callmed2.ui._main_page.MainPageActivity
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowFileTelemedicineDf
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowImageTelemedicineDf
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.ShowMediaTelemedicineDf
-import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.T1ListOfEntriesFragment
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.bottom_bar_chat.BottomBarChatView
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy.RoomAdapter
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.main.MainUtils
 import com.medhelp.callmedcmm2.db.RealmDb
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import timber.log.Timber
+import java.io.File
+import android.os.PowerManager
 
 
-class T3RoomActivity: AppCompatActivity() {
+class T3RoomActivity: AppCompatActivity(){
 
     lateinit var binding: ActivityT31RoomBinding
     lateinit var presenter: T3RoomPresenter
@@ -57,20 +63,36 @@ class T3RoomActivity: AppCompatActivity() {
 
     private val scroll: Parcelable? = null
 
-    var ocl = View.OnClickListener { v: View ->
-        when (v.id) {
-            R.id.sendMsg -> sendMessage()
-            R.id.takeAPhoto ->  takeAPhoto()
-            R.id.openLibraryPhoto -> openLibraryPhoto()
-            R.id.disableChat ->{
-                Different.showAlertInfo(this, "Внимание!", "Нажмите начать прием в меню(вверху справа три точки) для разблокировки чата")
+    var mCurrentFilePath: Uri? = null
+
+    var sensorManager: SensorManager? = null
+    var proximitySensor: Sensor? = null
+    var proximitySensorEventListener: SensorEventListener? = null
+    var stateProximity: ProximitySensorState = ProximitySensorState.AWAY
+        set(value) {
+            field = value
+            if(listenerStateProximity != null){
+                listenerStateProximity?.changeState(field)
+            }
+
+            if(field == ProximitySensorState.NEAR){
+                // Enable : Acquire the lock if it was not already acquired
+                if(!lock.isHeld) lock.acquire()
+            }else{
+                // Disable : Release the lock if it was not already released
+                if(lock.isHeld) lock.release()
             }
         }
-    }
+    var listenerStateProximity: RoomAdapter.ListenerStateProximity? = null
+
+    private lateinit var powerManager: PowerManager
+    private lateinit var lock: PowerManager.WakeLock
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.tag("my").i("Комната с доктором")
+
+        //setVolumeControlStream(AudioManager.STREAM_MUSIC)
 
         binding = ActivityT31RoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -96,18 +118,16 @@ class T3RoomActivity: AppCompatActivity() {
             }
         }
 
-    }
+        initView()
+        initProximitySensor()
 
+        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        lock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK,"callmed2:tag")
+    }
     fun baseInit(){
-        binding.disableChat.visibility = View.GONE
         binding.timer.visibility  = View.GONE
 
         presenter = T3RoomPresenter(this)
-
-        binding.sendMsg.setOnClickListener(ocl)
-        binding.takeAPhoto.setOnClickListener(ocl)
-        binding.openLibraryPhoto.setOnClickListener(ocl)
-        binding.disableChat.setOnClickListener(ocl)
 
         val kvl = object : KeyboardVisibilityListener {
             override fun onKeyboardVisibilityChanged(keyboardVisible: Boolean) {
@@ -117,23 +137,109 @@ class T3RoomActivity: AppCompatActivity() {
             }
         }
         setKeyboardVisibilityListener(this, kvl)
-
-        binding.editT.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                testShowPhotoButtons(s.toString())
+    }
+    fun initView(){
+        binding.bottomBarChat.listener = object : BottomBarChatView.BottomBarChatViewListener {
+            override fun sendMessageToServer(idSotr: String, item: MessageRoomItem, idFilial: String) {
+                presenter.sendMessageToServer(idSotr, item, idFilial)
             }
-        })
+
+            override fun getNewUriForNewFile(idRoom: String, extensionF: String, idMessage: String?, timeMillis: String?): Pair<Uri, File>? {
+                return presenter.getNewUriForNewFile(idRoom, extensionF, idMessage, timeMillis)
+            }
+
+            override fun setMCurrentFilePath(uri: Uri?) {
+                mCurrentFilePath = uri
+            }
+
+            override fun getRecordItem(): AllRecordsTelemedicineItem? {
+                return recordItem
+            }
+
+        }
+    }
+    fun initProximitySensor(){
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        proximitySensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_PROXIMITY)
+
+        if (proximitySensor != null) {
+            proximitySensorEventListener = object : SensorEventListener {
+                override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                    // method to check accuracy changed in sensor.
+                    //Log.wtf("adfasdasdf",">>> other")
+                }
+
+                override fun onSensorChanged(event: SensorEvent) {
+                    // check if the sensor type is proximity sensor.
+                    if (event.sensor.type == Sensor.TYPE_PROXIMITY) {
+                        if (event.values[0] == 0f) {
+                            //("Near")
+                            stateProximity = ProximitySensorState.NEAR
+                        } else {
+                            //("Away")
+                            stateProximity = ProximitySensorState.AWAY
+                        }
+                    }
+                }
+            }
+            sensorManager?.registerListener(proximitySensorEventListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+
+    }
+
+    //region audio volume click key
+    //AudioManager.MODE_IN_COMMUNICATION звук во время прослушивания регулируется только так
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        super.onKeyDown(keyCode, event)
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            val am = getSystemService(AUDIO_SERVICE)  as AudioManager
+            am?.let{
+                if(it.mode == AudioManager.MODE_IN_COMMUNICATION){
+                    val volumeLevel: Int = am?.getStreamVolume(AudioManager.MODE_IN_COMMUNICATION) ?: 0
+                    val max: Int = am?.getStreamMaxVolume(AudioManager.MODE_IN_COMMUNICATION) ?: 0
+
+                    val step: Int = if(max == 0) 0 else (max * 0.2).toInt()
+                    val tmpNewV = volumeLevel+step
+                    val newValue = if(tmpNewV>max) max else tmpNewV
+
+                    am?.setStreamVolume(AudioManager.MODE_IN_COMMUNICATION, newValue, 0)
+                    Log.wtf("adfasdasdf", "KEYCODE_VOLUME_UP $newValue")
+                    return true
+                }
+            }
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            val am = getSystemService(AUDIO_SERVICE)  as AudioManager
+            am?.let{
+                if(it.mode == AudioManager.MODE_IN_COMMUNICATION){
+                    val volumeLevel: Int = am?.getStreamVolume(AudioManager.MODE_IN_COMMUNICATION) ?: 0
+                    val max: Int = am?.getStreamMaxVolume(AudioManager.MODE_IN_COMMUNICATION) ?: 0
+
+                    val step: Int = if(max == 0) 0 else (max * 0.2).toInt()
+                    val tmpNewV = volumeLevel-step
+                    val newValue = if(tmpNewV<=0) 0 else tmpNewV
+
+                    am?.setStreamVolume(AudioManager.MODE_IN_COMMUNICATION, newValue, 0)
+                    Log.wtf("adfasdasdf", "KEYCODE_VOLUME_DOWN $newValue")
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+//endregion
+
+    override fun onPause() {
+        super.onPause()
+
+        // Disable : Release the lock if it was not already released
+        if(lock.isHeld) lock.release()
     }
 
     fun setUp() {
         setSupportActionBar(binding.toolbar)
-
-        if(recordItem!=null && recordItem!!.status == Constants.TelemedicineStatusRecord.active.toString()){
-            binding.disableChat.visibility = View.GONE
-        }else
-            binding.disableChat.visibility = View.VISIBLE
 
         setInfoToolbar()
         recordItem?.let{
@@ -151,10 +257,6 @@ class T3RoomActivity: AppCompatActivity() {
         checkTimer()
     }
 
-    public override fun onResume() {
-        super.onResume()
-        //checkTimer()
-    }
 
     var timerTimeStop = 0L
     fun checkTimer(){
@@ -177,6 +279,10 @@ class T3RoomActivity: AppCompatActivity() {
         }else{
             binding.timer.visibility = View.GONE
         }
+    }
+
+    fun setVisibilityBottomBarChat(boo: Int){ //View.VISIBLE...
+        binding.bottomBarChat.disableChat.visibility = boo
     }
     fun startTimer(){
         val currentTimePhone = MDate.getCurrentDate()
@@ -367,13 +473,29 @@ class T3RoomActivity: AppCompatActivity() {
                 return false
             }
 
+            override fun getStateProximity(): ProximitySensorState {
+                return stateProximity
+            }
+
+            override fun addListenerProximityState(listener: RoomAdapter.ListenerStateProximity?) {
+
+                if(listener == null){
+                    listenerStateProximity = null
+                }
+                else if(listenerStateProximity == null)
+                    listenerStateProximity = listener
+                else{
+                    listenerStateProximity?.changeState(null)
+                    listenerStateProximity = listener
+                }
+            }
+
         }, binding.recy)
 
         binding.recy.setLayoutManager(linearLayoutManager)
         binding.recy.setAdapter(adapter);
 
         recyScrollToStart()
-
     }
 
     private fun recyScrollToStart() {
@@ -384,43 +506,6 @@ class T3RoomActivity: AppCompatActivity() {
     }
 
 
-    private fun sendMessage() {
-        hideKeyboard();
-        val msg = binding.editT.getText().toString();
-        binding.editT.setText("");
-
-        val trimMsg = msg.trim { it <= ' ' }.length > 0
-
-        if(trimMsg) {
-            recordItem?.let {
-                var msgItem = MessageRoomItem()
-                msgItem.idRoom = it.idRoom!!.toString()
-                msgItem.data = MDate.longToString(MDate.getCurrentDate(),MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
-                msgItem.type = MsgRoomType.TEXT.toString()
-                msgItem.text = msg
-                msgItem.otpravitel = "sotr"
-                msgItem.idTm = it.tmId!!
-                msgItem.nameTm = it.tmName
-                msgItem.viewKl = "false"
-                msgItem.viewSotr = "true"
-
-                presenter.sendMessageToServer(it.idKl!!.toString(), msgItem, it.idFilial!!.toString())
-            }
-        }
-    }
-
-    private fun openLibraryPhoto() {
-        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
-        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE)
-
-        galleryIntent.type = "*/*"
-        val mimetypes = arrayOf("image/jpeg", "image/png", "application/pdf")
-        galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
-
-        startActivityForResult(galleryIntent, KEY_FOR_SELECT_DOC)
-    }
-
-    var mCurrentFilePath: Uri? = null
     private fun takeAPhoto() {
         if (permissionGranted()) {
             val isCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
@@ -431,7 +516,7 @@ class T3RoomActivity: AppCompatActivity() {
 
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (takePictureIntent.resolveActivity(packageManager) != null) {
-                val photoURI = presenter!!.getNewUriForNewFile(recordItem!!.idRoom.toString(), "jpg")
+                val photoURI = presenter!!.getNewUriForNewFile(recordItem!!.idRoom.toString(), "jpg")?.first
 
                 photoURI?.let {
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, it)
@@ -461,7 +546,7 @@ class T3RoomActivity: AppCompatActivity() {
                         Different.showAlertInfo(this, "Ошибка!", "Извините, такой тип файла не разрешен")
                         return
                     }else {
-                        val newFileInCacheUri = presenter.getNewUriForNewFile(recordItem?.idRoom.toString(), extF)
+                        val newFileInCacheUri = presenter.getNewUriForNewFile(recordItem?.idRoom.toString(), extF)?.first
                         if (newFileInCacheUri != null) {
                             presenter.convertBase64.copyFileByUri(this, contentURI, newFileInCacheUri)
                             mCurrentFilePath = newFileInCacheUri
@@ -480,8 +565,8 @@ class T3RoomActivity: AppCompatActivity() {
                                 msgItem.idTm = it.tmId!!
                                 msgItem.otpravitel = "sotr"
                                 msgItem.nameTm = it.tmName
-                                msgItem.viewKl = "true"
-                                msgItem.viewSotr = "false"
+                                msgItem.viewKl = "false"
+                                msgItem.viewSotr = "true"
 
 
                                 presenter.sendMessageToServer(it.idKl!!.toString(), msgItem, it.idFilial!!.toString())
@@ -505,8 +590,8 @@ class T3RoomActivity: AppCompatActivity() {
                     msgItem.idTm = it.tmId!!
                     msgItem.otpravitel = "sotr"
                     msgItem.nameTm = it.tmName
-                    msgItem.viewKl = "true"
-                    msgItem.viewSotr = "false"
+                    msgItem.viewKl = "false"
+                    msgItem.viewSotr = "true"
 
                     presenter.sendMessageToServer(it.idKl!!.toString(), msgItem, it.idFilial!!.toString())
                 }
@@ -534,8 +619,6 @@ class T3RoomActivity: AppCompatActivity() {
         }
     }
 
-
-
     private fun permissionGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
@@ -544,16 +627,6 @@ class T3RoomActivity: AppCompatActivity() {
         if(recordItem!=null && recordItem!!.idRoom!=null && recordItem!!.tmId!=null){
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel((recordItem!!.idRoom!!.toString()+recordItem!!.tmId!!.toString()).toInt())
-        }
-    }
-
-    private fun testShowPhotoButtons(s: String) {
-        if (s.trim { it <= ' ' }.length > 0) {
-            binding.takeAPhoto.visibility = View.GONE
-            binding.openLibraryPhoto.visibility = View.GONE
-        } else {
-            binding.takeAPhoto.visibility = View.VISIBLE
-            binding.openLibraryPhoto.visibility = View.VISIBLE
         }
     }
 
@@ -567,6 +640,11 @@ class T3RoomActivity: AppCompatActivity() {
     override fun onDestroy() {
         PadForMyFirebaseMessagingService.showIdRoom = null
         PadForMyFirebaseMessagingService.listener = null
+
+        proximitySensorEventListener?.let {
+            sensorManager?.unregisterListener(it)
+        }
+
         super.onDestroy()
     }
 
@@ -601,31 +679,27 @@ class T3RoomActivity: AppCompatActivity() {
         })
     }
 
-    fun hideKeyboard() {
-        val view: View? = currentFocus
-        if (view != null) {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            imm?.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-    }
-
     interface KeyboardVisibilityListener {
         fun onKeyboardVisibilityChanged(keyboardVisible: Boolean)
     }
     //endregion
 
-    public enum class MsgRoomType (val id: Int){
-        DATE(0),TARIFF(1), TEXT(2), IMG(3), FILE(4)
+    enum class MsgRoomType (val id: Int){
+        DATE(0),TARIFF(1), TEXT(2), IMG(3), FILE(4), REC_AUD(5)
+    }
+
+    enum class ProximitySensorState{
+        NEAR,AWAY
     }
     companion object {
         const val FOLDER_TELEMEDICINE = "TELEMEDICINE"
         const val PREFIX_NAME_FILE = "telemedicine"
 
-        private const val KEY_FOR_SELECT_DOC = 108
-        private const val KEY_FOR_CAMERA_PHOTO = 107
+        const val KEY_FOR_SELECT_DOC = 108
+        const val KEY_FOR_CAMERA_PHOTO = 107
 
-        private const val REQUEST_CODE_PERMISSIONS = 121
-        private val REQUIRED_PERMISSIONS =
+        const val REQUEST_CODE_PERMISSIONS = 121
+        val REQUIRED_PERMISSIONS =
             mutableListOf (Manifest.permission.CAMERA).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)

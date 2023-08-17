@@ -1,6 +1,8 @@
 package com.medhelp.callmed2.utils.main
 
 import android.util.Log
+import com.medhelp.callmed2.utils.timber_log.LoggingTree.Companion.getMessageForError
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -309,5 +311,19 @@ object MDate {
 
         //return analysis >= tDay && analysis <= (tDay + timeTo);
         return tDay < analysis && tDay > analysis - timeTo
+    }
+
+    fun getNewFormatString(data: String, oldFormat: String, newFormat: String): String {
+        val format: DateFormat = SimpleDateFormat(oldFormat)
+        var date: Date? = null
+        try {
+            date = format.parse(data)
+        } catch (e: ParseException) {
+            Timber.tag("my").e(getMessageForError(e, "getNewFormatString"))
+        }
+        assert(date != null)
+        val dataLong = date!!.time
+        val dateFormat = SimpleDateFormat(newFormat)
+        return dateFormat.format(Date(dataLong))
     }
 }

@@ -723,9 +723,15 @@ class T3RoomPresenter: ObservableObject {
             let currentTimeLong: Date = MDate.stringToDate(response.dataServer!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             let dateStartLong: Date = MDate.stringToDate(response.dataStart!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             let dateEndLong: Date = MDate.datePlasTimeInterval(dateStartLong, Int.init(response.tmTimeForTm!))
+            
+            let t1 = response.dataServer!
+            let t2 = response.dataStart!
+            let t3 = Int.init(response.tmTimeForTm!)
 
             if (currentTimeLong >= dateEndLong){
-                self.closeRecordTelemedicine(response)
+                DispatchQueue.main.async {
+                    self.closeRecordTelemedicine(response)
+                }
             }
         }
     }

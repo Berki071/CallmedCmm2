@@ -29,6 +29,7 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 import java.lang.Exception
 
 
@@ -121,9 +122,16 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
 
     fun processingOnImageOrFile(list: List<MessageRoomItem>){
         for (i in list){
-            if(i.type == T3RoomActivity.MsgRoomType.IMG.toString() || i.type == T3RoomActivity.MsgRoomType.FILE.toString()){
-                val ext = if(i.type == T3RoomActivity.MsgRoomType.IMG.toString()) "png" else "pdf"
-                val newUri = getNewUriForNewFile(mainView.recordItem!!.idRoom.toString(),ext, i.idMessage!!.toString())
+            if(i.type == T3RoomActivity.MsgRoomType.IMG.toString() || i.type == T3RoomActivity.MsgRoomType.FILE.toString()
+                || i.type == T3RoomActivity.MsgRoomType.REC_AUD.toString()){
+                val ext = when(i.type){
+                    T3RoomActivity.MsgRoomType.IMG.toString() -> "png"
+                    T3RoomActivity.MsgRoomType.FILE.toString() -> "pdf"
+                    T3RoomActivity.MsgRoomType.REC_AUD.toString() -> "wav"
+                    else -> "pdf"
+                }
+
+                val newUri = getNewUriForNewFile(mainView.recordItem!!.idRoom.toString(),ext, i.idMessage!!.toString())?.first
 
                 if(newUri==null){
                    Different.showAlertInfo(mainView, "Ошибка!", "Не удалось создать файл для сохранения")
@@ -225,6 +233,20 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
             // елсли фаил то в сообщении будет его бэйс64
             val valueText: String =  if(item.type == T3RoomActivity.MsgRoomType.TEXT.toString()) item.text!! else convertBase64.fileToBase64(mainView, Uri.parse(item.text!!))
 
+//            if(item.type != T3RoomActivity.MsgRoomType.TEXT.toString()){
+//                val uriFile = Uri.parse(item.text!!)
+//                var isExistFile = false    //проверка которая работает
+//                if (null != uriFile) {
+//                    try {
+//                        val inputStream: InputStream? = mainView.getContentResolver().openInputStream(uriFile)
+//                        isExistFile = inputStream != null
+//                        inputStream?.close()
+//                    } catch (e: Exception) {
+//                    }
+//                }
+//                Log.wtf("dfdfd",""+isExistFile)
+//            }
+
             kotlin.runCatching {
                 networkManager.sendMessageFromRoom(item.idRoom!!, item.idTm!!.toString(), idUser, item.type!!, valueText,
                     prefManager.accessToken!!, prefManager.centerInfo!!.db_name!!, prefManager.currentUserId.toString(), idBranch)
@@ -243,13 +265,28 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                         //если файл то надо пересохранить с idMessage
                         val newUriFileStr = if(item.type == T3RoomActivity.MsgRoomType.TEXT.toString())
                             null
-                        else
+                        else {
                             renameImageWithId(item, response.response[0].idMessage.toString())
+                        }
 
                         item.idMessage = response.response[0].idMessage
                         item.data = response.response[0].dataMessage
-                        if(newUriFileStr!=null)
+                        if(newUriFileStr!=null) {
                             item.text = newUriFileStr
+
+                            val uriFile = Uri.parse(newUriFileStr)
+                            var isExistFile = false    //проверка которая работает
+                            if (null != uriFile) {
+                                try {
+                                    val inputStream: InputStream? =
+                                        mainView.getContentResolver().openInputStream(uriFile)
+                                    isExistFile = inputStream != null
+                                    inputStream?.close()
+                                } catch (e: Exception) {
+                                }
+                            }
+                            Log.wtf("dfdfd", "" + isExistFile)
+                        }
                         addMessagesToRealm(mutableListOf(item))
 
                         mainView.adapter?.let{
@@ -329,14 +366,14 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
             val extension = convertBase64.getExtensionByUri(mainView, uriFile)
             val timeMillis= it.substring(it.lastIndexOf("_")+1, it.lastIndexOf("."))
 
-            val newUri = getNewUriForNewFile(item.idRoom!!, extension!!, idMessage, timeMillis)
+            val newUri = getNewUriForNewFile(item.idRoom!!, extension!!, idMessage, timeMillis)?.first
 
             newUri?.let{ur ->
                 convertBase64.copyFileByUri(mainView,uriFile, ur)
                 val contentResolver: ContentResolver = mainView.getContentResolver()
                 contentResolver.delete(uriFile, null, null)
 
-                return newUri.toString()
+                return ur.toString()
             }
         }
 
@@ -379,7 +416,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     }
 
 
-    fun getNewUriForNewFile(idRoom: String, extensionF: String, idMessage: String? = null, timeMillis: String? = null): Uri? {
+    fun getNewUriForNewFile(idRoom: String, extensionF: String, idMessage: String? = null, timeMillis: String? = null): Pair<Uri,File>?  {
         if(extensionF.isEmpty())
             return null
 
@@ -401,7 +438,8 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
 
         try {
             newFile.createNewFile()
-            return FileProvider.getUriForFile(mainView, "com.medhelp.callmed2.fileprovider", newFile)
+           // return FileProvider.getUriForFile(mainView, "com.medhelp.callmed2.fileprovider", newFile)
+            return Pair(FileProvider.getUriForFile(mainView, "com.medhelp.callmed2.fileprovider", newFile),newFile)
 
         } catch (e: IOException) {
             Timber.e(LoggingTree.getMessageForError(e, "T3RoomPresenter/generateFileCamera "))
@@ -434,7 +472,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                     mainView.recordItem?.let {
                         it.status = Constants.TelemedicineStatusRecord.complete.toString()
                     }
-                    mainView.binding.disableChat.visibility = View.VISIBLE
+                    mainView.setVisibilityBottomBarChat(View.VISIBLE)
                     mainView.checkShowMenuItems()
                     mainView.checkTimer()
 
@@ -446,7 +484,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                     if (mainView == null) {
                         return@onFailure
                     }
-                    mainView.binding.disableChat.visibility = View.VISIBLE
+                    mainView.setVisibilityBottomBarChat(View.VISIBLE)
                 }
         }
     }
@@ -463,7 +501,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                     mainView.recordItem?.let {
                         it.status = Constants.TelemedicineStatusRecord.active.toString()
                     }
-                    mainView.binding.disableChat.visibility = View.INVISIBLE
+                    mainView.setVisibilityBottomBarChat(View.INVISIBLE)
                     mainView.checkShowMenuItems()
                     getOneRecordInfo(item.idRoom.toString(), item.tmId.toString(), false)
 

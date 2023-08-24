@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.media.MediaMetadataRetriever
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Handler
@@ -205,7 +206,7 @@ class BottomBarChatView : RelativeLayout {
         val timeHasPassedAllSec: Int = if(timeHasPassedL == 0L) 0 else (timeHasPassedL/1000).toInt()
 
         if(timeHasPassedAllSec >= Constants.MAX_DURATION_OF_ONE_AUDIO_MSG){
-            //pointTimerStarted = null
+            pointTimerStarted = null  //????
             startRepeatShowTimer()
             return
         }
@@ -284,16 +285,14 @@ class BottomBarChatView : RelativeLayout {
         }
         audioRecorder = null
 
-        //true
-//        val uriFile = Uri.parse(pathToFileRecord!!.first.toString())
-//        var isExistFile = false    //проверка которая работает
-//        if (null != uriFile) {
-//            try {
-//                val inputStream: InputStream? = context.getContentResolver().openInputStream(uriFile)
-//                isExistFile = inputStream != null
-//                inputStream?.close()
-//            } catch (e: Exception) { }
-//        }
+        val duration = getDuration(pathToFileRecord!!.first)
+        if(duration < 1000){
+            pathToFileRecord?.let{
+                it.second.delete()
+            }
+            pathToFileRecord = null
+            return
+        }
 
         val recordItem = listener!!.getRecordItem()
         recordItem?.let {
@@ -310,19 +309,16 @@ class BottomBarChatView : RelativeLayout {
 
             listener!!.sendMessageToServer(it.idKl!!.toString(), msgItem, it.idFilial!!.toString())
         }
+    }
 
-//        val uriFile = pathToFileRecord?.first
-//
-//        var isExistFile = false    //проверка которая работает
-//        if (null != uriFile) {
-//            try {
-//                val inputStream: InputStream? = context.getContentResolver().openInputStream(uriFile)
-//                isExistFile = inputStream != null
-//                inputStream?.close()
-//            } catch (e: Exception) { }
-//        }
-//
-//        pathToFileRecord = null
+    fun getDuration(uri: Uri): Long{ //millsec
+        try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(context, uri)
+            return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+        }catch (e: Exception){}
+
+        return 0L
     }
     fun cancelRecord(){
         audioRecorder?.let {

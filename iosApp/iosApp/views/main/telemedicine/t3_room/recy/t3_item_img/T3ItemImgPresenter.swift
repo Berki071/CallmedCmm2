@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import shared
 
-class T3ItemPresenter: ObservableObject {
+class T3ItemImgPresenter: ObservableObject {
     var item: MessageRoomItem
     
     @Published var iuImageLogo : UIImage? = nil

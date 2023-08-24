@@ -10,6 +10,7 @@ import Foundation
 class Constants{
     static let PREFIX_NAME_FILE = "telemedicine"
     static let SENDER_ID_FCM_PATIENT = "933088839978"
+    static let MAX_DURATION_OF_ONE_AUDIO_MSG = 180 // в секундах
     
     enum WhatDataShow: String {
         case ARCHIVE, ACTIVE
@@ -26,7 +27,7 @@ class Constants{
     }
     
     enum MsgRoomType: String{
-        case DATE, TARIFF, TEXT, IMG, FILE
+        case DATE, TARIFF, TEXT, IMG, FILE, REC_AUD
         func callAsFunction() -> String {
             rawValue
         }

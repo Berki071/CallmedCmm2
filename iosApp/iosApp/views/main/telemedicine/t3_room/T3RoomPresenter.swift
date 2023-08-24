@@ -31,36 +31,41 @@ class T3RoomPresenter: ObservableObject {
     var isStoppedT3View = true  //для остановки цикличныз запросов
     var proxy: ScrollViewProxy? = nil //для скролла
     
+    //@Published var showToastMsg: String? = " test "
+    
     init(item: AllRecordsTelemedicineItem){
         self.isStoppedT3View = false
     
-        if(item != nil){
-            let tmIdC = item.tmId == nil ? "null" : String(Int.init(item.tmId!))
-            self.getOneRecordInfo(String(Int.init(item.idRoom!)), tmIdC)
-        }
+        let tmIdC = item.tmId == nil ? "null" : String(Int.init(truncating: item.tmId!))
+        self.getOneRecordInfo(String(Int.init(truncating: item.idRoom!)), tmIdC)
+        
+       
+        
     }
     init(idRoom: String, idTm: String){
         self.isStoppedT3View = false
     
         self.getOneRecordInfo(idRoom, idTm)
+        
+       
     }
     
     
     func  setUp(){
         if(self.recordTItem != nil && recyList.count == 0) {
             let idRoom = self.recordTItem!.idRoom!
-            self.getAllMessageFromRealm(idRoom: Int.init(idRoom))
+            self.getAllMessageFromRealm(idRoom: Int.init(truncating: idRoom))
             
             DispatchQueue.main.async {
-                self.getNewMessagesInLoopFromServer(idRoom: String(Int.init(idRoom)))
+                self.getNewMessagesInLoopFromServer(idRoom: String(Int.init(truncating: idRoom)))
             }
             
             
-            let tmIdC = self.recordTItem!.tmId == nil ? "null" : String(Int.init(self.recordTItem!.tmId!))
+            let tmIdC = self.recordTItem!.tmId == nil ? "null" : String(Int.init(truncating: self.recordTItem!.tmId!))
             
-            PadForMyFirebaseMessagingService.shared.showIdRoom = String(Int.init(self.recordTItem!.idRoom!))
+            PadForMyFirebaseMessagingService.shared.showIdRoom = String(Int.init(truncating: self.recordTItem!.idRoom!))
             PadForMyFirebaseMessagingService.shared.listenerT3 = { () -> Void in
-                self.getOneRecordInfo(String(Int.init(self.recordTItem!.idRoom!)), tmIdC)
+                self.getOneRecordInfo(String(Int.init(truncating: self.recordTItem!.idRoom!)), tmIdC)
             }
         }
     }
@@ -86,60 +91,57 @@ class T3RoomPresenter: ObservableObject {
         if(self.isStoppedT3View == true){
             return
         }
-        
+
         if(self.recordTItem == nil){
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.getNewMessagesInLoopFromServer(idRoom: idRoom)
             }
             return
         }
-        
+
         checkLastIdMessage()
-        
+
         let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
-        
+
         sdk.getMessagesRoom(idRoom: idRoom, idLastMsg: String(lastIdMessage),
                             h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, completionHandler: { response, error in
             if let res : MessageRoomResponse = response {
-                
+
                 if(self.isStoppedT3View == true){
                     return
                 }
-                
-                let time: String = MDate.getCurrentDate(MDate.DATE_FORMAT_HHmmss)
-                //print(">>>>!!!!>>>>>> \(time) T3RoomPresenter getNewMessagesInLoopFromServer")
-                
+
                 if (res.response.count > 1 || res.response[0].idMessage != nil) {
-                    
+
                     self.processingOnImageOrFile(res.response)
-                    
+
                     let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
-                    
+
                     if(!listNewMFromRealm.isEmpty){
                         self.processingAndAddListItemsInRecy(listNewMFromRealm)
                         self.checkLastIdMessage()
                     }else{
                         self.checkLastIdMessage()
                     }
-                    
+
                 }
                 self.showLoading(false)
-                
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.getNewMessagesInLoopFromServer(idRoom: idRoom)
                 }
             } else {
                 if let t=error{
-                    LoggingTree.INSTANCE.e("T3RoomPresenter/getNewMessagesInLoopFromServer \(error)")
+                    LoggingTree.INSTANCE.e("T3RoomPresenter/getNewMessagesInLoopFromServer \(t)")
                 }
                 self.showLoading(false)
-                
+
                 if(self.isStoppedT3View == true){
                     return
                 }
-        
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.getNewMessagesInLoopFromServer(idRoom: idRoom)
                 }
@@ -183,35 +185,18 @@ class T3RoomPresenter: ObservableObject {
         newList = self.processingAddDateInMessages(newList, lastItem)
         
         self.addToRecyListAndClearAndAddLastItemForScroll(newList)
-        //recyList += newList
         
-        do{
-            try self.proxy?.scrollTo(18881412322155,anchor: .top)
-            //print(">>>>>>!!!>>>>> 1 self.proxy?.scrollTo(18881412322155,anchor: .top)")
-        }catch{
-            print(">>>>> \(error)")
-        }
+        self.proxy?.scrollTo(18881412322155,anchor: .top)
+     
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            do{
-                try self.proxy?.scrollTo(18881412322155,anchor: .top)
-            }catch{
-                print(">>>>> \(error)")
-            }
+            self.proxy?.scrollTo(18881412322155,anchor: .top)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            do{
-                try self.proxy?.scrollTo(18881412322155,anchor: .top)
-            }catch{
-                print(">>>>> \(error)")
-            }
+            self.proxy?.scrollTo(18881412322155,anchor: .top)
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-            do{
-                try self.proxy?.scrollTo(18881412322155,anchor: .top)
-            }catch{
-                print(">>>>> \(error)")
-            }
+            self.proxy?.scrollTo(18881412322155,anchor: .top)
         }
       
     }
@@ -227,7 +212,7 @@ class T3RoomPresenter: ObservableObject {
             }
             
             var lictNew = listT
-            var tmpItem = MessageRoomItem()
+            let tmpItem = MessageRoomItem()
             tmpItem.type = "scrollItem"
             tmpItem.idMessage = 18881412322155
             lictNew.append(tmpItem)
@@ -242,10 +227,19 @@ class T3RoomPresenter: ObservableObject {
     
     func processingOnImageOrFile(_ list: [MessageRoomItem]){
          for i in list {
-             if(i.type == Constants.MsgRoomType.IMG() || i.type == Constants.MsgRoomType.FILE()){
-                 let ext = (i.type == Constants.MsgRoomType.IMG()) ? "png" : "pdf"
-                 
-                 let newFileName = self.workWithFiles.getNewNameForNewFile(String(Int.init(recordTItem!.idRoom!)), ext, String(Int.init(i.idMessage!)))
+             if(i.type == Constants.MsgRoomType.IMG() || i.type == Constants.MsgRoomType.FILE() || i.type == Constants.MsgRoomType.REC_AUD()){
+                 var ext: String
+                 if(i.type == Constants.MsgRoomType.IMG()){
+                     ext = "png"     
+                 }else if(i.type == Constants.MsgRoomType.FILE()){
+                     ext = "pdf"
+                 }else if(i.type == Constants.MsgRoomType.REC_AUD()){
+                     ext = "wav"
+                 }else{
+                     ext = "pdf"
+                 }
+                            
+                 let newFileName = self.workWithFiles.getNewNameForNewFile(String(Int.init(truncating: recordTItem!.idRoom!)), ext, String(Int.init(truncating: i.idMessage!)))
 
                  if(newFileName == nil){
                      self.showAlet("Ошибка!", "Не удалось создать файл для сохранения")
@@ -268,7 +262,7 @@ class T3RoomPresenter: ObservableObject {
     
     func checkLastIdMessage(){
         if(recordTItem != nil){
-            self.lastIdMessage = Int(RealmDb.shared.getMaxIdMessageByIdRoom(idRoom: String(Int.init(self.recordTItem!.idRoom!))))
+            self.lastIdMessage = Int(RealmDb.shared.getMaxIdMessageByIdRoom(idRoom: String(Int.init(truncating: self.recordTItem!.idRoom!))))
         }
     }
     
@@ -277,7 +271,7 @@ class T3RoomPresenter: ObservableObject {
         var nList: [MessageRoomItem] = []
         
         if(lastMsg == nil) {
-            var tmp = MessageRoomItem()
+            let tmp = MessageRoomItem()
             tmp.data = list[0].data!
             tmp.type = Constants.MsgRoomType.TARIFF()
             tmp.idTm = list[0].idTm
@@ -287,7 +281,7 @@ class T3RoomPresenter: ObservableObject {
             nList.append(list[0])
         }else{
             if(lastMsg!.idTm != list[0].idTm){
-                var tmp = MessageRoomItem()
+                let tmp = MessageRoomItem()
                 tmp.data = list[0].data
                 tmp.type = Constants.MsgRoomType.TARIFF()
                 tmp.idTm = list[0].idTm
@@ -301,7 +295,7 @@ class T3RoomPresenter: ObservableObject {
         if(list.count > 1){
             for index in 1...list.count-1 {
                 if (list[index].nameTm != list[index-1].nameTm) {
-                    var tmp = MessageRoomItem()
+                    let tmp = MessageRoomItem()
                     tmp.data = list[index].data
                     tmp.type = Constants.MsgRoomType.TARIFF()
                     tmp.idTm = list[index].idTm
@@ -320,7 +314,7 @@ class T3RoomPresenter: ObservableObject {
         var nList: [MessageRoomItem] = []
         
         if(lastMsg == nil) {
-            var tmp = MessageRoomItem()
+            let tmp = MessageRoomItem()
             tmp.data = list[0].data
             tmp.type = Constants.MsgRoomType.DATE()
             tmp.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
@@ -328,7 +322,7 @@ class T3RoomPresenter: ObservableObject {
             nList.append(list[0])
         }else{
             if(lastMsg!.data!.prefix(10) != list[0].data!.prefix(10)){
-                var tmp = MessageRoomItem()
+                let tmp = MessageRoomItem()
                 tmp.data = list[0].data
                 tmp.type = Constants.MsgRoomType.DATE()
                 tmp.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
@@ -340,7 +334,7 @@ class T3RoomPresenter: ObservableObject {
         if(list.count > 1){
             for index in 1...list.count-1 {
                 if(list[index].data!.prefix(10) != list[index-1].data!.prefix(10)){
-                    var tmp = MessageRoomItem()
+                    let tmp = MessageRoomItem()
                     tmp.data = list[index].data
                     tmp.type = Constants.MsgRoomType.DATE()
                     tmp.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
@@ -370,13 +364,7 @@ class T3RoomPresenter: ObservableObject {
         
         if(isPossibleDeleteCheckMsgUserAfterSelect && self.recordTItem != nil) {
             if (item.otpravitel == "sotr" && self.recordTItem!.status != Constants.TelemedicineStatusRecord.complete()) {
-//                var msg = ""
-//                if (item.type == Constants.MsgRoomType.TEXT()) {
-//                    msg = "Удалить собщение \"\(item.text!)\"?"
-//                } else {
-//                    msg = "Удалить файл?"
-//                }
-//
+
                 self.isShowAlertStandart = StandartAlertData(titel: "Удалить собщение?", text: "", isShowCansel: true, someFuncOk: {() -> Void in
                     self.isShowAlertStandart = nil
                     self.deleteMessageFromServer(item)
@@ -393,12 +381,12 @@ class T3RoomPresenter: ObservableObject {
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
-        let idMsg = String(Int.init(item.idMessage!))
+        let idMsg = String(Int.init(truncating: item.idMessage!))
         
         sdk.deleteMessageFromServer(idMsg: idMsg,
                                     h_Auth: apiKey, h_dbName: h_dbName, h_idKl: idDoc,completionHandler: { response, error in
             if let res : SimpleResponseBoolean2 = response {
-                if(item.type == Constants.MsgRoomType.IMG() || item.type == Constants.MsgRoomType.FILE()){
+                if(item.type == Constants.MsgRoomType.IMG() || item.type == Constants.MsgRoomType.FILE() || item.type == Constants.MsgRoomType.REC_AUD()){
                     self.workWithFiles.deleteFileFromDocumentsByName(item.text!)
                  }
 
@@ -499,41 +487,24 @@ class T3RoomPresenter: ObservableObject {
         let trimMsg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if(trimMsg.count > 0 && recordTItem != nil) {
-            var msgItem = MessageRoomItem()
-            msgItem.idRoom = String(Int.init(recordTItem!.idRoom!))
+            let msgItem = MessageRoomItem()
+            msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
             msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
             msgItem.type = Constants.MsgRoomType.TEXT()
             msgItem.text = msg
             msgItem.otpravitel = "sotr"
             msgItem.idTm = recordTItem!.tmId!
             msgItem.nameTm = recordTItem!.tmName
-            msgItem.viewKl = "true"
-            msgItem.viewSotr = "false"
+            msgItem.viewKl = "false"
+            msgItem.viewSotr = "true"
             msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
             
-            self.sendMessageToServer(String(Int.init(recordTItem!.idKl!)), msgItem, String(Int.init(recordTItem!.idFilial!)))
+            self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
         }
     }
     
     func sendMessageToServer(_ idUser: String, _ item: MessageRoomItem, _ idBranch: String){
-//        if(item.type != Constants.MsgRoomType.TEXT()){
-//            let valueText: String
-//            valueText = workWithFiles.fileToBase64ByName(item.text!)
-//            
-//            let nameFile = "tmp_2_\(item.text!)"
-//            
-//            let tmp = workWithFiles.base64ToFile(valueText, nameFile, errorListener: {(i:String, j:String) in
-//                //self.showAlet(i, j)
-//            })
-//
-//            if (!tmp){
-//                self.showAlet("Ошибка lyyyy!", "Не удалось скопировать файл для сохранения ssss")
-//            }else{
-//                item.text = nameFile
-//            }
-//        }
-        
-        
+
         self.processingAndAddListItemsInRecy([item])
         let valueText: String
         if(item.type == Constants.MsgRoomType.TEXT())
@@ -546,47 +517,47 @@ class T3RoomPresenter: ObservableObject {
         let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
-        
-        let idTm = String(Int.init(item.idTm!))
-        
+
+        let idTm = String(Int.init(truncating: item.idTm!))
+
         sdk.sendMessageFromRoom(idRoom: item.idRoom!, idTm: idTm, idUser: idUser, typeMsg: item.type!, text: valueText,
                                 h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, h_idFilial: idBranch,
                                   completionHandler: { response, error in
             if let res : SendMessageFromRoomResponse = response {
                 if(res.response[0].idMessage != nil){
                     if(res.response[0].idMessage! == -1){
-                        self.getOneRecordInfo(item.idRoom!, String(Int.init(item.idTm!)))
+                        self.getOneRecordInfo(item.idRoom!, String(Int.init(truncating: item.idTm!)))
                         self.deleteItemFromChatList(item)
                         return
                     }
-                    
-                    if(self.lastIdMessage < Int.init(res.response[0].idMessage!)){
-                        self.lastIdMessage = Int.init(res.response[0].idMessage!)
+
+                    if(self.lastIdMessage < Int.init(truncating: res.response[0].idMessage!)){
+                        self.lastIdMessage = Int.init(truncating: res.response[0].idMessage!)
                     }
-                    
+
                     //если файл то надо пересохранить с idMessage
                     let newUriFileStr: String?
                     if(item.type == Constants.MsgRoomType.TEXT()) {
                         newUriFileStr = nil
                     } else {
-                        newUriFileStr = self.workWithFiles.renameImageWithId(item, String(Int.init(res.response[0].idMessage!)))
+                        newUriFileStr = self.workWithFiles.renameImageWithId(item, String(Int.init(truncating: res.response[0].idMessage!)))
                     }
-                    
+
                     item.idMessage = res.response[0].idMessage
                     item.data = res.response[0].dataMessage
                     if(newUriFileStr != nil){
                         item.text = newUriFileStr
                     }
-                    
-                    
-                    
+
+
+
                     self.updateItemIdMessageByIdChatList(item.idAsString(), res.response[0].idMessage!, res.response[0].dataMessage!, newUriFileStr)
                     self.addMessagesToRealm([item])
-                    
+
                     DispatchQueue.main.async {
                         self.sendMsgNotification()
                     }
-                    
+
                 }else{
                     self.deleteItemFromChatList(item)
                 }
@@ -595,9 +566,9 @@ class T3RoomPresenter: ObservableObject {
                 if let t=error{
                     LoggingTree.INSTANCE.e("T3RoomPresenter/sendMessageToServer", t)
                 }
-                
+
                 self.deleteItemFromChatList(item)
-                               
+
             }
         })
     }
@@ -607,7 +578,7 @@ class T3RoomPresenter: ObservableObject {
         if(self.recordTItem != nil){
             let notiObj = self.creteJSONObjectNotificationForStatus(status, item, type)
             let servK = self.recordTItem!.serverKey!
-            self.sendMsgNotification2(notiObj, servK, Constants.SENDER_ID_FCM_PATIENT, false, String.init(Int.init(item.tmId!)), status)
+            self.sendMsgNotification2(notiObj, servK, Constants.SENDER_ID_FCM_PATIENT, false, String.init(Int.init(truncating: item.tmId!)), status)
         }
     }
     func creteJSONObjectNotificationForStatus(_ status: String, _ item: AllRecordsTelemedicineItem, _ type: String) -> String {
@@ -619,10 +590,10 @@ class T3RoomPresenter: ObservableObject {
         
         let dopData: [String: Any] = [
             "type_message": String.init(type),
-            "idRoom": String.init(Int.init(item.idRoom!)),
-            "idTm": String.init(Int.init(item.tmId!)),
-            "id_kl": String.init(Int.init(item.idKl!)),
-            "id_filial": String.init(Int.init(item.idFilial!))
+            "idRoom": String.init(Int.init(truncating: item.idRoom!)),
+            "idTm": String.init(Int.init(truncating: item.tmId!)),
+            "id_kl": String.init(Int.init(truncating: item.idKl!)),
+            "id_filial": String.init(Int.init(truncating: item.idFilial!))
         ]
         
         let obj: [String: Any] = [
@@ -635,12 +606,12 @@ class T3RoomPresenter: ObservableObject {
     }
     func sendMsgNotification() {
         if(recordTItem != nil){
-            let idRoom = String(Int.init(recordTItem!.idRoom!))
-            let idTm = String(Int.init(recordTItem!.tmId!))
+            let idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
+            let idTm = String(Int.init(truncating: recordTItem!.tmId!))
             
             let notiObj = self.creteJSONObjectNotification(recordTItem!.fcmKl!, idRoom, idTm)
             let servK = recordTItem!.serverKey
-            self.sendMsgNotification2(notiObj, servK!, Constants.SENDER_ID_FCM_PATIENT, true, String.init(Int.init(recordTItem!.tmId!)))
+            self.sendMsgNotification2(notiObj, servK!, Constants.SENDER_ID_FCM_PATIENT, true, String.init(Int.init(truncating: recordTItem!.tmId!)))
         }
     }
     func creteJSONObjectNotification(_ fcmKey: String, _ idRoom: String, _ idTm: String) -> String {
@@ -693,18 +664,19 @@ class T3RoomPresenter: ObservableObject {
                                   completionHandler: { response, error in
             if let res : AllRecordsTelemedicineResponse = response {
                 if(res.response[0].idRoom != nil){
-                    //let tmp1 = list![0].dataStart
-                   
-                    self.recordTItem = res.response[0]
-                    self.checkActiveItemOnComplete(res.response[0])
-                    self.setUp()
-                    self.showLoading(false)
-                    
+                    DispatchQueue.main.async {
+                        self.recordTItem = res.response[0]
+                        self.checkActiveItemOnComplete(res.response[0])
+                        self.setUp()
+                        self.showLoading(false)
+                    }
                 }else{
-                    self.recordTItem = nil
-                    LoggingTree.INSTANCE.e("T3RoomPresenter/getOneRecordInfo response[0]==null")
-                    self.showLoading(false)
-                    self.showAlet("Ошибка","Что-то пошло не так.")
+                    DispatchQueue.main.async {
+                        self.recordTItem = nil
+                        LoggingTree.INSTANCE.e("T3RoomPresenter/getOneRecordInfo response[0]==null")
+                        self.showLoading(false)
+                        self.showAlet("Ошибка","Что-то пошло не так.")
+                    }
                 }
 
             } else {
@@ -722,11 +694,11 @@ class T3RoomPresenter: ObservableObject {
         if (response.status! == Constants.TelemedicineStatusRecord.active() && response.dataServer != nil && response.dataStart != nil) {
             let currentTimeLong: Date = MDate.stringToDate(response.dataServer!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             let dateStartLong: Date = MDate.stringToDate(response.dataStart!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
-            let dateEndLong: Date = MDate.datePlasTimeInterval(dateStartLong, Int.init(response.tmTimeForTm!))
+            let dateEndLong: Date = MDate.datePlasTimeInterval(dateStartLong, Int.init(truncating: response.tmTimeForTm!))
             
-            let t1 = response.dataServer!
-            let t2 = response.dataStart!
-            let t3 = Int.init(response.tmTimeForTm!)
+//            let t1 = response.dataServer!
+//            let t2 = response.dataStart!
+//            let t3 = Int.init(truncating: response.tmTimeForTm!)
 
             if (currentTimeLong >= dateEndLong){
                 DispatchQueue.main.async {
@@ -743,8 +715,8 @@ class T3RoomPresenter: ObservableObject {
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
-        let idR = String(Int.init(item.idRoom!))
-        let idTm =  String(Int.init(item.tmId!))
+        let idR = String(Int.init(truncating: item.idRoom!))
+        let idTm =  String(Int.init(truncating: item.tmId!))
         
         sdk.closeRecordTelemedicine(idRoom: idR, idTm: idTm,
                                     h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc,
@@ -779,41 +751,57 @@ class T3RoomPresenter: ObservableObject {
     
     
     func createImageMsg(_ imgFileName: String){
-        var msgItem = MessageRoomItem()
-        msgItem.idRoom = String(Int.init(recordTItem!.idRoom!))
+        let msgItem = MessageRoomItem()
+        msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
         msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
         msgItem.type = Constants.MsgRoomType.IMG()
         msgItem.text = imgFileName
         msgItem.otpravitel = "sotr"
         msgItem.idTm = recordTItem!.tmId!
         msgItem.nameTm = recordTItem!.tmName
-        msgItem.viewKl = "true"
-        msgItem.viewSotr = "false"
+        msgItem.viewKl = "false"
+        msgItem.viewSotr = "true"
         msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
         
-        self.sendMessageToServer(String(Int.init(recordTItem!.idKl!)), msgItem, String(Int.init(recordTItem!.idFilial!)))
+        self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
         
     }
     func createFileMsg(_ fileName: String){
-        var msgItem = MessageRoomItem()
-        msgItem.idRoom = String(Int.init(recordTItem!.idRoom!))
+        let msgItem = MessageRoomItem()
+        msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
         msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
         msgItem.type = Constants.MsgRoomType.FILE()
         msgItem.text = fileName
         msgItem.otpravitel = "sotr"
         msgItem.idTm = recordTItem!.tmId!
         msgItem.nameTm = recordTItem!.tmName
-        msgItem.viewKl = "true"
-        msgItem.viewSotr = "false"
+        msgItem.viewKl = "false"
+        msgItem.viewSotr = "true"
         msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
         
-        self.sendMessageToServer(String(Int.init(recordTItem!.idKl!)), msgItem, String(Int.init(recordTItem!.idFilial!)))
+        self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
+        
+    }
+    func createRecordMsg(_ fileName: String){
+        let msgItem = MessageRoomItem()
+        msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
+        msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
+        msgItem.type = Constants.MsgRoomType.REC_AUD()
+        msgItem.text = fileName
+        msgItem.otpravitel = "sotr"
+        msgItem.idTm = recordTItem!.tmId!
+        msgItem.nameTm = recordTItem!.tmName
+        msgItem.viewKl = "false"
+        msgItem.viewSotr = "true"
+        msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
+        
+        self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
         
     }
     
     func saveImageByUrl(_ url: URL){
         let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
-        let idRoom: String = String(Int.init(recordTItem!.idRoom!))
+        let idRoom: String = String(Int.init(truncating: recordTItem!.idRoom!))
         let curentTimeMils = String(MDate.getCurrentDate1970())
         
         let fileName = "\(Constants.PREFIX_NAME_FILE)_\(idCenter)_\(idRoom)_\(curentTimeMils).png"
@@ -826,7 +814,7 @@ class T3RoomPresenter: ObservableObject {
     }
     func saveFileByUrl(_ url: URL){
         let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
-        let idRoom: String = String(Int.init(recordTItem!.idRoom!))
+        let idRoom: String = String(Int.init(truncating: recordTItem!.idRoom!))
         let curentTimeMils = String(MDate.getCurrentDate1970())
         
         let fileName = "\(Constants.PREFIX_NAME_FILE)_\(idCenter)_\(idRoom)_\(curentTimeMils).pdf"
@@ -878,14 +866,14 @@ class T3RoomPresenter: ObservableObject {
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
-        let idRoom: String = String(Int.init(item.idRoom!))
-        let idTm: String = String(Int.init(item.tmId!))
+        let idRoom: String = String(Int.init(truncating: item.idRoom!))
+        let idTm: String = String(Int.init(truncating: item.tmId!))
         
         sdk.toActiveRecordTelemedicine(idRoom: idRoom, idTm: idTm,
                                        h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc,
                                   completionHandler: { response, error in
             if let res : SimpleResponseBoolean2 = response {
-                LoggingTree.INSTANCE.d("в Активные tmId \(item.tmId)")
+                LoggingTree.INSTANCE.d("в Активные tmId \(idTm)")
                 DispatchQueue.main.async {
                     if(self.recordTItem != nil ){
                         self.recordTItem?.status = Constants.TelemedicineStatusRecord.active()

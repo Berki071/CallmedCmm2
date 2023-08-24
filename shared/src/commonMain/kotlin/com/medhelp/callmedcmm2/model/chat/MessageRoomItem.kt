@@ -35,4 +35,9 @@ open class MessageRoomItem : RealmObject {
     fun idAsString() : String {
         return _id.toString()
     }
+
+//    constructor(full_name: String, specialty: String) {
+//        this.full_name = full_name
+//        this.specialty = specialty
+//    }
 }

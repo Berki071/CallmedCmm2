@@ -68,9 +68,9 @@ class CheckUpdate: NSObject {
                 if let appStoreAppVersion = info?.version { // Check app on AppStore
                     // Check if the installed app is the same that is on AppStore, if it is, print on console, but if it isn't it shows an alert.
                     if appStoreAppVersion <= currentVersion {
-                        print(">>>>>!!!!>>>>> Already on the last app version: ", currentVersion)
+                        //print(">>>>>!!!!>>>>> Already on the last app version: ", currentVersion)
                     } else {
-                        print(">>>>>!!!!>>>>> Needs update: \(store) Version: \(appStoreAppVersion) > Current version: ", currentVersion)
+                       // print(">>>>>!!!!>>>>> Needs update: \(store) Version: \(appStoreAppVersion) > Current version: ", currentVersion)
                         DispatchQueue.main.async {
                             let topController: UIViewController = (UIApplication.shared.windows.first?.rootViewController)!
                             topController.showAppUpdateAlert(version: appStoreAppVersion, force: force, appURL: (info?.trackViewUrl)!, isTestFlight: self.isTestFlight)

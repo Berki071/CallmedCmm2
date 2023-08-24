@@ -7,6 +7,7 @@
 
 import SwiftUI
 import shared
+import UIKit
 
 struct T3RoomView: View {
     @StateObject var mainPresenter: T3RoomPresenter
@@ -17,16 +18,38 @@ struct T3RoomView: View {
     @State var fileName = "no file chosen"  //fileImporter
     @State var openFile = false             //fileImporter bool для показа
     
+    //var proximityObserver = ProximityObserver()
+    
+    func activateProximitySensor() {
+        //print(">>>> MyView::activateProximitySensor")
+        UIDevice.current.isProximityMonitoringEnabled = true
+
+
+//        if UIDevice.current.isProximityMonitoringEnabled {
+//            NotificationCenter.default.addObserver(proximityObserver, selector: #selector(proximityObserver.didChange), name: UIDevice.proximityStateDidChangeNotification, object: UIDevice.current)
+//        }
+    }
+    
+    func deactivateProximitySensor() {
+        print(">>>> MyView::deactivateProximitySensor")
+        UIDevice.current.isProximityMonitoringEnabled = false
+       // NotificationCenter.default.removeObserver(proximityObserver, name: UIDevice.proximityStateDidChangeNotification, object: UIDevice.current)
+    }
+    
 //    @State var itemTmp: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem(server_key: "1", data_server:"2", id_room: 3, status: "4", id_kl: 5, id_filial: 6, specialty: "7", full_name_kl: "8", dr_kl: "9", komment_kl: "10", fcm_kl: "11", tmId: 12, tm_name: "13", tm_type: "14", tm_price: 15, tm_time_for_tm: 16, timeStartAfterPay: 17, dataStart: "18", data_end: "19", dataPay: "20", status_pay: "21", about: "22", about_full: "23", notif_24: "24", notif_12: "25", notif_4: "26", notif_1: "27")
     
     init(item: AllRecordsTelemedicineItem, clickBack: @escaping () -> Void){
         self.clickBack = clickBack
         _mainPresenter = StateObject(wrappedValue:T3RoomPresenter(item: item))
         //mainPresenter = T3RoomPresenter(item: item)
+        
+       /// UIDevice.current.isProximityMonitoringEnabled = true
     }
     init(idRoom: String, idTm: String, clickBack: @escaping () -> Void){
         self.clickBack = clickBack
         _mainPresenter = StateObject(wrappedValue:T3RoomPresenter(idRoom: idRoom, idTm: idTm ))
+        
+       // UIDevice.current.isProximityMonitoringEnabled = true
     }
     
     
@@ -86,6 +109,13 @@ struct T3RoomView: View {
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
+                                    }else if(i.type  == Constants.MsgRoomType.REC_AUD()){
+                                        T3ItemRecordAudio(item: i, clickRemuveItem: {(k: MessageRoomItem) -> Void in
+                                            self.mainPresenter.clickRemuveItem(k)
+                                        })
+                                        .listRowSeparator(.hidden)
+                                        .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
+                                        .id(Int.init(truncating: i.idMessage!))
                                     }else{
                                         Text("")
                                             .listRowSeparator(.hidden)
@@ -128,12 +158,22 @@ struct T3RoomView: View {
                 }
                 .padding(.top, 48.0)
                 .padding(.bottom, 20.0)
+//                .onReceive(NotificationCenter.default.publisher(for: UIDevice.proximityStateDidChangeNotification)) { i in
+//                            if UIDevice.current.proximityState {
+//                                // sensor is close to user
+//                                // true is "near", false is "far"
+//
+//                                print(">>> \(i)")
+//                            }
+//                        }
                     
                 VStack(spacing: 0){
                     Spacer()
                     BottombarTelemedicine(item: self.$mainPresenter.recordTItem, listener: BottombarTelemedicineListener(sendMsg: {(msg: String) -> Void in
                         self.mainPresenter.sendMessage(msg)
-                    }, showAlertMsg: {(i: String, j: String) -> Void in
+                    }, sendRecordMsg: {(fileName: String) -> Void in
+                        self.mainPresenter.createRecordMsg(fileName)
+                    } , showAlertMsg: {(i: String, j: String) -> Void in
                         self.mainPresenter.showAlet(i,j)
                     }, makePhoto: {() -> Void in
                         self.mainPresenter.isStartCamera = true
@@ -144,7 +184,6 @@ struct T3RoomView: View {
                         self.showSheet = true
                     }, selectFileFromOtherPlace: {() -> Void in
                         self.openFile.toggle()
-                        
                     }))
                     
                 }
@@ -176,6 +215,7 @@ struct T3RoomView: View {
                 if(self.mainPresenter.showDialogLoading == true){
                     LoadingView()
                 }
+
                 
             }
             .sheet(isPresented: $showSheet) {
@@ -194,6 +234,12 @@ struct T3RoomView: View {
                     }) )
                 }
             }
+            .onAppear() {
+                 self.activateProximitySensor()
+             }.onDisappear() {
+                 AudioPlayerHandler.shared.stopAudio()
+                 self.deactivateProximitySensor()
+             }
             .fileImporter( isPresented: $openFile, allowedContentTypes: [.image,.pdf], allowsMultipleSelection: false, onCompletion: {
                 (Result) in
                 
@@ -215,14 +261,20 @@ struct T3RoomView: View {
                     }
                     
                 }
+                
+                
+                
                 catch{
                     LoggingTree.INSTANCE.e("T3RoomView/fileImporter error reading file \(error.localizedDescription)" )
                     //print("error reading file \(error.localizedDescription)")
                 }
                 
             })
+
         }
     }
+    
+
 }
 
 struct T3RoomView_Previews: PreviewProvider {

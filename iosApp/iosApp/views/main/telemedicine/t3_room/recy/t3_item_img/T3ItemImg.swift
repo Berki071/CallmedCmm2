@@ -9,13 +9,13 @@ import SwiftUI
 import shared
 
 struct T3ItemImg: View {
-    @StateObject var mainPresenter: T3ItemPresenter
+    @StateObject var mainPresenter: T3ItemImgPresenter
     
     var showBigImage: (MessageRoomItem) -> Void
     var clickRemuveItem: (MessageRoomItem) -> Void
     
     init(item: MessageRoomItem, showBigImage: @escaping (MessageRoomItem) -> Void, clickRemuveItem: @escaping  (MessageRoomItem) -> Void){
-        _mainPresenter = StateObject(wrappedValue:T3ItemPresenter(item: item))
+        _mainPresenter = StateObject(wrappedValue:T3ItemImgPresenter(item: item))
         self.showBigImage = showBigImage
         self.clickRemuveItem = clickRemuveItem
     }

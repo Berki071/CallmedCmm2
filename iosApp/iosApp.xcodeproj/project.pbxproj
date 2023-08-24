@@ -10,6 +10,10 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
+		56049C932A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */; };
+		56049C952A8F4A6200826899 /* AudioPlayerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */; };
+		5635C6F42A961A2A00DA2C65 /* AudioRecorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */; };
+		56AD72E32A8DDB24005D3708 /* T3ItemRecordAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */; };
 		56F259732A56B371002A016F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 56F259722A56B371002A016F /* FirebaseAnalytics */; };
 		56F259752A56B371002A016F /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 56F259742A56B371002A016F /* FirebaseCrashlytics */; };
 		56F259772A56B371002A016F /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 56F259762A56B371002A016F /* FirebaseMessaging */; };
@@ -49,7 +53,7 @@
 		56F25A0A2A56CDB1002A016F /* T3ItemMsg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259BE2A56CDB0002A016F /* T3ItemMsg.swift */; };
 		56F25A0B2A56CDB1002A016F /* T3ItemDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259BF2A56CDB0002A016F /* T3ItemDate.swift */; };
 		56F25A0C2A56CDB1002A016F /* T3ItemImg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259C12A56CDB0002A016F /* T3ItemImg.swift */; };
-		56F25A0D2A56CDB1002A016F /* T3ItemPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259C22A56CDB0002A016F /* T3ItemPresenter.swift */; };
+		56F25A0D2A56CDB1002A016F /* T3ItemImgPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259C22A56CDB0002A016F /* T3ItemImgPresenter.swift */; };
 		56F25A0E2A56CDB1002A016F /* PadForMyFirebaseMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259C32A56CDB0002A016F /* PadForMyFirebaseMessagingService.swift */; };
 		56F25A0F2A56CDB1002A016F /* T3RoomPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259C42A56CDB0002A016F /* T3RoomPresenter.swift */; };
 		56F25A102A56CDB1002A016F /* ToolbarTelemedicineRoomPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F259C72A56CDB0002A016F /* ToolbarTelemedicineRoomPresenter.swift */; };
@@ -151,6 +155,10 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudioPresenter.swift; sourceTree = "<group>"; };
+		56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerHandler.swift; sourceTree = "<group>"; };
+		5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorHandler.swift; sourceTree = "<group>"; };
+		56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudio.swift; sourceTree = "<group>"; };
 		56F259822A56C9D7002A016F /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		56F259892A56CCEF002A016F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		56F2598C2A56CD49002A016F /* SplashPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashPresenter.swift; sourceTree = "<group>"; };
@@ -187,7 +195,7 @@
 		56F259BE2A56CDB0002A016F /* T3ItemMsg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = T3ItemMsg.swift; sourceTree = "<group>"; };
 		56F259BF2A56CDB0002A016F /* T3ItemDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = T3ItemDate.swift; sourceTree = "<group>"; };
 		56F259C12A56CDB0002A016F /* T3ItemImg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = T3ItemImg.swift; sourceTree = "<group>"; };
-		56F259C22A56CDB0002A016F /* T3ItemPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = T3ItemPresenter.swift; sourceTree = "<group>"; };
+		56F259C22A56CDB0002A016F /* T3ItemImgPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = T3ItemImgPresenter.swift; sourceTree = "<group>"; };
 		56F259C32A56CDB0002A016F /* PadForMyFirebaseMessagingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PadForMyFirebaseMessagingService.swift; sourceTree = "<group>"; };
 		56F259C42A56CDB0002A016F /* T3RoomPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = T3RoomPresenter.swift; sourceTree = "<group>"; };
 		56F259C72A56CDB0002A016F /* ToolbarTelemedicineRoomPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTelemedicineRoomPresenter.swift; sourceTree = "<group>"; };
@@ -298,6 +306,16 @@
 				058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		56AD72E12A8DDAEF005D3708 /* t3_item_record_audio */ = {
+			isa = PBXGroup;
+			children = (
+				56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */,
+				56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */,
+				56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */,
+			);
+			path = t3_item_record_audio;
 			sourceTree = "<group>";
 		};
 		56F2598B2A56CD49002A016F /* splash */ = {
@@ -461,6 +479,7 @@
 				56F259BE2A56CDB0002A016F /* T3ItemMsg.swift */,
 				56F259BF2A56CDB0002A016F /* T3ItemDate.swift */,
 				56F259C02A56CDB0002A016F /* t3_item_img */,
+				56AD72E12A8DDAEF005D3708 /* t3_item_record_audio */,
 			);
 			path = recy;
 			sourceTree = "<group>";
@@ -469,7 +488,7 @@
 			isa = PBXGroup;
 			children = (
 				56F259C12A56CDB0002A016F /* T3ItemImg.swift */,
-				56F259C22A56CDB0002A016F /* T3ItemPresenter.swift */,
+				56F259C22A56CDB0002A016F /* T3ItemImgPresenter.swift */,
 			);
 			path = t3_item_img;
 			sourceTree = "<group>";
@@ -562,6 +581,7 @@
 				56F259E12A56CDB0002A016F /* TextViewM.swift */,
 				56F259E22A56CDB0002A016F /* BottombarTelemedicinePresenter.swift */,
 				56F259E32A56CDB0002A016F /* BottombarTelemedicinePresenter2.swift */,
+				5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */,
 			);
 			path = bottombar;
 			sourceTree = "<group>";
@@ -898,6 +918,7 @@
 				56F25A692A56D139002A016F /* SharedPreferenses.swift in Sources */,
 				56F25A032A56CDB1002A016F /* StatisticsMcbItem.swift in Sources */,
 				56F25A712A56D139002A016F /* SimpleResponseBoolean.swift in Sources */,
+				56049C952A8F4A6200826899 /* AudioPlayerHandler.swift in Sources */,
 				56F25A1F2A56CDB1002A016F /* ShowImagePage.swift in Sources */,
 				56F25A142A56CDB1002A016F /* ShowFilesView.swift in Sources */,
 				56F25A082A56CDB1002A016F /* T3ItemFile.swift in Sources */,
@@ -906,6 +927,7 @@
 				56F25A002A56CDB1002A016F /* TimetableDocMonthItem.swift in Sources */,
 				56F259F12A56CDB0002A016F /* ItemBranch.swift in Sources */,
 				56F25A7B2A56D139002A016F /* SendMessageFromRoomItem.swift in Sources */,
+				56AD72E32A8DDB24005D3708 /* T3ItemRecordAudio.swift in Sources */,
 				56F259EF2A56CDB0002A016F /* SettingsView.swift in Sources */,
 				56F259FE2A56CDB1002A016F /* TimetableDocMonthView.swift in Sources */,
 				56F259942A56CD95002A016F /* LoginPresenter.swift in Sources */,
@@ -935,7 +957,7 @@
 				56F25A262A56CDB1002A016F /* T1ListOfEntriesItemPresenter.swift in Sources */,
 				56F25A772A56D139002A016F /* SettingsAllBranchHospitalResponse.swift in Sources */,
 				56F25A222A56CDB1002A016F /* BottombarTelemedicine.swift in Sources */,
-				56F25A0D2A56CDB1002A016F /* T3ItemPresenter.swift in Sources */,
+				56F25A0D2A56CDB1002A016F /* T3ItemImgPresenter.swift in Sources */,
 				56F25A7C2A56D139002A016F /* File.swift in Sources */,
 				56F25A0B2A56CDB1002A016F /* T3ItemDate.swift in Sources */,
 				56F25A0F2A56CDB1002A016F /* T3RoomPresenter.swift in Sources */,
@@ -946,6 +968,7 @@
 				56F25A252A56CDB1002A016F /* BottombarTelemedicinePresenter2.swift in Sources */,
 				56F25A1A2A56CDB1002A016F /* ShowImagesView.swift in Sources */,
 				56F25A272A56CDB1002A016F /* T1ListOfEntriesTitle.swift in Sources */,
+				56049C932A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift in Sources */,
 				56F25A8C2A56D139002A016F /* RealmDb.swift in Sources */,
 				56F25A802A56D139002A016F /* SettingsAllBranchHospitalItem.swift in Sources */,
 				56F25A1B2A56CDB1002A016F /* ShowImagesItemImg.swift in Sources */,
@@ -997,6 +1020,7 @@
 				56F25A2D2A56CDB2002A016F /* CheckUpdate.swift in Sources */,
 				56F25A8B2A56D139002A016F /* RealmHelper.swift in Sources */,
 				56F259932A56CD95002A016F /* LoginView.swift in Sources */,
+				5635C6F42A961A2A00DA2C65 /* AudioRecorHandler.swift in Sources */,
 				56F25A1D2A56CDB1002A016F /* ShowImagesPresenter.swift in Sources */,
 				56F25A972A56D14D002A016F /* MDate.swift in Sources */,
 				56F259F72A56CDB1002A016F /* DropdownCategory.swift in Sources */,
@@ -1142,7 +1166,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22.0;
+				CURRENT_PROJECT_VERSION = 26.0;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HZ3W95LN3H;
 				ENABLE_PREVIEWS = YES;
@@ -1157,7 +1181,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 22.0;
+				MARKETING_VERSION = 26.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1177,7 +1201,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22.0;
+				CURRENT_PROJECT_VERSION = 26.0;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HZ3W95LN3H;
 				ENABLE_PREVIEWS = YES;
@@ -1192,7 +1216,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 22.0;
+				MARKETING_VERSION = 26.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",

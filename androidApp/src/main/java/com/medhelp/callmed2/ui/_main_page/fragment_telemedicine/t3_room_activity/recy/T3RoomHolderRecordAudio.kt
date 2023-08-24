@@ -176,9 +176,13 @@ class T3RoomHolderRecordAudio(val itemBinding: ItemChatRecordAudioBinding, val r
 
 
     fun getDuration(uri: Uri): Long{ //millsec
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(itemView.context, uri)
-        return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+        try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(itemView.context, uri)
+            return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+        }catch (e: Exception){}
+
+        return 0L
     }
     private fun durationMillSecToStringFormatted(millSec: Int): String {
         val durationSecAll = (millSec/1000).toInt()

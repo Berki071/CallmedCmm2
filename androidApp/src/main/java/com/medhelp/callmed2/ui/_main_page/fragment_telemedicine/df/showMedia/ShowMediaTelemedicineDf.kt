@@ -43,7 +43,8 @@ class ShowMediaTelemedicineDf: DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.title = recItem.fullNameKl
+        //binding.toolbar.title = recItem.fullNameKl
+        binding.toolbar.title = "Медиа"
         binding.toolbar.setNavigationOnClickListener {
             dialog?.dismiss()
         }

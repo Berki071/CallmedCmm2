@@ -96,19 +96,6 @@ class T3ItemRecordAudioPresenter : ObservableObject {
         getFile()
         
         if(self.urlAudio == nil){
-//            do {
-//                let path = getDocumentsDirectory()
-//                let directoryContents = try FileManager.default.contentsOfDirectory(at: path!, includingPropertiesForKeys: nil)
-//                let allFilesPngURL = directoryContents.filter{ $0.pathExtension == "wav" }  // во внутренню папку все сохраняютсяв пнг
-//
-//                for i in allFilesPngURL {
-//                    print(">>>> \(item.text) in>> \(i.lastPathComponent)")
-//                }
-//
-//            } catch {
-//                LoggingTree.INSTANCE.e("T3ItemImg/getImage", error)
-//            }
-            
             return
         }
         

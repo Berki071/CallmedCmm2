@@ -18,22 +18,12 @@ struct T3RoomView: View {
     @State var fileName = "no file chosen"  //fileImporter
     @State var openFile = false             //fileImporter bool для показа
     
-    //var proximityObserver = ProximityObserver()
     
     func activateProximitySensor() {
-        //print(">>>> MyView::activateProximitySensor")
         UIDevice.current.isProximityMonitoringEnabled = true
-
-
-//        if UIDevice.current.isProximityMonitoringEnabled {
-//            NotificationCenter.default.addObserver(proximityObserver, selector: #selector(proximityObserver.didChange), name: UIDevice.proximityStateDidChangeNotification, object: UIDevice.current)
-//        }
     }
-    
     func deactivateProximitySensor() {
-        print(">>>> MyView::deactivateProximitySensor")
         UIDevice.current.isProximityMonitoringEnabled = false
-       // NotificationCenter.default.removeObserver(proximityObserver, name: UIDevice.proximityStateDidChangeNotification, object: UIDevice.current)
     }
     
 //    @State var itemTmp: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem(server_key: "1", data_server:"2", id_room: 3, status: "4", id_kl: 5, id_filial: 6, specialty: "7", full_name_kl: "8", dr_kl: "9", komment_kl: "10", fcm_kl: "11", tmId: 12, tm_name: "13", tm_type: "14", tm_price: 15, tm_time_for_tm: 16, timeStartAfterPay: 17, dataStart: "18", data_end: "19", dataPay: "20", status_pay: "21", about: "22", about_full: "23", notif_24: "24", notif_12: "25", notif_4: "26", notif_1: "27")
@@ -123,10 +113,7 @@ struct T3RoomView: View {
                                             .font(.system(size: 1))
                                             .id(18881412322155)
                                             .frame(height: 1)
-                                        //                                    T3ItemMsg(item: i, clickRemuveItem: {(MessageRoomItem) -> Void in })
-                                        //                                        .listRowSeparator(.hidden)
-                                        //                                        .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
-                                        //                                        .id(Int.init(truncating: i.idMessage!))
+                      
                                     }
                                 }
                                 .id(UUID())
@@ -139,11 +126,6 @@ struct T3RoomView: View {
                                         }
                                     }
                                 }
-                                //                            .onChange(of: self.mainPresenter.recyList, perform: { list in
-                                //                                if(list.count > 0){
-                                //                                    proxy.scrollTo(18881412322155,anchor: .top)
-                                //                                }
-                                //                            })
                                 .onTapGesture {
                                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                 }
@@ -173,7 +155,7 @@ struct T3RoomView: View {
                         self.mainPresenter.sendMessage(msg)
                     }, sendRecordMsg: {(fileName: String) -> Void in
                         self.mainPresenter.createRecordMsg(fileName)
-                    } , showAlertMsg: {(i: String, j: String) -> Void in
+                    }, showAlertMsg: {(i: String, j: String) -> Void in
                         self.mainPresenter.showAlet(i,j)
                     }, makePhoto: {() -> Void in
                         self.mainPresenter.isStartCamera = true

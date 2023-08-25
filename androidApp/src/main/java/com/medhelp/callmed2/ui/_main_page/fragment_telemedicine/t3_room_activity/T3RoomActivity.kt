@@ -241,6 +241,11 @@ class T3RoomActivity: AppCompatActivity(){
     fun setUp() {
         setSupportActionBar(binding.toolbar)
 
+        if(recordItem!=null && recordItem!!.status == Constants.TelemedicineStatusRecord.active.toString()){
+            setVisibilityBottomBarChat(View.GONE)
+        }else
+            setVisibilityBottomBarChat(View.VISIBLE)
+
         setInfoToolbar()
         recordItem?.let{
             presenter.getAllMessageFromRealm(it.idRoom!!)

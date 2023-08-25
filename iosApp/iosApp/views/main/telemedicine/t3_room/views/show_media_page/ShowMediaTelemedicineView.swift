@@ -26,7 +26,7 @@ struct ShowMediaTelemedicineView: View {
         }else{
             ZStack{
                 VStack(spacing: 0){
-                    MyToolBar(title1: self.itemRecord.wrappedValue?.fullNameKl! ?? "", clickHumburger: {() -> Void in   //44.0
+                    MyToolBar(title1: "Медиа", clickHumburger: {() -> Void in   //44.0
                         self.clickBack()
                     }, isShowImageFreeLine: false)
                     GeometryReader { geo in

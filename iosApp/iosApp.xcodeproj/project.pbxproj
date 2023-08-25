@@ -455,6 +455,7 @@
 			children = (
 				56F259B92A56CDB0002A016F /* t3_room */,
 				56F259E42A56CDB0002A016F /* t1_list_of_entries */,
+				56F259C32A56CDB0002A016F /* PadForMyFirebaseMessagingService.swift */,
 			);
 			path = telemedicine;
 			sourceTree = "<group>";
@@ -466,7 +467,6 @@
 				56F259BB2A56CDB0002A016F /* recy */,
 				56F259BA2A56CDB0002A016F /* T3RoomView.swift */,
 				56F259C42A56CDB0002A016F /* T3RoomPresenter.swift */,
-				56F259C32A56CDB0002A016F /* PadForMyFirebaseMessagingService.swift */,
 			);
 			path = t3_room;
 			sourceTree = "<group>";
@@ -1166,7 +1166,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26.0;
+				CURRENT_PROJECT_VERSION = 27.0;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HZ3W95LN3H;
 				ENABLE_PREVIEWS = YES;
@@ -1181,7 +1181,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 26.0;
+				MARKETING_VERSION = 27.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1201,7 +1201,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26.0;
+				CURRENT_PROJECT_VERSION = 27.0;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HZ3W95LN3H;
 				ENABLE_PREVIEWS = YES;
@@ -1216,7 +1216,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 26.0;
+				MARKETING_VERSION = 27.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",

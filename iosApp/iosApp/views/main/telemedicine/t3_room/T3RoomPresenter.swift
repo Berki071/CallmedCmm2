@@ -31,7 +31,6 @@ class T3RoomPresenter: ObservableObject {
     var isStoppedT3View = true  //для остановки цикличныз запросов
     var proxy: ScrollViewProxy? = nil //для скролла
     
-    //@Published var showToastMsg: String? = " test "
     
     init(item: AllRecordsTelemedicineItem){
         self.isStoppedT3View = false
@@ -39,15 +38,11 @@ class T3RoomPresenter: ObservableObject {
         let tmIdC = item.tmId == nil ? "null" : String(Int.init(truncating: item.tmId!))
         self.getOneRecordInfo(String(Int.init(truncating: item.idRoom!)), tmIdC)
         
-       
-        
     }
     init(idRoom: String, idTm: String){
         self.isStoppedT3View = false
     
         self.getOneRecordInfo(idRoom, idTm)
-        
-       
     }
     
     
@@ -77,10 +72,8 @@ class T3RoomPresenter: ObservableObject {
         if(!list.isEmpty){
             var newList = self.processingAddTariffMessages(list)
             newList = self.processingAddDateInMessages(newList)
-            //self.recyList = newList
             self.addToRecyListAndClearAndAddLastItemForScroll(newList)
         }else{
-            //self.recyList = []
             self.addToRecyListAndClearAndAddLastItemForScroll([])
         }
     }
@@ -116,7 +109,6 @@ class T3RoomPresenter: ObservableObject {
                 if (res.response.count > 1 || res.response[0].idMessage != nil) {
 
                     self.processingOnImageOrFile(res.response)
-
                     let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
 
                     if(!listNewMFromRealm.isEmpty){
@@ -695,10 +687,6 @@ class T3RoomPresenter: ObservableObject {
             let currentTimeLong: Date = MDate.stringToDate(response.dataServer!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             let dateStartLong: Date = MDate.stringToDate(response.dataStart!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             let dateEndLong: Date = MDate.datePlasTimeInterval(dateStartLong, Int.init(truncating: response.tmTimeForTm!))
-            
-//            let t1 = response.dataServer!
-//            let t2 = response.dataStart!
-//            let t3 = Int.init(truncating: response.tmTimeForTm!)
 
             if (currentTimeLong >= dateEndLong){
                 DispatchQueue.main.async {
@@ -796,7 +784,6 @@ class T3RoomPresenter: ObservableObject {
         msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
         
         self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
-        
     }
     
     func saveImageByUrl(_ url: URL){

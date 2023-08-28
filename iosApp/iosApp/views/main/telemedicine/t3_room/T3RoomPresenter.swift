@@ -167,49 +167,21 @@ class T3RoomPresenter: ObservableObject {
     func processingAndAddListItemsInRecy(_ list: [MessageRoomItem]){
    
         var lastItem: MessageRoomItem? = nil
-        if(recyList.count == 1){
-            lastItem = recyList[recyList.count-1]
-        }else if(recyList.count > 1){
-            lastItem = recyList[recyList.count-2]
-        }
+        lastItem = recyList.first
 
         var newList = self.processingAddTariffMessages(list, lastItem)
         newList = self.processingAddDateInMessages(newList, lastItem)
         
         self.addToRecyListAndClearAndAddLastItemForScroll(newList)
-        
-        self.proxy?.scrollTo(18881412322155,anchor: .top)
-     
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.proxy?.scrollTo(18881412322155,anchor: .top)
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.proxy?.scrollTo(18881412322155,anchor: .top)
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-            self.proxy?.scrollTo(18881412322155,anchor: .top)
-        }
-      
     }
     
     func addToRecyListAndClearAndAddLastItemForScroll(_ listT: [MessageRoomItem]){
         if(listT.count > 0){
-            if(recyList.count != 0){
-                for i in stride(from: recyList.count-1, to: 0, by: -1) {
-                    if(recyList[i].type == "scrollItem"){
-                        recyList.remove(at: i)
-                    }
-                }
-            }
             
             var lictNew = listT
-            let tmpItem = MessageRoomItem()
-            tmpItem.type = "scrollItem"
-            tmpItem.idMessage = 18881412322155
-            lictNew.append(tmpItem)
+            lictNew.reverse()
+            recyList = lictNew + recyList
             
-            recyList += lictNew
         }else{
             recyList = []
         }
@@ -413,7 +385,8 @@ class T3RoomPresenter: ObservableObject {
         var positionTariff: Int? = nil
         
         //удаляет ненужные даты и тарифы в начале и середине списка
-        for i in stride(from: recyList.count-2, to: 0, by: -1) {
+        //for i in stride(from: recyList.count-2, to: 0, by: -1) {
+        for i in stride(from: 0, through: recyList.count-1, by: 1) {
             if(recyList[i].type == Constants.MsgRoomType.DATE()){
                 if(positionDate == nil){
                     positionDate = i
@@ -452,27 +425,29 @@ class T3RoomPresenter: ObservableObject {
     }
     //old name updateItemIdMessageById ObjectId
     func updateItemIdMessageByIdChatList(_ idAsStr: String, _ idMessage: KotlinInt, _ date: String, _ text: String? = nil){
-        for i in 0...self.recyList.count-2 {
-               if(recyList[i].idMessage! == idMessage && recyList[i].idAsString() != idAsStr){
-                   let position: Int? = recyList.firstIndex(where: { $0 == recyList[i]})
-                   if(position == nil){
-                       return
-                   }
-                   recyList.remove(at: position!)
-                   break
-               }
-           }
-
-           for i in 0...self.recyList.count-2 {
-               if(recyList[i].idAsString() == idAsStr){
-                   recyList[i].idMessage = idMessage
-                   recyList[i].data = date
-                   if(text != nil){
-                       recyList[i].text=text
-                   }
-                   break
-               }
-           }
+        //for i in 0...self.recyList.count-2 {
+        for i in stride(from: self.recyList.count-1, through: 0, by: -1) {
+            if(recyList[i].idMessage! == idMessage && recyList[i].idAsString() != idAsStr){
+                let position: Int? = recyList.firstIndex(where: { $0 == recyList[i]})
+                if(position == nil){
+                    return
+                }
+                recyList.remove(at: position!)
+                break
+            }
+        }
+        
+        //for i in 0...self.recyList.count-2 {
+        for i in stride(from: self.recyList.count-1, through: 0, by: -1) {
+            if(recyList[i].idAsString() == idAsStr){
+                recyList[i].idMessage = idMessage
+                recyList[i].data = date
+                if(text != nil){
+                    recyList[i].text=text
+                }
+                break
+            }
+        }
     }
     
     func sendMessage(_ msg: String){

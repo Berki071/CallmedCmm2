@@ -156,9 +156,9 @@ struct BottombarTelemedicine: View {
                             )
                             .onTapGesture {
                                 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                                }
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+//                                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//                                }
                                 
                                 self.mainPresenter.clickSendMsg()
                             }

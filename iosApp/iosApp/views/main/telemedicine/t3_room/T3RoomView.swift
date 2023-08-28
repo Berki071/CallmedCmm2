@@ -7,7 +7,20 @@
 
 import SwiftUI
 import shared
-import UIKit
+//import UIKit
+
+struct FlippedUpsideDown: ViewModifier {
+   func body(content: Content) -> some View {
+    content
+      .rotationEffect(.radians(.pi))
+      .scaleEffect(x: -1, y: 1, anchor: .center)
+   }
+}
+extension View{
+   func flippedUpsideDown() -> some View{
+     self.modifier(FlippedUpsideDown())
+   }
+}
 
 struct T3RoomView: View {
     @StateObject var mainPresenter: T3RoomPresenter
@@ -42,7 +55,6 @@ struct T3RoomView: View {
        // UIDevice.current.isProximityMonitoringEnabled = true
     }
     
-    
     var body: some View {
         if(self.mainPresenter.isShowMediaView == true){
             ShowMediaTelemedicineView(itemRecord: self.$mainPresenter.recordTItem, clickBack: {() -> Void in
@@ -53,13 +65,9 @@ struct T3RoomView: View {
             ShowImagePage(itemForShowBigImage5: self.$mainPresenter.isShowBigImageOrFile)
         }else{
             ZStack{
-                
                 VStack{
                     ScrollViewReader { proxy in
-                       let _ = self.mainPresenter.proxy = proxy
-                        
                         VStack{
-
                             if(self.mainPresenter.recyList.count > 0){
                                 List(self.mainPresenter.recyList, id: \.idMessage) { i in
                                     
@@ -68,12 +76,14 @@ struct T3RoomView: View {
                                             .listRowSeparator(.hidden)
                                             .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                             .id(Int.init(truncating: i.idMessage!))
+                                            .flippedUpsideDown()
                                         
                                     }else if(i.type  == Constants.MsgRoomType.TARIFF()){
                                         T3ItemTariff(item: i)
                                             .listRowSeparator(.hidden)
                                             .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                             .id(Int.init(truncating: i.idMessage!))
+                                            .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.TEXT()){
                                         T3ItemMsg(item: i, clickRemuveItem: {(k: MessageRoomItem) -> Void in
                                             self.mainPresenter.clickRemuveItem(k)
@@ -81,6 +91,7 @@ struct T3RoomView: View {
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(i.idMessage!)
+                                        .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.IMG()){
                                         T3ItemImg(item: i, showBigImage: {(j: MessageRoomItem) -> Void in
                                             self.mainPresenter.showBigImage(j)
@@ -90,6 +101,7 @@ struct T3RoomView: View {
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
+                                        .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.FILE()){
                                         T3ItemFile(item: i, showBigDoc: {(j: MessageRoomItem) -> Void in
                                             self.mainPresenter.showBigImage(j)
@@ -99,6 +111,7 @@ struct T3RoomView: View {
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
+                                        .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.REC_AUD()){
                                         T3ItemRecordAudio(item: i, clickRemuveItem: {(k: MessageRoomItem) -> Void in
                                             self.mainPresenter.clickRemuveItem(k)
@@ -106,51 +119,32 @@ struct T3RoomView: View {
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
+                                        .flippedUpsideDown()
                                     }else{
                                         Text("")
                                             .listRowSeparator(.hidden)
                                             .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                             .font(.system(size: 1))
-                                            .id(18881412322155)
+                                           // .id(18881412322155)
                                             .frame(height: 1)
-                      
+                                        
                                     }
                                 }
                                 .id(UUID())
                                 .listStyle(PlainListStyle())
-                                .onAppear{
-                                    //.onChange .onReceive .onAppear   withAnimation{}
-                                    if(mainPresenter.recyList.count > 0){
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                            proxy.scrollTo(18881412322155,anchor: .top)
-                                        }
-                                    }
-                                }
+                                .flippedUpsideDown()
                                 .onTapGesture {
                                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                 }
                             }else{
                                 Spacer()
                             }
-
+                            
                         }
                         .frame(maxWidth: .infinity)
                         .background(.white)
                     }
-                }
-                .padding(.top, 48.0)
-                .padding(.bottom, 20.0)
-//                .onReceive(NotificationCenter.default.publisher(for: UIDevice.proximityStateDidChangeNotification)) { i in
-//                            if UIDevice.current.proximityState {
-//                                // sensor is close to user
-//                                // true is "near", false is "far"
-//
-//                                print(">>> \(i)")
-//                            }
-//                        }
                     
-                VStack(spacing: 0){
-                    Spacer()
                     BottombarTelemedicine(item: self.$mainPresenter.recordTItem, listener: BottombarTelemedicineListener(sendMsg: {(msg: String) -> Void in
                         self.mainPresenter.sendMessage(msg)
                     }, sendRecordMsg: {(fileName: String) -> Void in
@@ -167,7 +161,6 @@ struct T3RoomView: View {
                     }, selectFileFromOtherPlace: {() -> Void in
                         self.openFile.toggle()
                     }))
-                    
                 }
                 .padding(.top, 48.0)
             

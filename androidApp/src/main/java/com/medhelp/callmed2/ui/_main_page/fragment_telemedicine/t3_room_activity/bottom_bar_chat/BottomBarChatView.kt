@@ -363,7 +363,7 @@ class BottomBarChatView : RelativeLayout {
     }
 
     private fun sendMessage() {
-        hideKeyboard();
+        //hideKeyboard();
         val msg = editT.getText().toString();
         editT.setText("");
 

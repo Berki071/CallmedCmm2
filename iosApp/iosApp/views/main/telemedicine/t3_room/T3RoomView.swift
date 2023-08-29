@@ -32,12 +32,12 @@ struct T3RoomView: View {
     @State var openFile = false             //fileImporter bool для показа
     
     
-    func activateProximitySensor() {
-        UIDevice.current.isProximityMonitoringEnabled = true
-    }
-    func deactivateProximitySensor() {
-        UIDevice.current.isProximityMonitoringEnabled = false
-    }
+//    func activateProximitySensor() {
+//        UIDevice.current.isProximityMonitoringEnabled = true
+//    }
+//    func deactivateProximitySensor() {
+//        UIDevice.current.isProximityMonitoringEnabled = false
+//    }
     
 //    @State var itemTmp: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem(server_key: "1", data_server:"2", id_room: 3, status: "4", id_kl: 5, id_filial: 6, specialty: "7", full_name_kl: "8", dr_kl: "9", komment_kl: "10", fcm_kl: "11", tmId: 12, tm_name: "13", tm_type: "14", tm_price: 15, tm_time_for_tm: 16, timeStartAfterPay: 17, dataStart: "18", data_end: "19", dataPay: "20", status_pay: "21", about: "22", about_full: "23", notif_24: "24", notif_12: "25", notif_4: "26", notif_1: "27")
     
@@ -209,11 +209,11 @@ struct T3RoomView: View {
                     }) )
                 }
             }
-            .onAppear() {
-                 self.activateProximitySensor()
-             }.onDisappear() {
+//            .onAppear() {
+//                 self.activateProximitySensor()
+             .onDisappear() {
                  AudioPlayerHandler.shared.stopAudio()
-                 self.deactivateProximitySensor()
+                 //self.deactivateProximitySensor()
              }
             .fileImporter( isPresented: $openFile, allowedContentTypes: [.image,.pdf], allowsMultipleSelection: false, onCompletion: {
                 (Result) in

@@ -433,7 +433,7 @@ class T3RoomPresenter: ObservableObject {
                     return
                 }
                 recyList.remove(at: position!)
-                break
+                //break
             }
         }
         

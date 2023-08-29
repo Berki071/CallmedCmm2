@@ -34,6 +34,13 @@ class T3ItemRecordAudioPresenter : ObservableObject {
         self.getDurationFile()
     }
     
+    func activateProximitySensor() {
+        UIDevice.current.isProximityMonitoringEnabled = true
+    }
+    func deactivateProximitySensor() {
+        UIDevice.current.isProximityMonitoringEnabled = false
+    }
+    
     func getFile(){
         let fileName = item.text!
         let path = getDocumentsDirectory()
@@ -126,6 +133,8 @@ class T3ItemRecordAudioPresenter : ObservableObject {
             return 
         }
         
+        activateProximitySensor()
+        
         let allMillSec = AudioPlayerHandler.shared.getCurrentTimeMillSec()
         let durationMillSec = AudioPlayerHandler.shared.getDurationMillSec()
         
@@ -156,6 +165,8 @@ class T3ItemRecordAudioPresenter : ObservableObject {
         }
     }
     func stopRepeatCheckPlayback(){
+        deactivateProximitySensor()
+        
         self.isStartCheckPlayback = false
         self.progressBarValue = 0.0
         getDurationFile()

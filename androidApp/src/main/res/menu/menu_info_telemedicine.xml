@@ -8,10 +8,19 @@
         />
 
     <item android:id="@+id/startReception"
-        android:title="Начать прием "
+        android:title="Начать прием"
         />
     <item android:id="@+id/completeReception"
         android:title="Завершить прием"
+        />
+
+    <item
+        android:id="@+id/menuShowAnalise"
+        android:title="Посмотреть анализы"
+        />
+    <item
+        android:id="@+id/menuShowConclusions"
+        android:title="Посмотреть заключения"
         />
 
 </menu>

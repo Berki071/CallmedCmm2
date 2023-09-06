@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace = "com.medhelp.callmed2"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.medhelp.callmed2"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 93
         versionName = "93"
     }
@@ -30,11 +30,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+    }
+    allprojects {
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_17.toString()
+            }
+        }
     }
 
     buildFeatures {
@@ -45,16 +52,14 @@ android {
 dependencies {
     implementation(project(":shared"))
 
-    compileOnly("io.realm.kotlin:library-base:1.10.1")
+    compileOnly("io.realm.kotlin:library-base:1.11.0")
+    implementation("io.realm.kotlin:library-base:1.11.0")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.media:media:1.6.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.test:monitor:1.6.1")
-
-    implementation("androidx.vectordrawable:vectordrawable-animated:1.1.0")
-    // implementation("androidx.exifinterface:exifinterface:1.3.6")
 
     implementation("com.squareup.picasso:picasso:2.71828")
 
@@ -68,10 +73,11 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
 
     //    Android
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.vectordrawable:vectordrawable:1.1.0")
+    implementation("androidx.vectordrawable:vectordrawable-animated:1.1.0")
 
     //    Logger
     implementation("com.jakewharton.timber:timber:5.0.1")
@@ -80,10 +86,11 @@ dependencies {
 
     //    Crash Reporting
     // Add the Firebase Crashlytics SDK.
-    implementation (platform("com.google.firebase:firebase-bom:32.1.1"))
+    implementation (platform("com.google.firebase:firebase-bom:32.2.3"))
     implementation ("com.google.firebase:firebase-crashlytics-ktx")
     implementation ("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
+
     implementation("com.google.android.gms:play-services-vision:20.1.3")
 
     //изображения с зумом
@@ -108,13 +115,13 @@ dependencies {
 
     implementation("com.google.android.play:core:1.10.3")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
-    implementation("io.realm.kotlin:library-base:1.10.1")
-
     implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
+
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }

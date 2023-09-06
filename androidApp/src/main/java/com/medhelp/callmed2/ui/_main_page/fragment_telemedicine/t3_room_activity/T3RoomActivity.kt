@@ -50,6 +50,8 @@ import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import timber.log.Timber
 import java.io.File
 import android.os.PowerManager
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_analyzes.ShowAnalyzesAlert
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_conclusions.ShowConclusionsAlert
 
 
 class T3RoomActivity: AppCompatActivity(){
@@ -123,6 +125,8 @@ class T3RoomActivity: AppCompatActivity(){
 
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         lock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK,"callmed2:tag")
+
+        //presenter.terxzt()
     }
     fun baseInit(){
         binding.timer.visibility  = View.GONE
@@ -383,8 +387,27 @@ class T3RoomActivity: AppCompatActivity(){
                 true
             }
 
+            R.id.menuShowAnalise -> {
+                showAnalyzes()
+                true
+            }
+            R.id.menuShowConclusions -> {
+                showConclusions()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
+    }
+    private fun showConclusions() {
+        val alert = ShowConclusionsAlert()
+        alert.recordItem = recordItem!!
+        alert.show(supportFragmentManager, ShowConclusionsAlert::class.java.canonicalName!!.toString())
+    }
+    private fun showAnalyzes() {
+        val alert = ShowAnalyzesAlert()
+        alert.recordItem = recordItem!!
+        alert.show(supportFragmentManager, ShowAnalyzesAlert::class.java.canonicalName!!.toString())
     }
 
     fun showMedia(){

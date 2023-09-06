@@ -116,7 +116,7 @@ class ProcessingFileB64AndImg {
             bitmap = Bitmap.createScaledBitmap(bitmap, it.get(0), it.get(1), false)
             context.getContentResolver().openOutputStream(uriF)
                 .use { outputStream ->
-                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 30, outputStream)
+                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 30, outputStream!!)
                     outputStream?.flush()
                 }
         }

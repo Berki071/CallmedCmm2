@@ -171,7 +171,7 @@ class PreviewImageView : ConstraintLayout {
 
                 activity!!.getContentResolver().openOutputStream(Uri.parse(photoURI))
                     .use { outputStream ->
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream!!)
                         outputStream?.flush()
                     }
             }
@@ -232,7 +232,7 @@ class PreviewImageView : ConstraintLayout {
                 bitmap = Bitmap.createScaledBitmap(bitmap!!, sizeList.get(0), sizeList.get(1), false)
                 activity!!.getContentResolver().openOutputStream(Uri.parse(photoURI))
                     .use { outputStream ->
-                        bitmap!!.compress(Bitmap.CompressFormat.PNG, 30, outputStream)
+                        bitmap!!.compress(Bitmap.CompressFormat.PNG, 30, outputStream!!)
                         outputStream?.flush()
                     }
             }

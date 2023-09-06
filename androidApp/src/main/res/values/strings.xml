@@ -98,4 +98,10 @@
     <string name="understandably">Хорошо</string>
     <string name="statistic_mcb">Статистика МКБ</string>
 
+    <string name="stub_test">Здесь будут отображаться результаты анализов</string>
+    <string name="analiseResultTooltipDelete">Нажмите для удаления из памяти телефона </string>
+    <string name="analiseResultTooltipLoad">Нажмите для загрузки результата анализа </string>
+    <string name="resultFrom">"Результаты анализов от: "</string>
+    <string name="empty_error_message">Не удалось загрузить даные</string>
+
 </resources>

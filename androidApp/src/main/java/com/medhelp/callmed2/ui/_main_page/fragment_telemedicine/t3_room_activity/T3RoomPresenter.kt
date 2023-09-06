@@ -22,6 +22,7 @@ import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
 import com.medhelp.callmed2.utils.timber_log.LoggingTree.Companion.getMessageForError
 import com.medhelp.callmedcmm2.db.RealmDb
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -39,6 +40,26 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     var convertBase64: ProcessingFileB64AndImg = ProcessingFileB64AndImg()
 
     var lastIdMessage = 0
+
+
+//    fun terxzt(){
+//        val tmp = ResultZakl2Item()
+//        tmp.idKl = "15"
+//        tmp.idFilial = 2
+//        tmp.nameSpec = "Гинекология 2"
+//        tmp.dataPriema = "05.12.2021"
+//
+//        mainView.lifecycleScope.launch {
+//            kotlin.runCatching {
+//                networkManager.geDataResultZakl2(tmp, "ODU2UG7O1U4EK0CRNO2J", "vpraktikdemo", "5", "1")
+//            }
+//                .onSuccess {
+//                   Log.wtf("","")
+//                }.onFailure {
+//                    Log.wtf("","")
+//                }
+//        }
+//    }
 
     fun getNewMessagesInLoopFromServer(idRoom: String) {
         // за счет повторения запроса в цикле должна вызываться только раз и крутится внутри while

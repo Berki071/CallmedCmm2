@@ -3,15 +3,21 @@ package com.medhelp.callmed2.data.network
 import android.content.Context
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.OkHttpResponseListener
 import com.medhelp.callmed2.data.model.*
 import com.medhelp.callmed2.data.model.timetable.*
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_add_user.AddUserDialog.NewUserData
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_select_doctor_and_time.data_model.RecordData
 import com.medhelp.callmed2.utils.main.AppConstants
+import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbItem
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
 import com.rx2androidnetworking.Rx2AndroidNetworking
+import io.reactivex.Completable
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import org.json.JSONObject
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -391,6 +397,39 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
             .addPathParameter(ID_DOC, idDoc)
             .build()
             .getObjectObservable(LoadStatMkbResponse::class.java)
+    }
+
+    fun loadFileZakl(data: LoadDataZaklAmbItem, dirPath: String, fileName: String, listener: Load2FileListener, item: ResultZakl2Item, fioKl: String): Completable {
+        // print("")
+        return Completable.fromAction {
+            Rx2AndroidNetworking.post("http://188.225.25.133/medhelp_client/fpdf/report_ambkarti.php")
+                .addHeaders("host", "oneclick.tmweb.ru")
+                .setContentType("application/pdf")
+                .addBodyParameter("data_priem", data.dataPriem)
+                .addBodyParameter("diagnoz", data.diagnoz)
+                .addBodyParameter("rekomend", data.rekomend)
+                .addBodyParameter("sotr", data.sotr)
+                .addBodyParameter("sotr_spec", data.sotrSpec)
+                .addBodyParameter("cons", data.cons)
+                .addBodyParameter("shapka", data.shapka)
+                .addBodyParameter("nom_amb", data.nom_amb.toString())
+                .addBodyParameter("OOO", data.ooo)
+                .addBodyParameter("fiokl", fioKl)
+                .build()
+                .getAsOkHttpResponse(object : OkHttpResponseListener {
+                    override fun onResponse(response: Response) {
+                        listener.onResponse(response, dirPath, fileName, item)
+                    }
+
+                    override fun onError(anError: ANError) {
+                        listener.onError(anError, item)
+                    }
+                })
+        }
+    }
+    interface Load2FileListener {
+        fun onResponse(response: Response, dirPath: String, fileName: String, item: ResultZakl2Item)
+        fun onError(anError: ANError, item: ResultZakl2Item)
     }
 
     companion object {

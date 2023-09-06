@@ -3,21 +3,28 @@ package com.medhelp.callmedcmm2.network
 import com.medhelp.callmedcmm2.model.SimpleResponseBoolean2
 import com.medhelp.callmedcmm2.model.SimpleString2
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AnaliseResultResponse
 import com.medhelp.callmedcmm2.model.chat.FCMResponse
 import com.medhelp.callmedcmm2.model.chat.HasPacChatsResponse
+import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
+import com.medhelp.callmedcmm2.model.chat.ResultZaklResponse
 import com.medhelp.callmedcmm2.model.chat.SendMessageFromRoomResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.*
+
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-
+import io.ktor.utils.io.charsets.Charsets
+import io.ktor.utils.io.core.use
 
 
 class NetworkManagerCompatibleKMM {
@@ -194,20 +201,111 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
-//    @Throws(Exception::class)
-//    suspend fun findRaspTomorrow (date: String,
-//                                  h_Auth: String, h_dbName: String, h_idDoc: String): ScheduleTomorrowResponse { //"null" при отмене токена
-//        return httpClient.get(CenterEndPoint.BASE_URL + "FindRaspTomorrow/" + h_idDoc + "/" + date) {
-//            headers {
-//                append(AUTH, h_Auth)
-//                append(DB_NAME, h_dbName)
-//                append(ID_SOTR, h_idDoc)
+    @Throws(Exception::class) suspend fun getResultAnalysis(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : AnaliseResultResponse {
+        return httpClient.get(BASE_URL + "getResultAnaliz/" + h_idKl + "/" + h_idFilial) {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_KL, h_idKl)
+                append(ID_FILIAL, h_idFilial)
+            }
+        }
+            .body()
+    }
+
+    @Throws(Exception::class) suspend fun getResultZakl(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : ResultZaklResponse {
+        return httpClient.get(BASE_URL + "getResultZakl/" + h_idKl + "/" + h_idFilial) {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_KL, h_idKl)
+                append(ID_FILIAL, h_idFilial)
+            }
+        }
+            .body()
+    }
+    @Throws(Exception::class) suspend fun getResultZakl2(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : ResultZakl2Response {
+        return httpClient.get(BASE_URL + "GetZaklAmb/" + h_idKl + "/" + h_idFilial) {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_KL, h_idKl)
+                append(ID_FILIAL, h_idFilial)
+            }
+        }
+            .body()
+    }
+
+    @Throws(Exception::class) suspend fun geDataResultZakl2(item: ResultZakl2Item,
+                                                            h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : LoadDataZaklAmbResponse {
+        return httpClient.get(BASE_URL + "LoadZaklAmb/" + item.idKl + "/" + item.idFilial + "/" + item.nameSpec + "/" + item.dataPriema) {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_KL, h_idKl)
+                append(ID_FILIAL, h_idFilial)
+            }
+        }
+            .body()
+    }
+
+//    @Throws(Exception::class) suspend fun geDataResultZakl2(item: ResultZakl2Item,
+//                                                            h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : LoadDataZaklAmbResponse {
+//        return getHttpClient().use { client ->
+//            client.get(BASE_URL + "LoadZaklAmb/" + item.idKl + "/" + item.idFilial + "/" + item.nameSpec + "/" + item.dataPriema) {
+//                headers {
+//                    append("host", "oneclick.tmweb.ru")
+//                    append(AUTH, h_Auth)
+//                    append(DB_NAME, h_dbName)
+//                    append(ID_KL, h_idKl)
+//                    append(ID_FILIAL, h_idFilial)
+//                }
 //            }
+//                .body()
 //        }
-//            .body()
+//    }
+//
+//    fun getHttpClient(): HttpClient{
+//        val httpClient1 = HttpClient(){
+//
+//
+//            install(ContentNegotiation) {
+//                //json()
+//                json(kotlinx.serialization.json.Json {
+//                    ignoreUnknownKeys = true
+//                })
+//            }
+//
+//            install(HttpTimeout) {
+//                requestTimeoutMillis = 60000
+//                connectTimeoutMillis = 60000
+//                socketTimeoutMillis = 60000
+//            }
+//
+//            install(HttpRequestRetry) {
+//                maxRetries = 3
+//
+//                retryOnExceptionIf { request, cause ->
+//
+//                    cause is RuntimeException
+//                }
+//                delayMillis { retry ->
+//                    retry * 2000L
+//                } // retries in 3, 6, 9, etc. seconds
+//            }
+//
+//        }
+//
+//        return httpClient1
 //    }
 
+
     private val httpClient = HttpClient(){
+
         install(ContentNegotiation) {
             //json()
             json(kotlinx.serialization.json.Json {
@@ -231,6 +329,7 @@ class NetworkManagerCompatibleKMM {
                 retry * 2000L
             } // retries in 3, 6, 9, etc. seconds
         }
+
     }
 
     companion object {

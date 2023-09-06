@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
-    id("io.realm.kotlin") version "1.10.1"
+    id("io.realm.kotlin") version "1.11.0"
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -28,8 +28,8 @@ kotlin {
     }
 
     sourceSets {
-        val ktorVersion = "2.3.2"
-        val coroutinesVersion = "1.6.4"
+        val ktorVersion = "2.3.4"
+        val coroutinesVersion = "1.7.3"
 
         val commonMain by getting {
             dependencies {
@@ -40,15 +40,21 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-                implementation("io.realm.kotlin:library-base:1.10.1")
+                implementation("io.realm.kotlin:library-base:1.11.0")
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+            }
+        }
+
+        val androidMain by getting{
+            dependencies {
+                implementation("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
 
@@ -70,7 +76,7 @@ kotlin {
 
 android {
     namespace = "com.medhelp.callmedcmm2"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 24
     }

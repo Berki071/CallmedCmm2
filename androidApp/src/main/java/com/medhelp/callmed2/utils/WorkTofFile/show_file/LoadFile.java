@@ -87,7 +87,7 @@ LoadFile {
 
     private String getDir()
     {
-        File pathToDownloadFolder= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File pathToDownloadFolder= context.getCacheDir();
 
         File pathToFolderApp=new File(pathToDownloadFolder, NAME_FOLDER_APP);
         if(!pathToFolderApp.exists())

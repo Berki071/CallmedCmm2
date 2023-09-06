@@ -17,6 +17,9 @@ open class AllRecordsTelemedicineItem() {
     var idKl: Int? = null
     @SerialName("id_filial")
     var idFilial: Int? = null
+    @SerialName("token_kl")
+    var token_kl: String? = null
+
     @SerialName("specialty")
     var specialty: String? = null
     @SerialName("full_name_kl")
@@ -71,6 +74,8 @@ open class AllRecordsTelemedicineItem() {
         this.status = item.status
         this.idKl = item.idKl
         this.idFilial = item.idFilial
+        this.token_kl = token_kl
+
         this.specialty = item.specialty
         this.fullNameKl = item.fullNameKl
         this.drKl = item.drKl

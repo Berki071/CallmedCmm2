@@ -46,7 +46,7 @@ struct ElectronicConclusionsPage: View {
                 VStack(spacing: 0){
                     MyToolBar(title1: "Электронные заключения", isShowSearchBtn: false, clickHumburger: {() -> Void in   //44.0
                         self.clickBack?()
-                    }, strSerch: nil)
+                    }, strSerch: nil, isShowImageFreeLine: false)
                     
                     
                     Spacer()

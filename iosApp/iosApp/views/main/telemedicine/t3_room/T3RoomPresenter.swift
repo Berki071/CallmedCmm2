@@ -16,6 +16,8 @@ class T3RoomPresenter: ObservableObject {
     @Published var isShowMediaView: Bool = false
     @Published var isShowAlertStandart: StandartAlertData? = nil
     @Published var showDialogLoading: Bool = false
+    @Published var isShowAnalizesView: Bool = false
+    @Published var isShowConclusionsView: Bool = false
     
     @Published var isStartCamera = true //ImagePicker показать камеру или галерею.. костыль. тут так как шит не видит изменений в переменной когда она лежит  во вью
     

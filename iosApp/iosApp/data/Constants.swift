@@ -8,6 +8,12 @@
 import Foundation
 
 class Constants{
+    
+    static let ConclusionZacPDF = "ConclusionZac" // оставил ConclusionZac что бы не легло уже скаченное
+    static let ConclusionZacHtml = "ConclusionZacHtml"
+    static let ConclusionAn = "ConclusionAn"
+    static let Analise = "Analise"
+    
     static let PREFIX_NAME_FILE = "telemedicine"
     static let SENDER_ID_FCM_PATIENT = "933088839978"
     static let MAX_DURATION_OF_ONE_AUDIO_MSG = 180 // в секундах

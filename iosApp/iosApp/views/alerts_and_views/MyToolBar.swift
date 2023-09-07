@@ -19,7 +19,7 @@ struct MyToolBar: View {
     
     var isShowImageFreeLine: Bool
     var isShowShareBtn: (() -> Void)?
-   
+
  
 
     init(title1 : String, isShowSearchBtn : Bool, clickHumburger : @escaping () -> Void, strSerch : Binding<String>?, isShowImageFreeLine: Bool = true, isShowShareBtn: (() -> Void)? = nil, isShowSearchView: Binding<Bool>? = nil){

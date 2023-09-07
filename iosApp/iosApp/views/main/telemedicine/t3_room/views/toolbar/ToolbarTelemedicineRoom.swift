@@ -14,6 +14,9 @@ struct ToolbarTelemedicineRoomListener{
     var clickBack: () -> Void
     var clickStartReception: () -> Void
     var clickCompleteReception: () -> Void
+    
+    var showAnalizes: () -> Void
+    var showConclusions: () -> Void
 }
 
 struct ToolbarTelemedicineRoom: View {
@@ -87,14 +90,16 @@ struct ToolbarTelemedicineRoom: View {
                             }else{
                                 Button("Завершить прием", action: self.mainPresenter.clickCompleteReception)
                             }
+                            
+                            Button("Посмотреть анализы", action: self.mainPresenter.showAnalizes)
+                            Button("Посмотреть заключения ", action: self.mainPresenter.showConclusions)
 
                         } label: {
                             Label("", systemImage: "ellipsis")
                                 .foregroundColor(Color.white)
                                 .rotationEffect(.degrees(-90))
                                 .padding(.horizontal, 12.0)
-
-
+                                .padding(.vertical, 8.0)
                         }
                         .frame(height: 48.0)
                     }
@@ -114,7 +119,7 @@ struct ToolbarTelemedicineRoom: View {
 struct ToolbarTelemedicineRoom_Previews: PreviewProvider {
     @State static var item: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem()
     static let list = ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in }, closeTm: {() -> Void in }, clickBack: {() -> Void in }, clickStartReception:  {() -> Void in },
-                                                      clickCompleteReception: {() -> Void in })
+                                                      clickCompleteReception: {() -> Void in }, showAnalizes: {() -> Void in }, showConclusions: {() -> Void in })
 
     static var previews: some View {
         ToolbarTelemedicineRoom(item: $item, listener: list)

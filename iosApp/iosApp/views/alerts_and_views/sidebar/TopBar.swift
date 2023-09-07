@@ -30,7 +30,7 @@ struct TopBar: View {
         if(curentCenterInfo != nil && curentCenterInfo.logo != nil){
             let imagePathString = curentCenterInfo.logo! + "&token=" + currentUserInfo.token!
             
-            DownloadImgManager(imagePathString,  resultUiImage: {(tmp : UIImage) -> Void in
+            DownloadManager(imagePathString,  resultUiImage: {(tmp : UIImage) -> Void in
                 iuImageLogo = tmp
             })
         }

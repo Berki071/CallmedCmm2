@@ -47,6 +47,12 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
     func goToMedia() {
         listener.goToMedia()
     }
+    func showAnalizes(){
+        listener.showAnalizes()
+    }
+    func showConclusions(){
+        listener.showConclusions()
+    }
     
     func checkTimer(){
         if(itemRecord.wrappedValue == nil){

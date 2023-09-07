@@ -63,6 +63,15 @@ struct T3RoomView: View {
             
         }else if(self.mainPresenter.isShowBigImageOrFile != nil){
             ShowImagePage(itemForShowBigImage5: self.$mainPresenter.isShowBigImageOrFile)
+            
+        }else if(self.mainPresenter.isShowAnalizesView == true && self.mainPresenter.recordTItem != nil){
+            AnaliseResultPage(clickBack: {() -> Void in
+                self.mainPresenter.isShowAnalizesView = false
+            }, recordTItem: self.mainPresenter.recordTItem!)
+        }else if(self.mainPresenter.isShowConclusionsView == true){
+            ElectronicConclusionsPage(clickBack: {() -> Void in
+                self.mainPresenter.isShowConclusionsView = false
+            }, recordTItem: self.mainPresenter.recordTItem!)
         }else{
             ZStack{
                 VStack{
@@ -180,8 +189,11 @@ struct T3RoomView: View {
                     self.mainPresenter.clickStartReception()
                 }, clickCompleteReception: {() -> Void in
                     self.mainPresenter.clickCompleteReception()
-                } ))
-                
+                }, showAnalizes: {() -> Void in
+                    self.mainPresenter.isShowAnalizesView = true
+                }, showConclusions: {() -> Void in
+                    self.mainPresenter.isShowConclusionsView = true
+                }))
                 
                 if(self.mainPresenter.isShowAlertStandart != nil){
                     StandartAlert(dataOb: mainPresenter.isShowAlertStandart!)

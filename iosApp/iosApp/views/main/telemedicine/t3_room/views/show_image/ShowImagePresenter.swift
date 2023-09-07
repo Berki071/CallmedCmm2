@@ -7,16 +7,130 @@
 
 import Foundation
 import SwiftUI
+import shared
 
 class ShowImagePresenter : ObservableObject{
     @Published var image:UIImage? = nil
     @Published var pdf : Data? = nil
+    @Published var html : URL? = nil
+    
     @Published var showDialogLoading: Bool = false
     
+    let dm = DownloadManager()
     let sharePreferenses : SharedPreferenses
     
+    var analiseResponseElectronic: AnaliseResponse? = nil
+    var resultZakl2ItemElectronic: ResultZakl2Item? = nil
+    var analiseResponseIos: AnaliseResponseIos? = nil
     var telemendItemData: ShowImagesFilesItemData? = nil
     var url: URL? = nil
+    
+    init(analiseResponseIos: AnaliseResponseIos?){
+        sharePreferenses = SharedPreferenses()
+        
+        self.analiseResponseIos = analiseResponseIos
+        
+        if(analiseResponseIos != nil ){
+            
+            let name = dm.getNameFile(analiseResponseIos!.linkToPDF!)
+            let exp = dm.getExpansionFromFileName(name)
+            
+            self.showLoading(true)
+            let urlString = analiseResponseIos!.pathToFile
+            guard let url = URL(string: urlString) else { return }
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                guard let data = data else { return }
+                DispatchQueue.main.async {
+                    
+                    if(exp == "jpg" || exp == "jpeg"){
+                        let photo = UIImage.init(data: data)
+                        self.image = photo!
+                        
+                    }else if(exp == "pdf"){
+                        self.pdf = data
+                    }
+                    
+                    self.showLoading(false)
+                }
+            }
+            task.resume()
+            
+        }
+    }
+    
+    init(dataClassForElectronicRecy: DataClassForElectronicRecyIos?){
+        sharePreferenses = SharedPreferenses()
+        
+        if(dataClassForElectronicRecy?.item is AnaliseResponse){
+            analiseResponseElectronic = dataClassForElectronicRecy?.item as? AnaliseResponse
+        }else{
+            resultZakl2ItemElectronic = dataClassForElectronicRecy?.item as? ResultZakl2Item
+        }
+        
+        if(analiseResponseElectronic != nil ){
+            
+            let name = dm.getNameFile(analiseResponseElectronic!.linkToPDF!)
+            let exp = dm.getExpansionFromFileName(name)
+            
+            self.showLoading(true)
+            let urlString = analiseResponseElectronic!.pathToFile
+            guard let url = URL(string: urlString) else { return }
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                guard let data = data else { return }
+                DispatchQueue.main.async {
+                    
+                    if(exp == "jpg" || exp == "jpeg"){
+                        let photo = UIImage.init(data: data)
+                        self.image = photo!
+                        
+                    }else if(exp == "pdf"){
+                        self.pdf = data
+                    }
+                    
+                    self.showLoading(false)
+                }
+            }
+            task.resume()
+            
+        }else if(resultZakl2ItemElectronic != nil){
+            
+            let puthToFile = resultZakl2ItemElectronic!.pathToFile
+            let exp = dm.getExpansionFromFilePath(puthToFile)
+            
+            self.showLoading(true)
+            let urlString = resultZakl2ItemElectronic!.pathToFile
+            guard let url = URL(string: urlString) else { return }
+            
+            if(exp == "html"){
+                self.html = url
+                //self.url = url
+                self.showLoading(false)
+                return
+            }
+            
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                guard let data = data else {
+                    DispatchQueue.main.async {
+                        self.showLoading(false)
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    
+                    if(exp == "jpg" || exp == "jpeg"){
+                        let photo = UIImage.init(data: data)
+                        self.image = photo!
+                        
+                    }else if(exp == "pdf"){
+                        self.pdf = data
+                    }
+                    
+                    self.showLoading(false)
+                }
+            }
+            task.resume()
+        }
+    }
     
     
     init(telemendItemData: ShowImagesFilesItemData?){ //telemed img
@@ -94,12 +208,18 @@ class ShowImagePresenter : ObservableObject{
     }
     
     func shareF(){
-        if(self.telemendItemData == nil && self.url == nil){
+        if(self.analiseResponseIos == nil && analiseResponseElectronic == nil && resultZakl2ItemElectronic == nil && self.telemendItemData == nil && self.url == nil){
             return
         }
         
         var urlString = ""
-       if(self.telemendItemData != nil){
+        if(analiseResponseIos != nil ){
+            urlString = analiseResponseIos!.pathToFile
+        }else if(analiseResponseElectronic != nil){
+            urlString = analiseResponseElectronic!.pathToFile
+        }else if (resultZakl2ItemElectronic != nil){
+            urlString = resultZakl2ItemElectronic!.pathToFile
+        }else if(self.telemendItemData != nil){
             urlString = self.telemendItemData!.url!.absoluteString
         }else if(self.url != nil){
             urlString = self.url!.absoluteString

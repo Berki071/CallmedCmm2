@@ -3,7 +3,7 @@ plugins {
     kotlin("android")
     
     id("kotlinx-serialization")
-    id("io.realm.kotlin")
+    //id("io.realm.kotlin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
@@ -53,7 +53,7 @@ dependencies {
     implementation(project(":shared"))
 
     compileOnly("io.realm.kotlin:library-base:1.11.0")
-    implementation("io.realm.kotlin:library-base:1.11.0")
+   // implementation("io.realm.kotlin:library-base:1.11.0")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

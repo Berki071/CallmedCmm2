@@ -11,7 +11,7 @@ plugins {
     kotlin("android").version("1.9.10").apply(false)
     kotlin("multiplatform").version("1.9.10").apply(false)
 
-    id("io.realm.kotlin").version("1.11.0").apply(false)
+    //id("io.realm.kotlin").version("1.11.0").apply(false)
     id("com.google.firebase.crashlytics") version "2.9.9" apply false
     id("com.google.gms.google-services") version "4.3.15" apply false
     kotlin("plugin.serialization").version("1.9.10")

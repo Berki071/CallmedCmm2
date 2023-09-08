@@ -176,6 +176,12 @@ class T1ListOfEntriesPresenter: ObservableObject {
         // удалить из списка не оплаченный wait
         var newList: [AllRecordsTelemedicineItem] = []
         for i in response{
+            if(i.statusPay == nil){
+                let tt3 = Int.init(i.idRoom!)
+                LoggingTree.INSTANCE.e("T1SelectSpecialtyPresenter/removeWaitItemWhichNoPay i.statusPay == nil idRoom:\(tt3)")
+                continue
+            }
+            
             if(i.status! != Constants.TelemedicineStatusRecord.wait() || i.statusPay! == "true"){
                 newList.append(i)
             }

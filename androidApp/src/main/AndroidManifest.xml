@@ -108,8 +108,8 @@
             android:name=".ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.video_chat.VideoChatActivity"
-            android:screenOrientation="portrait"></activity>
+<!--        <activity android:name=".ui.video_chat.VideoChatActivity"-->
+<!--            android:screenOrientation="portrait"></activity>-->
 
         <!--        <service-->
         <!--            android:name=".ui._main_page.fragment_call.service.MyServiceCallBefore23"-->

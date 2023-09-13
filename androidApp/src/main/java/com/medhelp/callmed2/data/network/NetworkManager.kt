@@ -155,6 +155,7 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
             .getObjectObservable(SettingsAllBaranchHospitalList::class.java)
 
     fun getAllReceptionApiCall(branch: Int, dateMonday: String): Observable<VisitList> {
+
         return Rx2AndroidNetworking.get(CenterEndPoint.TIME_TABLE_DOC)
             .addHeaders("host", "oneclick.tmweb.ru")
             .addHeaders(DB_NAME, prefManager.centerInfo!!.db_name)

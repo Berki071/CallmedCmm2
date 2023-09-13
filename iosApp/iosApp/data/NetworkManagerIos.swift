@@ -271,7 +271,13 @@ class NetworkManagerIos{
                                 responseF: @escaping (([VisitItem]) -> Void), errorM: @escaping ((String) -> Void)){
         
         // Create the session object
-        let session = URLSession.shared
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = TimeInterval(60)
+        config.timeoutIntervalForResource = TimeInterval(60)
+        let session = URLSession(configuration: config)
+        
+        
+   
         // Create url object
         guard let url = URL(string: "http://188.225.25.133/medhelp_client/v1/scheduleFull/doctor/\(idDoc)/\(date)/\(branch)") else {return}
         // Create the URLRequest object using the url object

@@ -17,14 +17,12 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.*
-
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.charsets.Charsets
-import io.ktor.utils.io.core.use
+import io.ktor.utils.io.errors.EOFException
 
 
 class NetworkManagerCompatibleKMM {
@@ -306,11 +304,13 @@ class NetworkManagerCompatibleKMM {
 
     private val httpClient = HttpClient(){
 
+
         install(ContentNegotiation) {
             //json()
             json(kotlinx.serialization.json.Json {
                 ignoreUnknownKeys = true
             })
+
         }
         install(HttpTimeout) {
             requestTimeoutMillis = 60000
@@ -323,7 +323,7 @@ class NetworkManagerCompatibleKMM {
 
             retryOnExceptionIf { request, cause ->
 
-                cause is RuntimeException
+                cause is RuntimeException || cause is EOFException
             }
             delayMillis { retry ->
                 retry * 2000L

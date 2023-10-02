@@ -35,8 +35,11 @@ struct T3ItemFile: View {
                                 .padding(.top, 2)
                             
                             Text(item.text!)
+                                .lineLimit(2)
                                 .font(.system(size: 15))
                                 .foregroundColor(Color.black)
+                                
+                                
                             
                             Spacer()
                         }
@@ -79,6 +82,7 @@ struct T3ItemFile: View {
                                 .padding(.top, 2)
                             
                             Text(item.text!)
+                                .lineLimit(2)
                                 .font(.system(size: 15))
                                 .foregroundColor(Color.black)
                             

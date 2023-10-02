@@ -15,8 +15,8 @@ android {
         applicationId = "com.medhelp.callmed2"
         minSdk = 24
         targetSdk = 34
-        versionCode = 94
-        versionName = "94"
+        versionCode = 95
+        versionName = "95"
     }
 
     packaging {

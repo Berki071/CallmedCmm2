@@ -323,7 +323,7 @@ class NetworkManagerCompatibleKMM {
 
             retryOnExceptionIf { request, cause ->
 
-                cause is RuntimeException || cause is EOFException
+                cause is RuntimeException
             }
             delayMillis { retry ->
                 retry * 2000L

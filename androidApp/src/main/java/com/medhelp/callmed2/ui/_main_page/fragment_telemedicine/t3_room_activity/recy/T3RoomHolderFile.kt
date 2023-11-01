@@ -67,6 +67,12 @@ class T3RoomHolderFile(val itemBinding: ItemChatFileBinding, val recyListener: R
         }
     }
 
+    fun showLoading(){
+        itemBinding.loadingView.visibility = View.VISIBLE
+    }
+    fun hideLoading(){
+        itemBinding.loadingView.visibility = View.GONE
+    }
 
     private fun tuningView() {
         if (message!!.otpravitel == "kl") {

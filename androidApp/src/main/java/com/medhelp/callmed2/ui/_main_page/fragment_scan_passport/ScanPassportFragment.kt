@@ -14,13 +14,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.medhelp.callmed2.R
 import com.medhelp.callmed2.databinding.FragmentScanPassportBinding
 import com.medhelp.callmed2.ui._main_page.MainPageActivity
-import com.medhelp.callmed2.ui._main_page.fragment_scanner_doc.ScannerDocFragment
-import com.medhelp.callmed2.ui._main_page.fragment_scanner_doc.ScannerDocPresenter
 import com.medhelp.callmed2.ui._main_page.fragment_scanner_doc.view_and_alerts.PreviewImageView
-import com.medhelp.callmed2.utils.Different
 
 class ScanPassportFragment : Fragment() {
     // фаил на распознание должен быть меньше 20мб и 20мп
@@ -70,7 +66,7 @@ class ScanPassportFragment : Fragment() {
             val photoURI2 = binding!!.imageMain2!!.photoURI
 
             if(photoURI1 != null || photoURI2 != null)
-                presenter!!.startSendImageConvertPathToBase64(photoURI1,photoURI2)
+                presenter!!.sendImagesToSRM(photoURI1,photoURI2)
 
         }
 
@@ -85,6 +81,8 @@ class ScanPassportFragment : Fragment() {
         }
 
         stateImgNotExist()
+
+        presenter?.requestToken()
     }
 
     fun startPhoto(requestKey : Int, image : PreviewImageView){

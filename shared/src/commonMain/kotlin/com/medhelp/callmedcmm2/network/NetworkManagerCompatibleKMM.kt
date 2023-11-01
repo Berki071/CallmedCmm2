@@ -1,6 +1,5 @@
 package com.medhelp.callmedcmm2.network
 
-import com.medhelp.callmedcmm2.model.pasport_recognize.IAMTokenYandex
 import com.medhelp.callmedcmm2.model.SimpleResponseBoolean2
 import com.medhelp.callmedcmm2.model.SimpleString2
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
@@ -13,6 +12,7 @@ import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
 import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
 import com.medhelp.callmedcmm2.model.chat.ResultZaklResponse
 import com.medhelp.callmedcmm2.model.chat.SendMessageFromRoomResponse
+import com.medhelp.callmedcmm2.model.pasport_recognize.IAMTokenFormOurServerResponse
 import com.medhelp.callmedcmm2.model.pasport_recognize.RecognizeTextResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -252,9 +252,17 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
-    @Throws(Exception::class)
-    suspend fun getIAMTokenYandex (oAuthToken: String): IAMTokenYandex {
-        return httpClient.post("https://iam.api.cloud.yandex.net/iam/v1/tokens?yandexPassportOauthToken=${oAuthToken}") {}
+//    @Throws(Exception::class)
+//    suspend fun getIAMTokenYandex (oAuthToken: String): IAMTokenYandex {
+//        return httpClient.post("https://iam.api.cloud.yandex.net/iam/v1/tokens?yandexPassportOauthToken=${oAuthToken}") {}
+//            .body()
+//    }
+    @Throws(Exception::class) suspend fun getIAMTokenFromOurServer() : IAMTokenFormOurServerResponse {
+        return httpClient.get("http://188.225.25.133/v1/recognize_token" ) {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+            }
+        }
             .body()
     }
 

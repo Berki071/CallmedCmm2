@@ -2,10 +2,8 @@ package com.medhelp.callmed2.ui._main_page.fragment_scan_passport
 
 import android.net.Uri
 import android.util.Base64
-import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.gson.JsonArray
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.WorkTofFile.convert_Base64.ProcessingFileB64AndImg
@@ -26,8 +24,27 @@ class ScanPassportPresenter(val mainView: ScanPassportFragment) {
     val networkManager = NetworkManagerCompatibleKMM()
     var convertBase64: ProcessingFileB64AndImg = ProcessingFileB64AndImg()
 
-    fun deleteAllFilesInCash() {
+    var iamToken: String? = null
 
+    fun requestToken() {
+        Different.showLoadingDialog(mainView.requireContext())
+
+        mainView.lifecycleScope.launch {
+            kotlin.runCatching {
+                networkManager.getIAMTokenFromOurServer()
+            }
+                .onSuccess { response ->
+                    iamToken = response.response[0].recognize_token
+                    Different.hideLoadingDialog()
+                }
+                .onFailure { error ->
+                    Timber.tag("my").w(LoggingTree.getMessageForError(error, "ScanPassportPresenter/requestToken"))
+                    Different.hideLoadingDialog()
+                }
+        }
+    }
+
+    fun deleteAllFilesInCash() {
         val pathToCacheFolder: File = mainView.requireActivity().getCacheDir()
         val pathToFolderScanner: File = File(pathToCacheFolder, FOLDER_SCAN_PASS)
         if (!pathToFolderScanner.exists()) {
@@ -80,31 +97,24 @@ class ScanPassportPresenter(val mainView: ScanPassportFragment) {
 
 
     var counterPathsInSending = 0
-    fun startSendImageConvertPathToBase64(path1: String?, path2: String?){
+    fun sendImagesToSRM(path1: String?, path2: String?){
         //https://cloud.yandex.ru/docs/vision/quickstart
+        //val oAuthTokenYandex = "y0_AgAAAAAekSFJAATuwQAAAADvffhWG5FLWziiRNm0bOTw2QRA_CK6wYc"
         val xFolderId = "b1gnuegihk7aoa3c54kb"
-        val oAuthTokenYandex = "y0_AgAAAAAekSFJAATuwQAAAADvffhWG5FLWziiRNm0bOTw2QRA_CK6wYc"
+
+        if(iamToken == null){
+            Different.showAlertInfo(mainView.activity, "Ошибка", "Нет токена!")
+            return
+        }
 
         Different.showLoadingDialog(mainView.requireContext())
-
-        mainView.lifecycleScope.launch {
-            kotlin.runCatching {
-                networkManager.getIAMTokenYandex(oAuthTokenYandex)
-            }
-                .onSuccess { response ->
-                    if(path1 != null){
-                        counterPathsInSending++
-                        sendImageB64ToProcessingInYandex(response.iamToken!!, xFolderId, path1, TypeImgForRecognize.Passport)
-                    }
-                    if(path2 != null){
-                        counterPathsInSending++
-                        sendImageB64ToProcessingInYandex(response.iamToken!!, xFolderId,path2, TypeImgForRecognize.Page)
-                    }
-                }
-                .onFailure { error ->
-                    Timber.tag("my").w(LoggingTree.getMessageForError(error, "ScanPassportPresenter/startSendImageConvertPathToBase64"))
-                    Different.hideLoadingDialog()
-                }
+        if(path1 != null){
+            counterPathsInSending++
+            sendImageB64ToProcessingInYandex(iamToken!!, xFolderId, path1, TypeImgForRecognize.Passport)
+        }
+        if (path2 != null) {
+            counterPathsInSending++
+            sendImageB64ToProcessingInYandex(iamToken!!, xFolderId, path2, TypeImgForRecognize.Page)
         }
     }
     fun createJsomWithImgForRecognize(b64String: String, type: TypeImgForRecognize) : JSONObject {

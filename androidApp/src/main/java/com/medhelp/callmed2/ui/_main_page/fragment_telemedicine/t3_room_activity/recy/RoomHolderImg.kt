@@ -1,6 +1,7 @@
 package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy
 
 import android.net.Uri
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
@@ -57,6 +58,13 @@ class RoomHolderImg(val bindingItem: ItemChatImgBinding, val recyListener: RoomA
             val timeStr = MDate.stringToString(message!!.data!!, MDate.DATE_FORMAT_yyyyMMdd_HHmmss, MDate.DATE_FORMAT_HHmm)
             bindingItem.time.text = timeStr
         } else bindingItem.time.text = "..."
+    }
+
+    fun showLoading(){
+        bindingItem.loadingView.visibility = View.VISIBLE
+    }
+    fun hideLoading(){
+        bindingItem.loadingView.visibility = View.GONE
     }
 
     private fun tuningView() {

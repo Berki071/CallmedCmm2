@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
@@ -192,6 +193,13 @@ class T3RoomHolderRecordAudio(val itemBinding: ItemChatRecordAudioBinding, val r
         val sec = if(secInt<10) "0$secInt" else secInt
 
         return "$min:$sec"
+    }
+
+    fun showLoading(){
+        itemBinding.loadingView.visibility = View.VISIBLE
+    }
+    fun hideLoading(){
+        itemBinding.loadingView.visibility = View.GONE
     }
 
     private fun tuningView() {

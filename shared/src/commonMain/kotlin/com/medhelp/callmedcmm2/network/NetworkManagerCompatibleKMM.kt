@@ -1,5 +1,6 @@
 package com.medhelp.callmedcmm2.network
 
+import com.medhelp.callmedcmm2.model.pasport_recognize.IAMTokenYandex
 import com.medhelp.callmedcmm2.model.SimpleResponseBoolean2
 import com.medhelp.callmedcmm2.model.SimpleString2
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
@@ -12,6 +13,7 @@ import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
 import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
 import com.medhelp.callmedcmm2.model.chat.ResultZaklResponse
 import com.medhelp.callmedcmm2.model.chat.SendMessageFromRoomResponse
+import com.medhelp.callmedcmm2.model.pasport_recognize.RecognizeTextResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.HttpRequestRetry
@@ -22,7 +24,6 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.errors.EOFException
 
 
 class NetworkManagerCompatibleKMM {
@@ -250,6 +251,51 @@ class NetworkManagerCompatibleKMM {
         }
             .body()
     }
+
+    @Throws(Exception::class)
+    suspend fun getIAMTokenYandex (oAuthToken: String): IAMTokenYandex {
+        return httpClient.post("https://iam.api.cloud.yandex.net/iam/v1/tokens?yandexPassportOauthToken=${oAuthToken}") {}
+            .body()
+    }
+
+    @Throws(Exception::class)
+    suspend fun recognizeTextInYandex (iamToken: String, xFolderId: String, jsonObj: String): RecognizeTextResponse { //RecognizeTextResponse
+        return httpClient.post("https://ocr.api.cloud.yandex.net/ocr/v1/recognizeText") {
+            contentType(ContentType.Application.Json)
+            headers {
+                append("Authorization", "Bearer ${iamToken}")
+                append("x-folder-id", xFolderId)
+                append("x-data-logging-enabled", "true")
+                //append("x-client-request-id", "2b4f5411-8eac-41c3-aa5b-462f35321c71")
+            }
+
+            setBody(jsonObj)
+        }
+            .body()
+    }
+
+    @Throws(Exception::class)
+    suspend fun sendPassportDataToServer (json: String, type: String,
+                                     h_Auth: String, h_dbName: String, h_idDoc: String):  SimpleResponseBoolean2{
+        return httpClient.post(BASE_URL + "/insert_data_recognize/${h_idDoc}/${type}") {
+
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_SOTR, h_idDoc)
+            }
+
+            val tmp = MultiPartFormDataContent(formData {
+                append("recognize", json)
+            })
+
+            setBody(tmp)
+
+        }
+            .body()
+    }
+
 
 //    @Throws(Exception::class) suspend fun geDataResultZakl2(item: ResultZakl2Item,
 //                                                            h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : LoadDataZaklAmbResponse {

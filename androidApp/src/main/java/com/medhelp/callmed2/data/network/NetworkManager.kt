@@ -13,6 +13,7 @@ import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_select_doctor_
 import com.medhelp.callmed2.utils.main.AppConstants
 import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbItem
 import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
+import com.medhelp.callmedcmm2.model.pasport_recognize.RecognizeTextResponse
 import com.rx2androidnetworking.Rx2AndroidNetworking
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -25,6 +26,7 @@ import javax.inject.Inject
 
 
 class NetworkManager @Inject constructor(private val prefManager: PreferencesManager) {
+
     fun doLoginApiCall(username: String, password: String, context: Context): Observable<UserList> {
         val pd = ProtectionData()
         return Rx2AndroidNetworking.post(LocalEndPoint.LOGIN)

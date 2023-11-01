@@ -61,7 +61,7 @@ class ProcessingFileB64AndImg {
 //        return if (file.exists()) file.absolutePath else null
 //    }
 
-    fun fileToBase64(context:Context, fileUri: Uri): String {
+    fun fileToBase64String(context:Context, fileUri: Uri): String {
 
 //        if(img.length() > 1024*1024*9)
 //            return Single.error(new Throwable("Ограничение на размер изображения 9 мегабайт"));
@@ -76,7 +76,7 @@ class ProcessingFileB64AndImg {
         }
         val buffer = ByteArray(1024)
         var bytesRead: Int
-        val output = ByteArrayOutputStream()
+        val output : ByteArrayOutputStream = ByteArrayOutputStream()
         val output64 = Base64OutputStream(output, Base64.DEFAULT)
         try {
             while (inputStream!!.read(buffer).also { bytesRead = it } != -1) {
@@ -94,6 +94,39 @@ class ProcessingFileB64AndImg {
                 .e(getMessageForError(null, "ConvertBase64\$fileToBase64$3 " + e.message))
         }
         val attachedFile = output.toString()
+
+        return attachedFile
+    }
+    fun fileToBase64ByteArray(context:Context, fileUri: Uri): ByteArray {
+
+        var inputStream: InputStream? = null //You can get an inputStream using any IO API
+        try {
+            //inputStream = FileInputStream(fileUri)
+            inputStream = context.contentResolver.openInputStream(fileUri)
+        } catch (e: FileNotFoundException) {
+            Timber.tag("my")
+                .e(getMessageForError(null, "ConvertBase64\$fileToBase64$1 " + e.message))
+        }
+        val buffer = ByteArray(1024)
+        var bytesRead: Int
+        val output : ByteArrayOutputStream = ByteArrayOutputStream()
+        val output64 = Base64OutputStream(output, Base64.DEFAULT)
+        try {
+            while (inputStream!!.read(buffer).also { bytesRead = it } != -1) {
+                output64.write(buffer, 0, bytesRead)
+            }
+        } catch (e: IOException) {
+            Timber.tag("my")
+                .e(getMessageForError(null, "ConvertBase64\$fileToBase64$2 " + e.message))
+        }
+        try {
+            output64.close()
+            inputStream?.close()
+        } catch (e: IOException) {
+            Timber.tag("my")
+                .e(getMessageForError(null, "ConvertBase64\$fileToBase64$3 " + e.message))
+        }
+        val attachedFile = output.toByteArray()
 
         return attachedFile
     }

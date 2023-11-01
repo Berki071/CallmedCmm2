@@ -33,6 +33,7 @@ import com.medhelp.callmed2.data.model.timetable.Doctor
 import com.medhelp.callmed2.ui._main_page.fragment_call.CallFragment
 import com.medhelp.callmed2.ui._main_page.fragment_call.call_center_new.CallCenterService
 import com.medhelp.callmed2.ui._main_page.fragment_doc_recognition.DocRecognitionFragment
+import com.medhelp.callmed2.ui._main_page.fragment_scan_passport.ScanPassportFragment
 import com.medhelp.callmed2.ui._main_page.fragment_scanner_doc.ScannerDocFragment
 import com.medhelp.callmed2.ui._main_page.fragment_settings.SettingsFragment
 import com.medhelp.callmed2.ui._main_page.fragment_statistics_mcb.StatisticsMcbFragment
@@ -200,6 +201,8 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
         val rec = presenter!!.preferencesManager.isShowPartTimetable
         val scan = presenter!!.preferencesManager.isShowPartScanDoc
         val docRasp = presenter!!.preferencesManager.isShowPartRaspDoc
+        val passRecognize = presenter!!.preferencesManager.isShowPassportRecognize
+
         val menu = navView!!.menu
         if (cs)
             menu.add(0, MENU_CALL_SENTER, Menu.NONE, resources.getString(R.string.callCenter)).setIcon(R.drawable.ic_call_light_green_a200_24dp).isChecked = true
@@ -216,6 +219,9 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
             menu.add(0, MENU_ONLINE_CONSULTATION, Menu.NONE, resources.getString(R.string.onlineConsultation)).setIcon(R.drawable.ic_videocam_black_24dp).isChecked = true
         if (scan)
             menu.add(0, MENU_SCANNER_DOC, Menu.NONE, "Сканнер документов").setIcon(R.drawable.baseline_scanner_white_24).isChecked = true
+
+        if(passRecognize)
+            menu.add(0, MENU_SCAN_PASSPORT, Menu.NONE, resources.getString(R.string.scanPassport)).setIcon(R.drawable.baseline_contact_emergency_24).isChecked = true
 
         if (false)
             menu.add(0, MENU_DOC_RECOGNITION, Menu.NONE, "Распознание текста").setIcon(R.drawable.baseline_emoji_symbols_white_24).isChecked = true
@@ -296,6 +302,10 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
                 showDocRecognitionFragment()
                 true
             }
+            MENU_SCAN_PASSPORT -> {
+                showScanPassport()
+                true
+            }
             MENU_SETTINGS -> {
                 showSettingsFragments()
                 true
@@ -318,6 +328,19 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         deleteShowFragment(fragmentTransaction)
         selectFragment = DocRecognitionFragment()
+        fragmentTransaction.replace(rootFragment!!.id, selectFragment!!, MENU_TIMETABLE_DOC.toString())
+        fragmentTransaction.commit()
+    }
+    private fun showScanPassport(){
+        if (selectFragment is ScanPassportFragment) return
+        if (selectFragment is CallFragment) {
+            wakeLockScrin(false)
+        }
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        deleteShowFragment(fragmentTransaction)
+        selectFragment = ScanPassportFragment()
         fragmentTransaction.replace(rootFragment!!.id, selectFragment!!, MENU_TIMETABLE_DOC.toString())
         fragmentTransaction.commit()
     }
@@ -593,6 +616,7 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
         const val MENU_DOC_RECOGNITION = 7
         const val MENU_SETTINGS = 8
         const val MENU_EXIT = 9
+        const val MENU_SCAN_PASSPORT = 10
 
         init {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)

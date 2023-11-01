@@ -51,6 +51,7 @@ android {
 
 dependencies {
     implementation(project(":shared"))
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
 
     compileOnly("io.realm.kotlin:library-base:1.11.0")
    // implementation("io.realm.kotlin:library-base:1.11.0")

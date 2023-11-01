@@ -51,6 +51,11 @@ class PreferencesManager @Inject constructor(context: Context) {
         set(boo) {
             preferences.edit().putBoolean(PREF_KEY_SHOW_SCAN_DOC, boo).apply()
         }
+    var isShowPassportRecognize: Boolean
+        get() = preferences.getBoolean(PREF_KEY_SHOW_PASSPORT_RECOGNIZE, false)
+        set(boo) {
+            preferences.edit().putBoolean(PREF_KEY_SHOW_PASSPORT_RECOGNIZE, boo).apply()
+        }
     var isShowPartRaspDoc: Boolean
         get() = preferences.getBoolean(PREF_KEY_SHOW_RASP_DOC, false)
         set(boo) {
@@ -226,6 +231,7 @@ class PreferencesManager @Inject constructor(context: Context) {
         private const val PREF_KEY_SHOW_PART_MESSENGER = "PREF_KEY_SHOW_PART_MESSENGER"
         private const val PREF_KEY_SHOW_PART_TIMETABLE =
             "PREF_KEY_SHOW_PART_TIMETABLE" // запись на прием
+        private const val PREF_KEY_SHOW_PASSPORT_RECOGNIZE = "PREF_KEY_SHOW_PASSPORT_RECOGNIZE"
         private const val PREF_KEY_SHOW_SCAN_DOC = "PREF_KEY_SHOW_SCAN_DOC"
         private const val PREF_KEY_SHOW_RASP_DOC = "PREF_KEY_SHOW_RASP_DOC" // расписание доктора
         private const val PREF_KEY_CENTER_INFO = "PREF_KEY_CENTER_INFO"

@@ -22,7 +22,6 @@ import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
 import com.medhelp.callmed2.utils.timber_log.LoggingTree.Companion.getMessageForError
 import com.medhelp.callmedcmm2.db.RealmDb
-import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -252,7 +251,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
 
         mainView.lifecycleScope.launch {
             // елсли фаил то в сообщении будет его бэйс64
-            val valueText: String =  if(item.type == T3RoomActivity.MsgRoomType.TEXT.toString()) item.text!! else convertBase64.fileToBase64(mainView, Uri.parse(item.text!!))
+            val valueText: String =  if(item.type == T3RoomActivity.MsgRoomType.TEXT.toString()) item.text!! else convertBase64.fileToBase64String(mainView, Uri.parse(item.text!!))
 
 //            if(item.type != T3RoomActivity.MsgRoomType.TEXT.toString()){
 //                val uriFile = Uri.parse(item.text!!)

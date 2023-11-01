@@ -72,31 +72,37 @@ public class ScannerDocFragment : Fragment() {
             override fun startPhoto() {
                 startPhoto(1,image1)
             }
+            override fun imgDeleted() {}
         })
         image2.setData(requireActivity(),object : PreviewImageView.PreviewImageViewListener {
             override fun startPhoto() {
                 startPhoto(2,image2)
             }
+            override fun imgDeleted() {}
         })
         image3.setData(requireActivity(),object : PreviewImageView.PreviewImageViewListener {
             override fun startPhoto() {
                 startPhoto(3,image3)
             }
+            override fun imgDeleted() {}
         })
         image4.setData(requireActivity(),object : PreviewImageView.PreviewImageViewListener {
             override fun startPhoto() {
                 startPhoto(4,image4)
             }
+            override fun imgDeleted() {}
         })
         image5.setData(requireActivity(),object : PreviewImageView.PreviewImageViewListener {
             override fun startPhoto() {
                 startPhoto(5,image5)
             }
+            override fun imgDeleted() {}
         })
         image6.setData(requireActivity(),object : PreviewImageView.PreviewImageViewListener {
             override fun startPhoto() {
                 startPhoto(6,image6)
             }
+            override fun imgDeleted() {}
         })
 
         btnSend.setOnClickListener{

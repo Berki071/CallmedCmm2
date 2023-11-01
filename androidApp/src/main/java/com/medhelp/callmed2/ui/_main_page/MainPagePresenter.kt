@@ -29,6 +29,7 @@ class MainPagePresenter(private val mainView: MainPageActivity) {
         preferencesManager.isShowPartTimetable = false
         preferencesManager.isShowPartScanDoc = false
         preferencesManager.isShowPartRaspDoc = false
+        preferencesManager.isShowPassportRecognize = false
     }
 
     fun getCurrentDocInfo() {

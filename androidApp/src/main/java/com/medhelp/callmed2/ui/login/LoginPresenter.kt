@@ -172,6 +172,7 @@ class LoginPresenter (private val mainView: LoginActivity) {
             preferencesManager.isShowPartMessenger = response.isShowPartMessenger
             preferencesManager.isShowPartTimetable = response.isTimetable
             preferencesManager.isShowPartScanDoc = response.isSync
+            preferencesManager.isShowPassportRecognize = response.isButtonRecognize
             preferencesManager.isShowPartRaspDoc = response.isVrach
             preferencesManager.currentUserId = response.idUser
             preferencesManager.currentUserName = response.username

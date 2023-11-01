@@ -63,6 +63,7 @@ class SplashPresenter(private val mainView: SplashActivity) {
                     preferencesManager.isShowPartMessenger = response.isShowPartMessenger
                     preferencesManager.isShowPartTimetable = response.isTimetable
                     preferencesManager.isShowPartScanDoc = response.isSync
+                    preferencesManager.isShowPassportRecognize = response.isButtonRecognize
                     preferencesManager.isShowPartRaspDoc = response.isVrach
                     preferencesManager.accessToken = response.apiKey
                     updateHeaderInfo()

@@ -26,6 +26,8 @@ public class UserResponse/* implements Parcelable*/ {
     private boolean vrach;
     @SerializedName("sync")  //сканер док
     private boolean sync;
+    @SerializedName("recognize")  //распознавание паспорта
+    private boolean buttonRecognize;
 
     public boolean isTimetable() {
         return timetable;
@@ -95,6 +97,13 @@ public class UserResponse/* implements Parcelable*/ {
     }
     public void setSync(boolean sync) {
         this.sync = sync;
+    }
+
+    public boolean isButtonRecognize() {
+        return buttonRecognize;
+    }
+    public void setButtonRecognize(boolean buttonRecognize) {
+        this.buttonRecognize = buttonRecognize;
     }
 
     public UserResponse() {

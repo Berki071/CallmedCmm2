@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +22,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 import java.io.IOException
+
 
 class PreviewImageView : ConstraintLayout {
 
@@ -58,6 +60,7 @@ class PreviewImageView : ConstraintLayout {
 
     var photoURI: String? = null
 
+    var sizePxImg = 0
 
     fun init() {
         val mainView = inflate(context, R.layout.view_previrew_image, this)
@@ -81,7 +84,6 @@ class PreviewImageView : ConstraintLayout {
 
         delete.setOnClickListener {
             activity?.let { alertDeletePhoto(it) }
-            //image.setImageDrawable(null)
         }
 
         rotateRight.setOnClickListener {
@@ -91,8 +93,15 @@ class PreviewImageView : ConstraintLayout {
     }
 
     private fun initAttrs(attrs: AttributeSet?) {
-//        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.BasicBtn, 0, 0)
-//        text.text = typedArray.getString(R.styleable.BasicBtn_text)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.PreviewImageView, 0, 0)
+        val sizeDp = typedArray.getInteger(R.styleable.PreviewImageView_sizeImgWH, 0)
+
+        if(sizeDp != 0){
+            sizePxImg = Different.convertDpToPixel(sizeDp.toFloat(), context).toInt()
+            val lp = image.layoutParams
+            lp.width = sizePxImg
+            image.layoutParams = lp
+        }
     }
 
 
@@ -241,6 +250,13 @@ class PreviewImageView : ConstraintLayout {
 
     fun setImageURI() {
         photoURI?.let {
+
+            if(sizePxImg != 0){
+                val lp = image.layoutParams
+                lp.width = 0
+                image.layoutParams = lp
+            }
+
             val imgUri = Uri.parse(photoURI)
             image.setImageURI(imgUri)
             isHideBtn(false)
@@ -281,6 +297,11 @@ class PreviewImageView : ConstraintLayout {
         photoURI = null
         isHideBtn(true)
         image.setImageDrawable(resources.getDrawable(R.drawable.ic_add_a_photo_white_24dp))
+        listener?.imgDeleted()
+
+        val lp = image.layoutParams
+        lp.width = sizePxImg
+        image.layoutParams = lp
     }
 
     fun showBigPhoto(){
@@ -293,6 +314,7 @@ class PreviewImageView : ConstraintLayout {
 
     interface PreviewImageViewListener {
         fun startPhoto()
+        fun imgDeleted()
     }
 
 }

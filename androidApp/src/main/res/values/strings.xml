@@ -38,6 +38,8 @@
     <string name="onlineConsultation">Онлайн-консультация</string>
     <string name="stub_chat_video">Здесь будут отображаться Ваши текущие и предстоящие онлайн-консультации</string>
 
+    <string name="scanPassport">Сканирование паспорта</string>
+
     <string name="hint_patient">"Пациент: "</string>
     <string name="txtService">"Услуга: "</string>
 

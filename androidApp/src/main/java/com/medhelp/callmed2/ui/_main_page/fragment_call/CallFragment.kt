@@ -65,7 +65,7 @@ class CallFragment : BaseFragment(), SensorEventListener {
             if (requireArguments().getString("log") == "log") isLogTimber = false
         } catch (e: Exception) {
         }
-        if (isLogTimber) Timber.i("Колл центр")
+       // if (isLogTimber) Timber.i("Колл центр")
         //endregion
         val rootView = inflater.inflate(R.layout.fragment_call, container, false)
         init(rootView)

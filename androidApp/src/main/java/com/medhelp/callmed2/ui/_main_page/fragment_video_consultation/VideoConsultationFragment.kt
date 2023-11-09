@@ -49,7 +49,7 @@ class VideoConsultationFragment : BaseFragment(), ConsultationListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.i("Онлайн консультация(список клиентов)")
+        //Timber.i("Онлайн консультация(список клиентов)")
         val rootView = inflater.inflate(R.layout.fragment_online_consultatin, container, false)
         binding = FragmentOnlineConsultatinBinding.bind(rootView)
 

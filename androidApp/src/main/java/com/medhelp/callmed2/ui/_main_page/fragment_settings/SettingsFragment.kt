@@ -24,7 +24,7 @@ class SettingsFragment : BaseFragment() {
     var presenter: SettingsPresenter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Timber.i("Настройки")
+       //Timber.i("Настройки")
         val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
         binding = FragmentSettingsBinding.bind(rootView)
 

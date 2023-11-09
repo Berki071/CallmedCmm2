@@ -32,7 +32,7 @@ class T1ListOfEntriesFragment : BaseFragment() {
     var whatDataShow: String = WhatDataShow.ACTIVE.toString()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Timber.i("Чат c доктором")
+        //Timber.i("Чат c доктором")
         val rootView = inflater.inflate(R.layout.fragment_chat_with_doctor, container, false)
         binding = FragmentChatWithDoctorBinding.bind(rootView)
 

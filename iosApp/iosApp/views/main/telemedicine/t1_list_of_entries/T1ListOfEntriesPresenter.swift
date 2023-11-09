@@ -44,7 +44,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
                 }
             },
             goToRoom: {(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void in
-                LoggingTree.INSTANCE.d("переход в комнату idRoom tmId \(item.tmId)")
+                //LoggingTree.INSTANCE.d("переход в комнату idRoom tmId \(item.tmId)")
                 self.isShowRoomView = item
                 
             },

@@ -39,7 +39,7 @@ class StatisticsMcbFragment : BaseFragment() {
     var adapter: StatisticsMcbAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Timber.i("Статистика МКБ")
+        //Timber.i("Статистика МКБ")
         val view = inflater.inflate(R.layout.fragment_statistecs_mcb, container, false)
         return view
     }

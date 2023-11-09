@@ -70,7 +70,7 @@ class TimetableDocFragment : BaseFragment() {
         binding.toolbar!!.setNavigationOnClickListener { (context as MainPageActivity?)!!.showNavigationMenu() }
     }
 
-    override fun destroyFragment() {}
+    override fun onDestroyB() {}
     override fun onStartSetStatusFragment(status: Int) {}
     fun showErrorScreen() {}
 }

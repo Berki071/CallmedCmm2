@@ -227,99 +227,99 @@ class NetworkManagerIos{
         webTask.resume()
     }
     
-    func getCurrentDateApiCall(responseF: @escaping ((DateItem) -> Void), errorM: @escaping ((String) -> Void)){
-        // Create the session object
-        let session = URLSession.shared
-        // Create url object
-        guard let url = URL(string: "http://188.225.25.133/medhelp_main/v1/date") else {return}
-        // Create the URLRequest object using the url object
-        var request = URLRequest(url: url)
-        // Set the request method. Important Do not set any other headers, like Content-Type
-        request.httpMethod = "GET" //set http method
-        
-        //HTTP Headers
-        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
-        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
-  
-        
-        // Create a task using the session object, to run and return completion handler
-        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
-            guard let data = data, error == nil else {
-                let str = error?.localizedDescription ?? "error date/"
-                errorM(str)
-                return
-            }
-            
-            // let tttr = String(data: data, encoding: .utf8)
-            let respData = try? JSONDecoder().decode(DateResponse.self, from: data)
-            
-            if let prespData = respData {
-                responseF(prespData.response!)
-            }
-            else{
-                let tttr = String(data: data, encoding: .utf8)
-                errorM("pars errpr \(String(describing: tttr))")
-            }
-        })
-        
-        // Run the task
-        webTask.resume()
-    }
+//    func getCurrentDateApiCall(responseF: @escaping ((DateItem) -> Void), errorM: @escaping ((String) -> Void)){
+//        // Create the session object
+//        let session = URLSession.shared
+//        // Create url object
+//        guard let url = URL(string: "http://188.225.25.133/medhelp_main/v1/date") else {return}
+//        // Create the URLRequest object using the url object
+//        var request = URLRequest(url: url)
+//        // Set the request method. Important Do not set any other headers, like Content-Type
+//        request.httpMethod = "GET" //set http method
+//        
+//        //HTTP Headers
+//        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
+//        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+//  
+//        
+//        // Create a task using the session object, to run and return completion handler
+//        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
+//            guard let data = data, error == nil else {
+//                let str = error?.localizedDescription ?? "error date/"
+//                errorM(str)
+//                return
+//            }
+//            
+//            // let tttr = String(data: data, encoding: .utf8)
+//            let respData = try? JSONDecoder().decode(DateResponse.self, from: data)
+//            
+//            if let prespData = respData {
+//                responseF(prespData.response!)
+//            }
+//            else{
+//                let tttr = String(data: data, encoding: .utf8)
+//                errorM("pars errpr \(String(describing: tttr))")
+//            }
+//        })
+//        
+//        // Run the task
+//        webTask.resume()
+//    }
     
     
-    func getAllReceptionApiCall(branch: String, date: String, idDoc: String, dbName: String, accessToken: String,
-                                responseF: @escaping (([VisitItem]) -> Void), errorM: @escaping ((String) -> Void)){
-        
-        // Create the session object
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = TimeInterval(60)
-        config.timeoutIntervalForResource = TimeInterval(60)
-        let session = URLSession(configuration: config)
-        
-        
-   
-        // Create url object
-        guard let url = URL(string: "http://188.225.25.133/medhelp_client/v1/scheduleFull/doctor/\(idDoc)/\(date)/\(branch)") else {return}
-        // Create the URLRequest object using the url object
-        var request = URLRequest(url: url)
-        // Set the request method. Important Do not set any other headers, like Content-Type
-        request.httpMethod = "GET" //set http method
-        
-        //HTTP Headers
-        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
-        request.setValue(dbName, forHTTPHeaderField: "db_name")
-        request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-        request.setValue(idDoc, forHTTPHeaderField: "id_sotr")
-        
-        // Create a task using the session object, to run and return completion handler
-        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
-            guard let data = data, error == nil else {
-                var str = error?.localizedDescription ?? "error scheduleFull/doctor/"
-                str += " ,error._code: " + String(error?._code ?? -333)
-                
-                if let response = response {
-                    str += " response.description: "
-                    str += response.description
-                }
-                errorM(str)
-                return
-            }
-            
-            // let tttr = String(data: data, encoding: .utf8)
-            let respData = try? JSONDecoder().decode(VisitResponse.self, from: data)
-            
-            if let prespData = respData {
-                responseF(prespData.response!)
-            }
-            else{
-                let tttr = String(data: data, encoding: .utf8)
-                errorM("pars errpr \(String(describing: tttr))")
-            }
-        })
-        
-        // Run the task
-        webTask.resume()
-    }
+//    func getAllReceptionApiCall(branch: String, date: String, idDoc: String, dbName: String, accessToken: String,
+//                                responseF: @escaping (([VisitItem]) -> Void), errorM: @escaping ((String) -> Void)){
+//        
+//        // Create the session object
+//        let config = URLSessionConfiguration.default
+//        config.timeoutIntervalForRequest = TimeInterval(60)
+//        config.timeoutIntervalForResource = TimeInterval(60)
+//        let session = URLSession(configuration: config)
+//        
+//        
+//   
+//        // Create url object
+//        guard let url = URL(string: "http://188.225.25.133/medhelp_client/v1/scheduleFull/doctor/\(idDoc)/\(date)/\(branch)") else {return}
+//        // Create the URLRequest object using the url object
+//        var request = URLRequest(url: url)
+//        // Set the request method. Important Do not set any other headers, like Content-Type
+//        request.httpMethod = "GET" //set http method
+//        
+//        //HTTP Headers
+//        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
+//        request.setValue(dbName, forHTTPHeaderField: "db_name")
+//        request.setValue(accessToken, forHTTPHeaderField: "Authorization")
+//        request.setValue(idDoc, forHTTPHeaderField: "id_sotr")
+//        
+//        // Create a task using the session object, to run and return completion handler
+//        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
+//            guard let data = data, error == nil else {
+//                var str = error?.localizedDescription ?? "error scheduleFull/doctor/"
+//                str += " ,error._code: " + String(error?._code ?? -333)
+//                
+//                if let response = response {
+//                    str += " response.description: "
+//                    str += response.description
+//                }
+//                errorM(str)
+//                return
+//            }
+//            
+//            // let tttr = String(data: data, encoding: .utf8)
+//            let respData = try? JSONDecoder().decode(VisitResponse.self, from: data)
+//            
+//            if let prespData = respData {
+//                responseF(prespData.response!)
+//            }
+//            else{
+//                let tttr = String(data: data, encoding: .utf8)
+//                errorM("pars errpr \(String(describing: tttr))")
+//            }
+//        })
+//        
+//        // Run the task
+//        webTask.resume()
+//    }
     
     func updateFcmToken(fbToken: String, idDoc: String, dbName: String, accessToken: String,
                         responseF: @escaping ((SimpleResponseString) -> Void), errorM: @escaping ((String) -> Void)){

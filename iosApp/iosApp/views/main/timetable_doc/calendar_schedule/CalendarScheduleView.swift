@@ -7,13 +7,14 @@
 //
 
 import SwiftUI
+import shared
 
 struct CalendarScheduleView: View {
     
     @ObservedObject var presenter: CalendarSchedulePresenter
     var selectdedDate : ((String,String) -> Void)
     
-    init(currentDateResponce : Binding<DateItem?> ,listSchedule: Binding<[VisitItem]>,
+    init(currentDateResponce : Binding<DateResponse.DateItem?> ,listSchedule: Binding<[VisitResponse.VisitItem]>,
          clickNextWeek: @escaping ((String) -> Void), selectdedDate : @escaping ((String,String) -> Void), selectDay: String, msg : String){
         
         self.selectdedDate = selectdedDate
@@ -108,8 +109,8 @@ struct CalendarScheduleView: View {
 
 struct CalendarScheduleView_Previews: PreviewProvider {
     
-    @State static var cheTmp : DateItem? = nil
-    @State static var cheduleAll : [VisitItem] = []
+    @State static var cheTmp : DateResponse.DateItem? = nil
+    @State static var cheduleAll : [VisitResponse.VisitItem] = []
     
     static var previews: some View {
         CalendarScheduleView(currentDateResponce: $cheTmp, listSchedule: $cheduleAll, clickNextWeek: {(String) -> Void in },

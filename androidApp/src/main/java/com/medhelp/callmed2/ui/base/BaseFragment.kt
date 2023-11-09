@@ -11,7 +11,7 @@ import com.medhelp.callmed2.utils.main.MainUtils
 abstract class BaseFragment : Fragment(), MvpView {
     var baseActivity: BaseActivity? = null
         private set
-    private var dialog: ProgressDialog? = null
+    var dialog: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
@@ -44,6 +44,7 @@ abstract class BaseFragment : Fragment(), MvpView {
         if (dialog != null && dialog!!.isShowing) {
             try {
                 dialog!!.cancel()
+                dialog  = null
             } catch (e: Exception) {
             }
         }
@@ -91,11 +92,11 @@ abstract class BaseFragment : Fragment(), MvpView {
 
     protected abstract fun setUp(view: View)
     override fun onDestroy() {
-        destroyFragment()
+        onDestroyB()
         super.onDestroy()
     }
 
-    protected abstract fun destroyFragment()
+    protected abstract fun onDestroyB()
     interface Callback {
         fun onFragmentAttached()
         fun onFragmentDetached(tag: String?)

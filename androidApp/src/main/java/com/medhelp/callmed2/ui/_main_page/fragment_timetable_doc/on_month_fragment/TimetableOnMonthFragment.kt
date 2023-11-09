@@ -46,7 +46,7 @@ class TimetableOnMonthFragment: BaseFragment() {
             dialog.show(childFragmentManager, ThreeMonthPickerDialog:: class.java.canonicalName)
         }
     }
-    override fun destroyFragment() {}
+    override fun onDestroyB() {}
     override fun onStartSetStatusFragment(status: Int) {}
 
     private fun setCurrentDate(date: Long){

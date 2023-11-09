@@ -190,7 +190,7 @@ class CallFragment : BaseFragment(), SensorEventListener {
         Log.wtf("mmmLog", "statusFragment= " + statusFragment)
     }
 
-    override fun destroyFragment() {
+    override fun onDestroyB() {
         requireActivity().unregisterReceiver(brError)
         if (callCenterServiceIntent == null) return else {
             Log.wtf("mLogStopService", "3")

@@ -1,40 +1,33 @@
-package com.medhelp.callmed2.data.model;
+package com.medhelp.callmedcmm2.model
 
-import com.google.gson.annotations.SerializedName;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@SuppressWarnings("unused")
-public class DateList {
+@Serializable
+class DateResponse {
+    @SerialName("error")
+    var isError = false
 
-    @SerializedName("error")
-    private boolean error;
+    @SerialName("message")
+    var message: String? = null
 
-    @SerializedName("message")
-    private String message;
+    @SerialName("response")
+    var response: DateItem? = null
 
-    @SerializedName("response")
-    private DateResponse response;
+    @Serializable
+    class DateItem {
+        @SerialName("today")
+        var today: String? = null
 
-    public boolean isError() {
-        return error;
-    }
+        @SerialName("week_day")
+        var weekDay: String? = null
 
-    public void setError(boolean error) {
-        this.error = error;
-    }
+        @SerialName("last_monday")
+        var lastMonday: String? = null
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public DateResponse getResponse() {
-        return response;
-    }
-
-    public void setResponse(DateResponse response) {
-        this.response = response;
+        constructor()
+        constructor(lastMonday: String?) {
+            this.lastMonday = lastMonday
+        }
     }
 }

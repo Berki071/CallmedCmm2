@@ -8,12 +8,13 @@
 
 import Foundation
 import SwiftUI
+import shared
 
 
 class CalendarSchedulePresenter: ObservableObject{
-    var listSchedule: Binding<[VisitItem]>
+    var listSchedule: Binding<[VisitResponse.VisitItem]>
     
-    var currentDateResponce : Binding<DateItem?>
+    var currentDateResponce : Binding<DateResponse.DateItem?>
     var clickNextWeek: ((String) -> Void)
     var selectdedDate : ((String,String) -> Void)
     
@@ -28,7 +29,7 @@ class CalendarSchedulePresenter: ObservableObject{
     
     @Published var hindSelectDay: String  = ""
     
-    init(currentDateResponce : Binding<DateItem?>, listSchedule: Binding<[VisitItem]>, clickNextWeek: @escaping ((String) -> Void), selectdedDate: @escaping ((String,String) -> Void)){
+    init(currentDateResponce : Binding<DateResponse.DateItem?>, listSchedule: Binding<[VisitResponse.VisitItem]>, clickNextWeek: @escaping ((String) -> Void), selectdedDate: @escaping ((String,String) -> Void)){
         
         self.currentDateResponce = currentDateResponce
         self.listSchedule = listSchedule
@@ -44,7 +45,7 @@ class CalendarSchedulePresenter: ObservableObject{
             return
         }
         
-        let strDate = currentDateResponce.wrappedValue!.last_monday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.last_monday!
+        let strDate = currentDateResponce.wrappedValue!.lastMonday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.lastMonday!
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = MDate.DATE_FORMAT_ddMMyyyy
         let date = dateFormatter.date(from: strDate)!
@@ -62,7 +63,7 @@ class CalendarSchedulePresenter: ObservableObject{
         
         let todayDate = dateFormatter.date(from: currentDateResponce.wrappedValue!.today!)!
         
-        var d1Str = currentDateResponce.wrappedValue!.last_monday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.last_monday!
+        var d1Str = currentDateResponce.wrappedValue!.lastMonday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.lastMonday!
         var d1Date = dateFormatter.date(from: d1Str)!
         
        // var listItemsDay = [day1,day2,day3,day4,day5,day6,day7]
@@ -101,7 +102,7 @@ class CalendarSchedulePresenter: ObservableObject{
             day1 = DayWeekItemViewData(date: d1Str, type: TypeDayWeekItem.Hide, listScheduleOnDate: nil)
         }else{
            
-            let list : [VisitItem]? = scheduleListForDate(d1Str)
+            let list : [VisitResponse.VisitItem]? = scheduleListForDate(d1Str)
             var d1Type : TypeDayWeekItem
             
             //let calendarDateCurrent = Date()
@@ -118,12 +119,12 @@ class CalendarSchedulePresenter: ObservableObject{
     }
     
     
-    func scheduleListForDate(_ date : String) -> [VisitItem]? {
+    func scheduleListForDate(_ date : String) -> [VisitResponse.VisitItem]? {
         if(listSchedule.wrappedValue.count == 0){
             return nil
         }
         
-        var newList : [VisitItem] = []
+        var newList : [VisitResponse.VisitItem] = []
         
         listSchedule.wrappedValue.forEach{i in
             if(i.date == date){
@@ -211,7 +212,7 @@ class CalendarSchedulePresenter: ObservableObject{
     }
     
     func clickArrowBack(){
-        let strDate = currentDateResponce.wrappedValue!.last_monday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.last_monday!
+        let strDate = currentDateResponce.wrappedValue!.lastMonday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.lastMonday!
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = MDate.DATE_FORMAT_ddMMyyyy
         let date = dateFormatter.date(from: strDate)!
@@ -224,7 +225,7 @@ class CalendarSchedulePresenter: ObservableObject{
     }
     
     func clickArrowForward(){
-        let strDate = currentDateResponce.wrappedValue!.last_monday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.last_monday!
+        let strDate = currentDateResponce.wrappedValue!.lastMonday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.lastMonday!
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = MDate.DATE_FORMAT_ddMMyyyy
         let date = dateFormatter.date(from: strDate)!
@@ -241,7 +242,7 @@ class CalendarSchedulePresenter: ObservableObject{
             return false
         }
         
-        let strDate = currentDateResponce.wrappedValue!.last_monday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.last_monday!
+        let strDate = currentDateResponce.wrappedValue!.lastMonday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.lastMonday!
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = MDate.DATE_FORMAT_ddMMyyyy
         let lMonday = dateFormatter.date(from: strDate)!
@@ -263,7 +264,7 @@ class CalendarSchedulePresenter: ObservableObject{
         let strDateTodayD = dateFormatter.date(from: strDateToday)!
         let dateTodayPlus28 : Date = Calendar.current.date(byAdding: .day, value: 29, to: strDateTodayD)!
         
-        let strMonday = currentDateResponce.wrappedValue!.last_monday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.last_monday!
+        let strMonday = currentDateResponce.wrappedValue!.lastMonday == "1" ? currentDateResponce.wrappedValue!.today! : currentDateResponce.wrappedValue!.lastMonday!
         let strMondayD = dateFormatter.date(from: strMonday)!
         let strMondayPlus6 : Date = Calendar.current.date(byAdding: .day, value: 7, to: strMondayD)!
         

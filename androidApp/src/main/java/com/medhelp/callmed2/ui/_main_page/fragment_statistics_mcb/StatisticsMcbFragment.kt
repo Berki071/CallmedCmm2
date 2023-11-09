@@ -124,6 +124,6 @@ class StatisticsMcbFragment : BaseFragment() {
         titleKod.callOnClick()
     }
 
-    override fun destroyFragment() {}
+    override fun onDestroyB() {}
     override fun onStartSetStatusFragment(status: Int) {}
 }

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmed2.data.model.timetable.VisitResponse
 import com.medhelp.callmed2.databinding.ItemAppointmentBinding
+import com.medhelp.callmedcmm2.model.VisitResponse.VisitItem
 
-class AppointmentAdapter(var context: Context, var list: List<VisitResponse>) :
+class AppointmentAdapter(var context: Context, var list: List<VisitItem>) :
     RecyclerView.Adapter<AppointmentHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_appointment, parent, false)

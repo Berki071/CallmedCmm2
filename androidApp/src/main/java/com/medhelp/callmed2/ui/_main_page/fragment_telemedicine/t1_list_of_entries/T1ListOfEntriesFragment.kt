@@ -191,7 +191,7 @@ class T1ListOfEntriesFragment : BaseFragment() {
         (requireContext() as MainPageActivity).startActivity(newIntent)
         (requireContext() as MainPageActivity).finish()
     }
-    override fun destroyFragment() {}
+    override fun onDestroyB() {}
     override fun onStartSetStatusFragment(status: Int) {}
     fun showError() {}
 

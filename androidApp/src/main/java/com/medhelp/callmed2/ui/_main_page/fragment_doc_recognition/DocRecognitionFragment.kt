@@ -39,7 +39,7 @@ class DocRecognitionFragment : BaseFragment() {
     override fun setUp(view: View) {
     }
 
-    override fun destroyFragment() {
+    override fun onDestroyB() {
     }
 
     override fun onStartSetStatusFragment(status: Int) {

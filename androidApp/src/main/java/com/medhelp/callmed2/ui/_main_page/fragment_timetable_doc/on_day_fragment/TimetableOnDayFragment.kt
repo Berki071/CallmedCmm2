@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.model.timetable.SettingsAllBranchHospitalResponse
-import com.medhelp.callmed2.data.model.timetable.VisitResponse
 import com.medhelp.callmed2.databinding.FragmentTimetableOnDayBinding
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.decorators.DayDecorator
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.decorators.SelectDecorator
@@ -17,6 +16,8 @@ import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.resyAppointment.AppointmentAdapter
 import com.medhelp.callmed2.ui.base.BaseFragment
 import com.medhelp.callmed2.utils.main.TimesUtils
+import com.medhelp.callmedcmm2.model.VisitResponse
+import com.medhelp.callmedcmm2.model.VisitResponse.*
 import com.prolificinteractive.materialcalendarview.*
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
@@ -29,7 +30,7 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
     lateinit var presenter: TimetableOnDayPresenter
 
     private var selectedBranch = -1
-    private val visitList: MutableList<VisitResponse> = mutableListOf()
+    private val visitList: MutableList<VisitItem> = mutableListOf()
     var appointmentResy: AppointmentAdapter? = null
 
 
@@ -37,6 +38,8 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
         //Timber.i("Расписание доктора yна день")
         val rootView: View = inflater.inflate(R.layout.fragment_timetable_on_day, container, false)
         binding = FragmentTimetableOnDayBinding.bind(rootView)
+        presenter = TimetableOnDayPresenter()
+        presenter.onAttachView(this)
         return binding.root
     }
     override fun onResume() {
@@ -47,19 +50,17 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
             binding.rvSchedule!!.adapter = null
             val ss = binding.calendarSchedule!!.currentDate.date
             val dateMon = TimesUtils.dateToString(ss, TimesUtils.DATE_FORMAT_ddMMyyyy)
-            presenter.getDataFrom(selectedBranch, dateMon)
+            presenter.getAllReceptionApiCall(selectedBranch, dateMon)
         }
     }
 
     override fun setUp(view: View) {
-        presenter =
-            TimetableOnDayPresenter(
-                this
-            )
         setupCalendarView()
-        presenter.allHospitalBranch
+        presenter.allHospitalBranch()
     }
-    override fun destroyFragment() {}
+    override fun onDestroyB() {
+        presenter.onDetachView()
+    }
     override fun onStartSetStatusFragment(status: Int) {}
 
     private fun setupCalendarView() {
@@ -110,7 +111,7 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
     }
 
 
-    fun setupCalendar(todayString: String?, response: MutableList<VisitResponse>) {
+    fun setupCalendar(todayString: String?, response: MutableList<VisitItem>) {
         val cd = binding.calendarSchedule!!.minimumDate
         if (cd == null) {
             val min = CalendarDay.from(TimesUtils.stringToDate(todayString))
@@ -134,7 +135,7 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
     }
 
 
-    fun updateCalendar(response: MutableList<VisitResponse>, todayString: String?) {
+    fun updateCalendar(response: MutableList<VisitItem>, todayString: String?) {
         //listCalendarPlaces=new ArrayList<>();
         binding.rvSchedule!!.visibility = View.GONE
         visitList.clear()
@@ -190,7 +191,7 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
         val todayString = TimesUtils.currrentDate
         var i = 0
         while (visitList.size > i) {
-            if (visitList.get(i).getDate() == todayString) {
+            if (visitList.get(i).date == todayString) {
                 val date = TimesUtils.stringToDate(todayString)
                 binding.calendarSchedule!!.setSelectedDate(date)
                 break
@@ -201,10 +202,10 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
 
 
     override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
-        val response: List<VisitResponse> = visitList
+        val response: List<VisitItem> = visitList
         binding.dayEmpty!!.visibility = View.VISIBLE
         binding.rvSchedule!!.visibility = View.GONE
-        val listSelected: MutableList<VisitResponse> = ArrayList()
+        val listSelected: MutableList<VisitItem> = ArrayList()
         val dd = date.date
         val sData = TimesUtils.dateToString(dd, TimesUtils.DATE_FORMAT_ddMMyyyy)
         for (dateResponse in visitList) {
@@ -235,7 +236,7 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
     override fun onMonthChanged(widget: MaterialCalendarView?, date: CalendarDay) {
         binding.cabinetName!!.visibility = View.GONE
         val sData = TimesUtils.dateToString(date.date, TimesUtils.DATE_FORMAT_ddMMyyyy)
-        presenter.getDataFrom(selectedBranch, sData)
+        presenter.getAllReceptionApiCall(selectedBranch, sData)
         if (appointmentResy != null) appointmentResy?.clear()
     }
 

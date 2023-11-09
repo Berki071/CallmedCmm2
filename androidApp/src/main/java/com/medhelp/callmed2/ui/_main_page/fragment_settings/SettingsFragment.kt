@@ -126,7 +126,7 @@ class SettingsFragment : BaseFragment() {
         binding.switchNoty!!.isChecked = presenter!!.preferencesManager.isShowNotifications
     }
 
-    override fun destroyFragment() {
+    override fun onDestroyB() {
         // presenter.unSubscribe();
     }
 

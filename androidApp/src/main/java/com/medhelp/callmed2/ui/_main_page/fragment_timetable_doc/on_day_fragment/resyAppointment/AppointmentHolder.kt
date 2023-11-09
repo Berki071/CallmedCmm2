@@ -7,12 +7,13 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmed2.data.model.timetable.VisitResponse
 import com.medhelp.callmed2.databinding.ItemAppointmentBinding
 import com.medhelp.callmed2.utils.main.MainUtils
+import com.medhelp.callmedcmm2.model.VisitResponse
+import com.medhelp.callmedcmm2.model.VisitResponse.VisitItem
 
 class AppointmentHolder(val bindingItem: ItemAppointmentBinding) : RecyclerView.ViewHolder(bindingItem.root) {
-    var data: VisitResponse? = null
+    var data: VisitItem? = null
 
     init {
         bindingItem.topConstr!!.setOnClickListener {
@@ -30,7 +31,7 @@ class AppointmentHolder(val bindingItem: ItemAppointmentBinding) : RecyclerView.
         }
     }
 
-    fun onBind(data: VisitResponse) {
+    fun onBind(data: VisitItem) {
         bindingItem.dropDawnPanel!!.visibility = View.GONE
         this.data = data
         if (data.naim == null || data.naim == "") {

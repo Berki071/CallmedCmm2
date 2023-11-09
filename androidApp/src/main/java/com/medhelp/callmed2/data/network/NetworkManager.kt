@@ -40,12 +40,12 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
             .getObjectObservable(UserList::class.java)
     }
 
-    val currentDateApiCall: Observable<DateList>
-        get() = Rx2AndroidNetworking.get(LocalEndPoint.CURRENT_DATE)
-            .addHeaders("host", "oneclick.tmweb.ru")
-            .addHeaders(AUTH, AppConstants.API_KEY)
-            .build()
-            .getObjectObservable(DateList::class.java)
+//    val currentDateApiCall: Observable<DateList>
+//        get() = Rx2AndroidNetworking.get(LocalEndPoint.CURRENT_DATE)
+//            .addHeaders("host", "oneclick.tmweb.ru")
+ //           .addHeaders(AUTH, AppConstants.API_KEY)
+//            .build()
+//            .getObjectObservable(DateList::class.java)
 
     val centerApiCall: Observable<CenterList>
         get() = Rx2AndroidNetworking.get(LocalEndPoint.CENTER)
@@ -157,19 +157,23 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
             .build()
             .getObjectObservable(SettingsAllBaranchHospitalList::class.java)
 
-    fun getAllReceptionApiCall(branch: Int, dateMonday: String): Observable<VisitList> {
 
-        return Rx2AndroidNetworking.get(CenterEndPoint.TIME_TABLE_DOC)
-            .addHeaders("host", "oneclick.tmweb.ru")
-            .addHeaders(DB_NAME, prefManager.centerInfo!!.db_name)
-            .addHeaders(AUTH, prefManager.accessToken)
-            .addHeaders(ID_DOC, prefManager.currentUserId.toString())
-            .addPathParameter(ID_USER, prefManager.currentUserId.toString())
-            .addPathParameter(DATE, dateMonday)
-            .addPathParameter(ID_BRANCH, branch.toString())
-            .build()
-            .getObjectObservable(VisitList::class.java)
-    }
+    //const val BASE_URL = "http://188.225.25.133/medhelp_client/v1/"
+   // const val TIME_TABLE_DOC =
+        //CenterEndPoint.BASE_URL + "scheduleFull/doctor/{" + NetworkManager.ID_USER + "}/{" + NetworkManager.DATE + "}/{" + NetworkManager.ID_BRANCH + "}" //-
+//    fun getAllReceptionApiCall(branch: Int, dateMonday: String): Observable<VisitList> {
+//
+//        return Rx2AndroidNetworking.get(CenterEndPoint.TIME_TABLE_DOC)
+//            .addHeaders("host", "oneclick.tmweb.ru")
+//            .addHeaders(DB_NAME, prefManager.centerInfo!!.db_name)
+//            .addHeaders(AUTH, prefManager.accessToken)
+//            .addHeaders(ID_DOC, prefManager.currentUserId.toString())
+//            .addPathParameter(ID_USER, prefManager.currentUserId.toString())
+//            .addPathParameter(DATE, dateMonday)
+//            .addPathParameter(ID_BRANCH, branch.toString())
+//            .build()
+//            .getObjectObservable(VisitList::class.java)
+//    }
 
     val scheduleTomorrow: Observable<TimetableDocNotificationList>
         get() {
@@ -342,17 +346,18 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
             .getObjectObservable(SimpleString::class.java)
     }
 
-    fun getScheduleDocForVideoCal(idDoc: String, date: String): Observable<VisitResponse2> {
-        return Rx2AndroidNetworking.get(CenterEndPoint.SCHEDULE_DOC_FOR_VIDEO_CALL)
-            .addHeaders("host", "oneclick.tmweb.ru")
-            .addHeaders(DB_NAME, prefManager.centerInfo!!.db_name)
-            .addHeaders(AUTH, prefManager.accessToken)
-            .addHeaders(ID_DOC, prefManager.currentUserId.toString())
-            .addPathParameter(ID_DOC, idDoc)
-            .addPathParameter(DATE, date)
-            .build()
-            .getObjectObservable(VisitResponse2::class.java)
-    }
+    //не удалять
+//    fun getScheduleDocForVideoCal(idDoc: String, date: String): Observable<VisitResponse2> {
+//        return Rx2AndroidNetworking.get(CenterEndPoint.SCHEDULE_DOC_FOR_VIDEO_CALL)
+//            .addHeaders("host", "oneclick.tmweb.ru")
+//            .addHeaders(DB_NAME, prefManager.centerInfo!!.db_name)
+//            .addHeaders(AUTH, prefManager.accessToken)
+//            .addHeaders(ID_DOC, prefManager.currentUserId.toString())
+//            .addPathParameter(ID_DOC, idDoc)
+//            .addPathParameter(DATE, date)
+//            .build()
+//            .getObjectObservable(VisitResponse2::class.java)
+//    }
 
     val syncData: Observable<NewSyncResponse>
         get() = Rx2AndroidNetworking.get(CenterEndPoint.FIND_NEW_SYNC)

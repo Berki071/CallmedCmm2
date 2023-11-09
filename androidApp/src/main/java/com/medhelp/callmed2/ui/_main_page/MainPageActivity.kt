@@ -40,7 +40,6 @@ import com.medhelp.callmed2.ui._main_page.fragment_statistics_mcb.StatisticsMcbF
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.T1ListOfEntriesFragment
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.TimetableDocFragment
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.RecordFindServiceFragment
-import com.medhelp.callmed2.ui._main_page.fragment_video_consultation.VideoConsultationFragment
 import com.medhelp.callmed2.ui.base.BaseActivity
 import com.medhelp.callmed2.ui.login.LoginActivity
 import com.medhelp.callmed2.utils.Different
@@ -526,20 +525,20 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
                 }
                 return
             }
-            VideoConsultationFragment.PERMISSIONS_REQUEST_ONLINE_CONSULTATION -> {
-                if (grantResults.size > 0) {
-                    var isGranted = true
-                    for (res in grantResults) {
-                        if (res != PackageManager.PERMISSION_GRANTED) {
-                            isGranted = false
-                        }
-                    }
-                    if (isGranted && selectFragment != null) {
-                        (selectFragment!! as VideoConsultationFragment).isPermissionGranted = true
-                    }
-                }
-                return
-            }
+//            VideoConsultationFragment.PERMISSIONS_REQUEST_ONLINE_CONSULTATION -> {
+//                if (grantResults.size > 0) {
+//                    var isGranted = true
+//                    for (res in grantResults) {
+//                        if (res != PackageManager.PERMISSION_GRANTED) {
+//                            isGranted = false
+//                        }
+//                    }
+//                    if (isGranted && selectFragment != null) {
+//                        (selectFragment!! as VideoConsultationFragment).isPermissionGranted = true
+//                    }
+//                }
+//                return
+//            }
         }
     }
 

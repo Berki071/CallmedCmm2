@@ -1,7 +1,9 @@
 package com.medhelp.callmedcmm2.network
 
+import com.medhelp.callmedcmm2.model.DateResponse
 import com.medhelp.callmedcmm2.model.SimpleResponseBoolean2
 import com.medhelp.callmedcmm2.model.SimpleString2
+import com.medhelp.callmedcmm2.model.VisitResponse
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
 import com.medhelp.callmedcmm2.model.chat.AnaliseResultResponse
 import com.medhelp.callmedcmm2.model.chat.FCMResponse
@@ -327,55 +329,37 @@ class NetworkManagerCompatibleKMM {
     }
 
 
-//    @Throws(Exception::class) suspend fun geDataResultZakl2(item: ResultZakl2Item,
-//                                                            h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : LoadDataZaklAmbResponse {
-//        return getHttpClient().use { client ->
-//            client.get(BASE_URL + "LoadZaklAmb/" + item.idKl + "/" + item.idFilial + "/" + item.nameSpec + "/" + item.dataPriema) {
-//                headers {
-//                    append("host", "oneclick.tmweb.ru")
-//                    append(AUTH, h_Auth)
-//                    append(DB_NAME, h_dbName)
-//                    append(ID_KL, h_idKl)
-//                    append(ID_FILIAL, h_idFilial)
-//                }
-//            }
-//                .body()
-//        }
-//    }
-//
-//    fun getHttpClient(): HttpClient{
-//        val httpClient1 = HttpClient(){
-//
-//
-//            install(ContentNegotiation) {
-//                //json()
-//                json(kotlinx.serialization.json.Json {
-//                    ignoreUnknownKeys = true
-//                })
-//            }
-//
-//            install(HttpTimeout) {
-//                requestTimeoutMillis = 60000
-//                connectTimeoutMillis = 60000
-//                socketTimeoutMillis = 60000
-//            }
-//
-//            install(HttpRequestRetry) {
-//                maxRetries = 3
-//
-//                retryOnExceptionIf { request, cause ->
-//
-//                    cause is RuntimeException
-//                }
-//                delayMillis { retry ->
-//                    retry * 2000L
-//                } // retries in 3, 6, 9, etc. seconds
-//            }
-//
-//        }
-//
-//        return httpClient1
-//    }
+
+    @Throws(Exception::class)
+    suspend fun currentDateApiCall(): DateResponse {
+        return httpClient.get("http://188.225.25.133/medhelp_main/v1/" + "date") {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, API_KEY)
+            }
+        }
+            .body()
+    }
+    @Throws(Exception::class)
+    suspend fun getAllReceptionApiCall(branch: String, dateMonday: String,
+                                       h_Auth: String, h_dbName: String, h_idDoc: String): VisitResponse {
+
+        return httpClient.get(BASE_URL + "scheduleFull/doctor/${h_idDoc}/${dateMonday}/${branch}") {
+            timeout {
+                requestTimeoutMillis = 30000
+                connectTimeoutMillis = 30000
+                socketTimeoutMillis = 30000
+            }
+
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_SOTR, h_idDoc)
+            }
+        }
+            .body()
+    }
 
 
     private val httpClient = HttpClient(){
@@ -450,5 +434,7 @@ class NetworkManagerCompatibleKMM {
 //        const val BASE_URL_CENTER = "https://oneclick.tmweb.ru/medhelp_client/v1/"
 
         const val BASE_URL = "http://188.225.25.133/medhelp_client/v1/"
+        const val API_KEY =
+            "AAAA2UBtySo:APA91bGOxg0DNY9Ojz-BD0d4bUr-GukFBdvCtivWVjqZ8ppEHtl-BIwmINKD3R_"
     }
 }

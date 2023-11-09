@@ -1,41 +1,75 @@
-package com.medhelp.callmed2.data.model.timetable;
+package com.medhelp.callmedcmm2.model
 
-import com.google.gson.annotations.SerializedName;
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class VisitList {
-    @SerializedName("error")
-    private boolean error;
+@Serializable
+class VisitResponse {
+    @SerialName("error")
+    var isError = false
 
-    @SerializedName("message")
-    private String message;
+    @SerialName("message")
+    var message: String? = null
 
-    @SerializedName("response")
-    private List<VisitResponse> response = new ArrayList<>();
+    @SerialName("response")
+    var response: List<VisitItem> = ArrayList()
 
-    public String getMessage() {
-        return message;
-    }
+    @Serializable
+    class VisitItem {
+        @SerialName("kab")
+        var kab: String? = null
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+        @SerialName("date")
+        var date: String? = null
 
-    public boolean isError() {
-        return error;
-    }
+        @SerialName("time")
+        var time: String? = null
 
-    public void setError(boolean error) {
-        this.error = error;
-    }
+        @SerialName("fam_kl")
+        var fam_kl: String? = null
 
-    public List<VisitResponse> getResponse() {
-        return response;
-    }
+        @SerialName("name_kl")
+        var name_kl: String? = null
 
-    public void setResponse(List<VisitResponse> response) {
-        this.response = response;
+        @SerialName("otch_kl")
+        var otch_kl: String? = null
+
+        @SerialName("komment")
+        var komment: String? = null
+
+        @SerialName("id_client")
+        var id_client = 0
+
+        @SerialName("naim")
+        var naim: String? = null
+
+        @SerialName("start")
+        var start: String? = null
+
+        @SerialName("end")
+        var end: String? = null
+        val fullName: String
+            get() = "$fam_kl $name_kl $otch_kl"
+
+        constructor(time: String, am_kl: String, name_kl: String, otch_kl: String, naim: String, komment: String){
+            this.time = time
+            this.fam_kl=fam_kl
+            this.name_kl=name_kl
+            this.otch_kl=otch_kl
+            this.naim=naim
+            this.komment=komment
+        }
+
+//        override operator fun compareTo(o: Any): Int {
+//            val dateCurrent = stringToLong(date, TimesUtils.DATE_FORMAT_ddMMyyyy)!!
+//            val dateObj = stringToLong((o as VisitResponse).date, TimesUtils.DATE_FORMAT_ddMMyyyy)!!
+//            return if (dateCurrent > dateObj) 1 else if (dateCurrent < dateObj) -1 else {
+//                val timeCurrent = stringToLong(time, TimesUtils.DATE_FORMAT_HHmm)!!
+//                val timeObj =
+//                    stringToLong(o.time, TimesUtils.DATE_FORMAT_HHmm)!!
+//                java.lang.Long.compare(timeCurrent, timeObj)
+//            }
+//        }
     }
 }

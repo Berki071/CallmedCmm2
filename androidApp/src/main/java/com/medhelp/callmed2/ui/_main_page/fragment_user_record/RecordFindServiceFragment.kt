@@ -177,6 +177,6 @@ class RecordFindServiceFragment : BaseFragment() {
         recordUserDialog.show(requireFragmentManager(), "recordUserDialog")
     }
 
-    override fun destroyFragment() {}
+    override fun onDestroyB() {}
     override fun onStartSetStatusFragment(status: Int) {}
 }

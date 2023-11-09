@@ -16,8 +16,8 @@ object CenterEndPoint {
 //    const val SEND_MSG =
 //        BASE_URL + "ChatInsertNewTextDoc/{" + NetworkManager.ID_ROOM + "}/{" + NetworkManager.MESSAGE + "}/sotr/{" + NetworkManager.TYPE + "}" //-
     const val BRANCH_DOC = BASE_URL + "FilialByIdSotr/{" + NetworkManager.ID_USER + "}" //-
-    const val TIME_TABLE_DOC =
-        BASE_URL + "scheduleFull/doctor/{" + NetworkManager.ID_USER + "}/{" + NetworkManager.DATE + "}/{" + NetworkManager.ID_BRANCH + "}" //-
+//    const val TIME_TABLE_DOC =
+//        BASE_URL + "scheduleFull/doctor/{" + NetworkManager.ID_USER + "}/{" + NetworkManager.DATE + "}/{" + NetworkManager.ID_BRANCH + "}" //-
     const val SCHEDULE_TOMORROW =
         BASE_URL + "scheduleTomorrow/{" + NetworkManager.ID_USER + "}" //-
     const val DOCTOR_BY_ID = BASE_URL + "sotr_info_doc/{id_doctor}" //-

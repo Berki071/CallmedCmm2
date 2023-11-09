@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import shared
 
 class TimetableDocPresenter: ObservableObject{
     @Published var showDialogLoading: Bool = false
@@ -13,15 +14,16 @@ class TimetableDocPresenter: ObservableObject{
     @Published var showEmptyView = false
     
     let sdk: NetworkManagerIos
+    let sdkKMM: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
     var sharePreferenses : SharedPreferenses
     //let netConnection = NetMonitor.shared
     
-    @Published var currentDateResponce : DateItem? = nil
+    @Published var currentDateResponce : DateResponse.DateItem? = nil
     
     var selectDate : String = ""
     var msgCalendar : String = ""
-    @Published var scheduleForDate : [VisitItem] = []
-    @Published var scheduleAll : [VisitItem] = []
+    @Published var scheduleForDate : [VisitResponse.VisitItem] = []
+    @Published var scheduleAll : [VisitResponse.VisitItem] = []
     
     @Published var selectBrtanch : SettingsAllBranchHospitalItem? = nil
     var listBranch : [SettingsAllBranchHospitalItem] = []
@@ -222,16 +224,20 @@ class TimetableDocPresenter: ObservableObject{
        
         self.showDialogLoading = true
         
-        sdk.getCurrentDateApiCall(responseF: {(r: DateItem) -> Void in
-            DispatchQueue.main.async {
-                self.currentDateResponce = r
-                self.getAllReceptionDoc(branch, r.today!)
-            }
-            
-        }, errorM: {(e: String) -> Void in
-            DispatchQueue.main.async {
-                LoggingTree.INSTANCE.e("TimetableDocPresenter/getDateAndCallAllReception \(e)")
-                self.showDialogLoading = false
+        sdkKMM.currentDateApiCall( completionHandler: { response, error in
+            if let res : DateResponse = response {
+                DispatchQueue.main.async {
+                    self.currentDateResponce = res.response
+                    self.getAllReceptionDoc(branch, res.response!.today!)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    if let t=error{
+                        LoggingTree.INSTANCE.e("TimetableDocPresenter/getDateAndCallAllReception \(t)")
+                    }
+                    
+                    self.showDialogLoading = false
+                }
             }
         })
     }
@@ -248,38 +254,43 @@ class TimetableDocPresenter: ObservableObject{
         let idDoc = String(sharePreferenses.currentDocInfo?.id_doctor ?? 0)
         let dbName = sharePreferenses.currentCenterInfo?.db_name ?? ""
         let accessToken = sharePreferenses.currentUserInfo?.token ?? ""
-                           
-        sdk.getAllReceptionApiCall(branch: brString, date: date, idDoc: idDoc, dbName: dbName, accessToken: accessToken,
-                                   responseF: {(r: [VisitItem]) -> Void in
-            
-            DispatchQueue.main.async {
-                self.showDialogLoading = false
+        
+        sdkKMM.getAllReceptionApiCall(branch: brString, dateMonday: date,
+                                      h_Auth: accessToken, h_dbName: dbName,  h_idDoc: idDoc,  completionHandler: { response, error in
+            if let res : VisitResponse = response {
                 
-                if(r.count > 1 || r[0].date != nil){
+                DispatchQueue.main.async {
+                    self.showDialogLoading = false
                     
-                    self.showEmptyView = false
-                    self.scheduleAll = r
-                    
-                    if(!self.selectDate.isEmpty){
-                        self.selectDate(self.selectDate)
+                    if(res.response.count > 1 || res.response[0].date != nil){
+                        
+                        self.showEmptyView = false
+                        self.scheduleAll = res.response
+                        
+                        if(!self.selectDate.isEmpty){
+                            self.selectDate(self.selectDate)
+                        }
+                    }else{
+                        self.showEmptyView = true
+                        self.scheduleAll = []
+                        
                     }
-                }else{
-                    self.showEmptyView = true
-                    self.scheduleAll = []
                     
+                    if(date == self.currentDateResponce!.today){
+                        self.selectDate(date)
+                    }
                 }
-                
-                if(date == self.currentDateResponce!.today){
-                    self.selectDate(date)
+            } else {
+                DispatchQueue.main.async {
+                    if let t=error{
+                        LoggingTree.INSTANCE.e("TimetableDocPresenter/getAllReceptionDoc \(t)")
+                    }
+                    
+                    self.showDialogLoading = false
                 }
             }
-            
-        }, errorM: {(e: String) -> Void in
-            DispatchQueue.main.async {
-                LoggingTree.INSTANCE.e("TimetableDocPresenter/getAllReceptionDoc \(e)")
-                self.showDialogLoading = false
-            }
-        } )
+        }
+        )
     }
     
     
@@ -289,7 +300,7 @@ class TimetableDocPresenter: ObservableObject{
         if(scheduleAll.count == 0){
             scheduleForDate = []
         }else{
-            var tmpList : [VisitItem] = []
+            var tmpList : [VisitResponse.VisitItem] = []
             scheduleAll.forEach{i in
                 if(i.date == date){
                     tmpList.append(i)
@@ -316,7 +327,7 @@ class TimetableDocPresenter: ObservableObject{
     }
     
     func clickLoadNewWeek(_ dateMonday : String){
-        currentDateResponce?.last_monday = dateMonday
+        currentDateResponce?.lastMonday = dateMonday
         self.getAllReceptionDoc(selectBrtanch!.id_filial!, dateMonday)
     }
     

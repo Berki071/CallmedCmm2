@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import shared
 
 struct TimetableDocDayItem: View {
     @State var showDopIngo = false
     
-    var item : VisitItem
+    var item : VisitResponse.VisitItem
     
     var body: some View {
         ZStack{
@@ -20,7 +21,7 @@ struct TimetableDocDayItem: View {
             
             VStack(spacing: 0){
                 HStack(spacing: 0){
-                    let title = isRecord ? item.getFullName() : "Нет записи"
+                    let title = isRecord ? item.fullName : "Нет записи"
                     
                     Text(item.time ?? "")
                         .font(.headline)
@@ -80,6 +81,6 @@ struct TimetableDocDayItem: View {
 
 struct TimetableDocItem_Previews: PreviewProvider {
     static var previews: some View {
-        TimetableDocDayItem(item: VisitItem("18:00","Ivanov", "Ivan", "Ivanovich", "priem tatata tata", "ku ku epta"))
+        TimetableDocDayItem(item: VisitResponse.VisitItem(time:"18:00", am_kl: "Ivanov", name_kl:"Ivan", otch_kl:"Ivanovich", naim:"priem tatata tata", komment:"ku ku epta"))
     }
 }

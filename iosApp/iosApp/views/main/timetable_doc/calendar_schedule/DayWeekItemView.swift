@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 enum TypeDayWeekItem{
     case Hide
@@ -20,7 +21,7 @@ struct DayWeekItemViewData{
     let date : String
     var idSelect = false
     var type : TypeDayWeekItem
-    let listScheduleOnDate :[VisitItem]?
+    let listScheduleOnDate :[VisitResponse.VisitItem]?
 }
 
 struct DayWeekItemView: View {

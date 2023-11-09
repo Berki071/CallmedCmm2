@@ -1,4 +1,4 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.recy
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -17,7 +17,8 @@ import com.medhelp.callmed2.databinding.ItemChatRecordAudioBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.main.MainUtils
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.InputStream
 
 class T3RoomHolderRecordAudio(val itemBinding: ItemChatRecordAudioBinding, val recyListener: RoomAdapter.RecyListener) : RecyclerView.ViewHolder(itemBinding.root)  {
@@ -30,14 +31,29 @@ class T3RoomHolderRecordAudio(val itemBinding: ItemChatRecordAudioBinding, val r
         itemBinding.btnControl.tag = BtnControlStay.STOP.name  //current stay
 
         itemBinding.root.setOnLongClickListener {
-            recyListener.clickLongClick(message)
+            if(message != null) {
+                recyListener.clickLongClick(message!!)
+            }else
+                false
         }
     }
 
 
     fun onBinView(msg: MessageRoomItem) {
+        if(msg.isShowLoading)
+            showLoading()
+        else
+            hideLoading()
+
         message = msg
-        setData()
+
+        if(msg.text != null && !msg.text!!.isEmpty()) {
+            setData()
+        }else{
+            showLoading()
+            recyListener.loadFile(msg)
+        }
+
         tuningView()
     }
 

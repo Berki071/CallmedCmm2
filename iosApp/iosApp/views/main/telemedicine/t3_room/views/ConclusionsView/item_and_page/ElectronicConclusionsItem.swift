@@ -12,7 +12,7 @@ import shared
 struct ElectronicConclusionsItem: View {
     @State var item : DataClassForElectronicRecyIos
     var clickShowBigImage: ((DataClassForElectronicRecyIos) -> ())?
-    var recordTItem: AllRecordsTelemedicineItem
+    var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
     
     @State var isShowLoad = false
     var addFileEvent: (() -> Void)?
@@ -96,7 +96,7 @@ struct ElectronicConclusionsItem: View {
                                         }
                                     })
                                 }else{
-                                    let itm = (item.item as! ResultZakl2Item)
+                                    let itm = (item.item as! ResultZakl2Response.ResultZakl2Item)
                                     let nameU = String.init(recordTItem.fullNameKl ?? "")
                                     
                                     let searchI = sharePreferenses.getElectronicConclusions(pref: Constants.ConclusionZacPDF, nameU: nameU, date: itm.datePer!, spec: itm.nameSpec!)
@@ -149,7 +149,7 @@ struct ElectronicConclusionsItem: View {
                                     }
                                 })
                             }else{
-                                let itm = (item.item as! ResultZakl2Item)
+                                let itm = (item.item as! ResultZakl2Response.ResultZakl2Item)
                                 
                                 let tmpI = FileNameInfo(pref: Constants.ConclusionZacPDF, date: itm.datePer!, nameSpec: itm.nameSpec!, nameUser: nameU)
                                 
@@ -195,7 +195,7 @@ struct ElectronicConclusionsItem: View {
 
 struct ElectronicConclusionsItem_Previews: PreviewProvider {
     static var previews: some View {
-        ElectronicConclusionsItem(item: DataClassForElectronicRecyIos(item: AnaliseResponseIos(date: "анализ такойто и потому то 01.01.2022")), clickShowBigImage: nil, recordTItem: AllRecordsTelemedicineItem())
+        ElectronicConclusionsItem(item: DataClassForElectronicRecyIos(item: AnaliseResponseIos(date: "анализ такойто и потому то 01.01.2022")), clickShowBigImage: nil, recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem())
     }
 }
 

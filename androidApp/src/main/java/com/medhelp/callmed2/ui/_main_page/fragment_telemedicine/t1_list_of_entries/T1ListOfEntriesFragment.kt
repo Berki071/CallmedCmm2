@@ -10,7 +10,6 @@ import com.google.gson.Gson
 import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.bg.service.MyFirebaseMessagingService
 import com.medhelp.callmed2.data.bg.service.PadForMyFirebaseMessagingService
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
 import com.medhelp.callmed2.data.model.AllRecordsTelemedicineItemAndroid
 import com.medhelp.callmed2.databinding.FragmentChatWithDoctorBinding
 import com.medhelp.callmed2.ui._main_page.MainPageActivity
@@ -21,6 +20,8 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entri
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesDataModel
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.ui.base.BaseFragment
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 import timber.log.Timber
 
 

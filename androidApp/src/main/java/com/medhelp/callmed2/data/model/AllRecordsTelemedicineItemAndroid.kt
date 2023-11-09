@@ -2,7 +2,8 @@ package com.medhelp.callmed2.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 
 class AllRecordsTelemedicineItemAndroid: AllRecordsTelemedicineItem, Parcelable {
    // var isShowNewMsgIco= false

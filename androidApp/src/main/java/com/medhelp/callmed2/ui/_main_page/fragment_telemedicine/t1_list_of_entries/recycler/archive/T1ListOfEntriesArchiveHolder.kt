@@ -4,9 +4,10 @@ import android.content.Context
 import android.text.Html
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
 import com.medhelp.callmed2.databinding.ItemChatWithDoctorBinding
 import com.medhelp.callmed2.utils.main.MainUtils
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 
 class T1ListOfEntriesArchiveHolder(private val context: Context, val bindingItem: ItemChatWithDoctorBinding, val listener: T1ListOfEntriesArchiveHolderListener) :
     RecyclerView.ViewHolder(bindingItem.root) {

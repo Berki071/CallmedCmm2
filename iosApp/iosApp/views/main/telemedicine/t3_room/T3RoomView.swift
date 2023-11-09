@@ -41,7 +41,7 @@ struct T3RoomView: View {
     
 //    @State var itemTmp: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem(server_key: "1", data_server:"2", id_room: 3, status: "4", id_kl: 5, id_filial: 6, specialty: "7", full_name_kl: "8", dr_kl: "9", komment_kl: "10", fcm_kl: "11", tmId: 12, tm_name: "13", tm_type: "14", tm_price: 15, tm_time_for_tm: 16, timeStartAfterPay: 17, dataStart: "18", data_end: "19", dataPay: "20", status_pay: "21", about: "22", about_full: "23", notif_24: "24", notif_12: "25", notif_4: "26", notif_1: "27")
     
-    init(item: AllRecordsTelemedicineItem, clickBack: @escaping () -> Void){
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, clickBack: @escaping () -> Void){
         self.clickBack = clickBack
         _mainPresenter = StateObject(wrappedValue:T3RoomPresenter(item: item))
         //mainPresenter = T3RoomPresenter(item: item)
@@ -94,7 +94,7 @@ struct T3RoomView: View {
                                             .id(Int.init(truncating: i.idMessage!))
                                             .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.TEXT()){
-                                        T3ItemMsg(item: i, clickRemuveItem: {(k: MessageRoomItem) -> Void in
+                                        T3ItemMsg(item: i, clickRemuveItem: {(k: MessageRoomResponse.MessageRoomItem) -> Void in
                                             self.mainPresenter.clickRemuveItem(k)
                                         })
                                         .listRowSeparator(.hidden)
@@ -102,29 +102,35 @@ struct T3RoomView: View {
                                         .id(i.idMessage!)
                                         .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.IMG()){
-                                        T3ItemImg(item: i, showBigImage: {(j: MessageRoomItem) -> Void in
+                                        T3ItemImg(item: i, showBigImage: {(j: MessageRoomResponse.MessageRoomItem) -> Void in
                                             self.mainPresenter.showBigImage(j)
-                                        }, clickRemuveItem: {(k: MessageRoomItem) -> Void in
+                                        }, clickRemuveItem: {(k: MessageRoomResponse.MessageRoomItem) -> Void in
                                             self.mainPresenter.clickRemuveItem(k)
+                                        }, idRoom: self.mainPresenter.getIdRoom(), showAlert: {(i: String, j: String) -> Void in
+                                            self.mainPresenter.showAlet(i,j)
                                         })
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
                                         .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.FILE()){
-                                        T3ItemFile(item: i, showBigDoc: {(j: MessageRoomItem) -> Void in
+                                        T3ItemFile(item: i, showBigDoc: {(j: MessageRoomResponse.MessageRoomItem) -> Void in
                                             self.mainPresenter.showBigImage(j)
-                                        }, clickRemuveItem: {(k: MessageRoomItem) -> Void in
+                                        }, clickRemuveItem: {(k: MessageRoomResponse.MessageRoomItem) -> Void in
                                             self.mainPresenter.clickRemuveItem(k)
-                                        })
+                                        }, idRoom: self.mainPresenter.getIdRoom(), showAlert: {(i: String, j: String) -> Void in
+                                            self.mainPresenter.showAlet(i,j)}
+                                        )
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
                                         .flippedUpsideDown()
                                     }else if(i.type  == Constants.MsgRoomType.REC_AUD()){
-                                        T3ItemRecordAudio(item: i, clickRemuveItem: {(k: MessageRoomItem) -> Void in
+                                        T3ItemRecordAudio(item: i, clickRemuveItem: {(k: MessageRoomResponse.MessageRoomItem) -> Void in
                                             self.mainPresenter.clickRemuveItem(k)
-                                        })
+                                        }, idRoom: self.mainPresenter.getIdRoom(), showAlert: {(i: String, j: String) -> Void in
+                                            self.mainPresenter.showAlet(i,j)}
+                                        )
                                         .listRowSeparator(.hidden)
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
@@ -266,6 +272,6 @@ struct T3RoomView: View {
 
 struct T3RoomView_Previews: PreviewProvider {
     static var previews: some View {
-        T3RoomView(item: AllRecordsTelemedicineItem(), clickBack: {() -> Void in } )
+        T3RoomView(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem(), clickBack: {() -> Void in } )
     }
 }

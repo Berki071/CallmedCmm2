@@ -9,7 +9,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
 import com.medhelp.callmed2.databinding.DfShowFilesMediaTmBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowFileTelemedicineDf
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.ShowMediaTelemedicineDf
@@ -17,6 +16,8 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.dop
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.files.recy.ShowFilesMediaTmAdapter
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.files.recy.ShowFilesMediaTmHolder
 import com.medhelp.callmed2.utils.Different
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 
 
 class ShowFilesMediaTmFragment: Fragment(){

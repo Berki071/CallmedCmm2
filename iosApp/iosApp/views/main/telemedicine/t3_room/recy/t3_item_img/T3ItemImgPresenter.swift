@@ -10,16 +10,46 @@ import SwiftUI
 import shared
 
 class T3ItemImgPresenter: ObservableObject {
-    var item: MessageRoomItem
+    var item: MessageRoomResponse.MessageRoomItem
+    var idRoom: String
+    var showAlert: ((String, String) -> Void)
     
     @Published var iuImageLogo : UIImage? = nil
     
-    init(item: MessageRoomItem){
+    @Published var isShowLoad = false
+    
+    var loaderFileForChat: LoaderFileForChat = LoaderFileForChat()
+    
+    init(item: MessageRoomResponse.MessageRoomItem, idRoom: String, showAlert: @escaping  (String, String) -> Void){
         self.item = item
+        self.idRoom = idRoom
+        self.showAlert = showAlert
         
-        self.getImage()
+        if(item.isShowLoading){
+            isShowLoad = true
+        }else{
+            isShowLoad = false
+        }
+        
+        if(item.text != nil && !item.text!.isEmpty){
+            self.getImage()
+        }else{
+            isShowLoad = true
+            loadFile(item)
+        }
     }
     
+    func loadFile(_ item: MessageRoomResponse.MessageRoomItem){
+        loaderFileForChat.load(item: item, processingFileComplete: {(i: MessageRoomResponse.MessageRoomItem) -> Void in
+            RealmDb.shared.updateItemMessageText(item: item)
+            self.getImage()
+            self.isShowLoad = false
+            
+        }, errorBack: {(i: MessageRoomResponse.MessageRoomItem, title: String, text: String) -> Void in
+            self.isShowLoad = false
+            self.showAlert(title,text)
+        }, idRoom: self.idRoom)
+    }
     
     
     func getImage(){
@@ -66,4 +96,7 @@ class T3ItemImgPresenter: ObservableObject {
         // just send back the first one, which ought to be the only one
         return paths[0]
     }
+    
+    
+  
 }

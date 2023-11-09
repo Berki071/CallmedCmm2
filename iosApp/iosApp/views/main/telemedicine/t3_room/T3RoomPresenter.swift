@@ -11,7 +11,7 @@ import shared
 
 class T3RoomPresenter: ObservableObject {
     
-    @Published var recordTItem: AllRecordsTelemedicineItem?
+    @Published var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
     
     @Published var isShowMediaView: Bool = false
     @Published var isShowAlertStandart: StandartAlertData? = nil
@@ -26,7 +26,7 @@ class T3RoomPresenter: ObservableObject {
     let workWithFiles = WorkWithFiles()
     
     // начало чата
-    @Published var recyList: [MessageRoomItem] = []  //последний итем скрол
+    @Published var recyList: [MessageRoomResponse.MessageRoomItem] = []  //последний итем скрол
     var lastIdMessage = 0
     @Published var isShowBigImageOrFile: URL? = nil
     
@@ -34,7 +34,7 @@ class T3RoomPresenter: ObservableObject {
     var proxy: ScrollViewProxy? = nil //для скролла
     
     
-    init(item: AllRecordsTelemedicineItem){
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.isStoppedT3View = false
     
         let tmIdC = item.tmId == nil ? "null" : String(Int.init(truncating: item.tmId!))
@@ -110,7 +110,7 @@ class T3RoomPresenter: ObservableObject {
 
                 if (res.response.count > 1 || res.response[0].idMessage != nil) {
 
-                    self.processingOnImageOrFile(res.response)
+                    //self.processingOnImageOrFile(res.response)
                     let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
 
                     if(!listNewMFromRealm.isEmpty){
@@ -143,7 +143,7 @@ class T3RoomPresenter: ObservableObject {
         })
     }
     
-    func addMessagesToRealm(_ list: [MessageRoomItem], _ isNeedProcessing: Bool = false) -> [MessageRoomItem]{
+    func addMessagesToRealm(_ list: [MessageRoomResponse.MessageRoomItem], _ isNeedProcessing: Bool = false) -> [MessageRoomResponse.MessageRoomItem]{
         // от вставки двух сообщений сразy
         //вызывать принудительно в основном потоке
         
@@ -166,9 +166,9 @@ class T3RoomPresenter: ObservableObject {
         }
     }
     
-    func processingAndAddListItemsInRecy(_ list: [MessageRoomItem]){
+    func processingAndAddListItemsInRecy(_ list: [MessageRoomResponse.MessageRoomItem]){
    
-        var lastItem: MessageRoomItem? = nil
+        var lastItem: MessageRoomResponse.MessageRoomItem? = nil
         lastItem = recyList.first
 
         var newList = self.processingAddTariffMessages(list, lastItem)
@@ -177,7 +177,7 @@ class T3RoomPresenter: ObservableObject {
         self.addToRecyListAndClearAndAddLastItemForScroll(newList)
     }
     
-    func addToRecyListAndClearAndAddLastItemForScroll(_ listT: [MessageRoomItem]){
+    func addToRecyListAndClearAndAddLastItemForScroll(_ listT: [MessageRoomResponse.MessageRoomItem]){
         if(listT.count > 0){
             
             var lictNew = listT
@@ -191,38 +191,38 @@ class T3RoomPresenter: ObservableObject {
     }
     
     
-    func processingOnImageOrFile(_ list: [MessageRoomItem]){
-         for i in list {
-             if(i.type == Constants.MsgRoomType.IMG() || i.type == Constants.MsgRoomType.FILE() || i.type == Constants.MsgRoomType.REC_AUD()){
-                 var ext: String
-                 if(i.type == Constants.MsgRoomType.IMG()){
-                     ext = "png"     
-                 }else if(i.type == Constants.MsgRoomType.FILE()){
-                     ext = "pdf"
-                 }else if(i.type == Constants.MsgRoomType.REC_AUD()){
-                     ext = "wav"
-                 }else{
-                     ext = "pdf"
-                 }
-                            
-                 let newFileName = self.workWithFiles.getNewNameForNewFile(String(Int.init(truncating: recordTItem!.idRoom!)), ext, String(Int.init(truncating: i.idMessage!)))
-
-                 if(newFileName == nil){
-                     self.showAlet("Ошибка!", "Не удалось создать файл для сохранения")
-                 }else{
-                     let tmp = workWithFiles.base64ToFile(i.text!, newFileName!, errorListener: {(i:String, j:String) in
-                         //self.showAlet(i, j)
-                     })
-
-                     if (!tmp){
-                         self.showAlet("Ошибка!", "Не удалось скопировать файл для сохранения")
-                     }else{
-                         i.text = newFileName
-                     }
-                 }
-             }
-         }
-     }
+//    func processingOnImageOrFile(_ list: [MessageRoomResponse.MessageRoomItem]){
+//         for i in list {
+//             if(i.type == Constants.MsgRoomType.IMG() || i.type == Constants.MsgRoomType.FILE() || i.type == Constants.MsgRoomType.REC_AUD()){
+//                 var ext: String
+//                 if(i.type == Constants.MsgRoomType.IMG()){
+//                     ext = "png"     
+//                 }else if(i.type == Constants.MsgRoomType.FILE()){
+//                     ext = "pdf"
+//                 }else if(i.type == Constants.MsgRoomType.REC_AUD()){
+//                     ext = "wav"
+//                 }else{
+//                     ext = "pdf"
+//                 }
+//                            
+//                 let newFileName = self.workWithFiles.getNewNameForNewFile(String(Int.init(truncating: recordTItem!.idRoom!)), ext, String(Int.init(truncating: i.idMessage!)))
+//
+//                 if(newFileName == nil){
+//                     self.showAlet("Ошибка!", "Не удалось создать файл для сохранения")
+//                 }else{
+//                     let tmp = workWithFiles.base64ToFile(i.text!, newFileName!, errorListener: {(i:String, j:String) in
+//                         //self.showAlet(i, j)
+//                     })
+//
+//                     if (!tmp){
+//                         self.showAlet("Ошибка!", "Не удалось скопировать файл для сохранения")
+//                     }else{
+//                         i.text = newFileName
+//                     }
+//                 }
+//             }
+//         }
+//     }
     
 
     
@@ -233,11 +233,11 @@ class T3RoomPresenter: ObservableObject {
     }
     
     
-    func processingAddTariffMessages(_ list: [MessageRoomItem], _ lastMsg: MessageRoomItem? = nil) -> [MessageRoomItem]{
-        var nList: [MessageRoomItem] = []
+    func processingAddTariffMessages(_ list: [MessageRoomResponse.MessageRoomItem], _ lastMsg: MessageRoomResponse.MessageRoomItem? = nil) -> [MessageRoomResponse.MessageRoomItem]{
+        var nList: [MessageRoomResponse.MessageRoomItem] = []
         
         if(lastMsg == nil) {
-            let tmp = MessageRoomItem()
+            let tmp = MessageRoomResponse.MessageRoomItem()
             tmp.data = list[0].data!
             tmp.type = Constants.MsgRoomType.TARIFF()
             tmp.idTm = list[0].idTm
@@ -247,7 +247,7 @@ class T3RoomPresenter: ObservableObject {
             nList.append(list[0])
         }else{
             if(lastMsg!.idTm != list[0].idTm){
-                let tmp = MessageRoomItem()
+                let tmp = MessageRoomResponse.MessageRoomItem()
                 tmp.data = list[0].data
                 tmp.type = Constants.MsgRoomType.TARIFF()
                 tmp.idTm = list[0].idTm
@@ -261,7 +261,7 @@ class T3RoomPresenter: ObservableObject {
         if(list.count > 1){
             for index in 1...list.count-1 {
                 if (list[index].nameTm != list[index-1].nameTm) {
-                    let tmp = MessageRoomItem()
+                    let tmp = MessageRoomResponse.MessageRoomItem()
                     tmp.data = list[index].data
                     tmp.type = Constants.MsgRoomType.TARIFF()
                     tmp.idTm = list[index].idTm
@@ -276,11 +276,11 @@ class T3RoomPresenter: ObservableObject {
         return nList
     }
     
-    func processingAddDateInMessages(_ list: [MessageRoomItem], _ lastMsg: MessageRoomItem? = nil) -> [MessageRoomItem]{
-        var nList: [MessageRoomItem] = []
+    func processingAddDateInMessages(_ list: [MessageRoomResponse.MessageRoomItem], _ lastMsg: MessageRoomResponse.MessageRoomItem? = nil) -> [MessageRoomResponse.MessageRoomItem]{
+        var nList: [MessageRoomResponse.MessageRoomItem] = []
         
         if(lastMsg == nil) {
-            let tmp = MessageRoomItem()
+            let tmp = MessageRoomResponse.MessageRoomItem()
             tmp.data = list[0].data
             tmp.type = Constants.MsgRoomType.DATE()
             tmp.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
@@ -288,7 +288,7 @@ class T3RoomPresenter: ObservableObject {
             nList.append(list[0])
         }else{
             if(lastMsg!.data!.prefix(10) != list[0].data!.prefix(10)){
-                let tmp = MessageRoomItem()
+                let tmp = MessageRoomResponse.MessageRoomItem()
                 tmp.data = list[0].data
                 tmp.type = Constants.MsgRoomType.DATE()
                 tmp.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
@@ -300,7 +300,7 @@ class T3RoomPresenter: ObservableObject {
         if(list.count > 1){
             for index in 1...list.count-1 {
                 if(list[index].data!.prefix(10) != list[index-1].data!.prefix(10)){
-                    let tmp = MessageRoomItem()
+                    let tmp = MessageRoomResponse.MessageRoomItem()
                     tmp.data = list[index].data
                     tmp.type = Constants.MsgRoomType.DATE()
                     tmp.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
@@ -314,7 +314,7 @@ class T3RoomPresenter: ObservableObject {
     }
     
     
-    func showBigImage(_ item: MessageRoomItem){
+    func showBigImage(_ item: MessageRoomResponse.MessageRoomItem){
         let pathDir = workWithFiles.getDocumentsDirectory()
         
         if let destinationUrl = pathDir?.appendingPathComponent(item.text!) {
@@ -325,7 +325,7 @@ class T3RoomPresenter: ObservableObject {
         }
     }
     
-    func clickRemuveItem(_ item: MessageRoomItem){
+    func clickRemuveItem(_ item: MessageRoomResponse.MessageRoomItem){
         let isPossibleDeleteCheckMsgUserAfterSelect = RealmDb.shared.isPossibleDeleteCheckMsgUserAfterSelect(item: item)
         
         if(isPossibleDeleteCheckMsgUserAfterSelect && self.recordTItem != nil) {
@@ -340,7 +340,7 @@ class T3RoomPresenter: ObservableObject {
             }
         }
     }
-    func deleteMessageFromServer(_ item: MessageRoomItem){
+    func deleteMessageFromServer(_ item: MessageRoomResponse.MessageRoomItem){
         self.showLoading(true) //скроет показ загрузки getAllMessagesInLoop
         
         let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
@@ -374,7 +374,7 @@ class T3RoomPresenter: ObservableObject {
         })
     }
     
-    func deleteItemFromChatList(_ item: MessageRoomItem){
+    func deleteItemFromChatList(_ item: MessageRoomResponse.MessageRoomItem){
         let position: Int? = recyList.firstIndex(where: { $0 == item })
         
         if(position == nil){
@@ -456,7 +456,7 @@ class T3RoomPresenter: ObservableObject {
         let trimMsg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if(trimMsg.count > 0 && recordTItem != nil) {
-            let msgItem = MessageRoomItem()
+            let msgItem = MessageRoomResponse.MessageRoomItem()
             msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
             msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
             msgItem.type = Constants.MsgRoomType.TEXT()
@@ -472,7 +472,7 @@ class T3RoomPresenter: ObservableObject {
         }
     }
     
-    func sendMessageToServer(_ idUser: String, _ item: MessageRoomItem, _ idBranch: String){
+    func sendMessageToServer(_ idUser: String, _ item: MessageRoomResponse.MessageRoomItem, _ idBranch: String){
 
         self.processingAndAddListItemsInRecy([item])
         let valueText: String
@@ -543,14 +543,14 @@ class T3RoomPresenter: ObservableObject {
     }
     
     
-    func sendStatusNotification(_ status: String, _ item: AllRecordsTelemedicineItem, _ type: String) {
+    func sendStatusNotification(_ status: String, _ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, _ type: String) {
         if(self.recordTItem != nil){
             let notiObj = self.creteJSONObjectNotificationForStatus(status, item, type)
             let servK = self.recordTItem!.serverKey!
             self.sendMsgNotification2(notiObj, servK, Constants.SENDER_ID_FCM_PATIENT, false, String.init(Int.init(truncating: item.tmId!)), status)
         }
     }
-    func creteJSONObjectNotificationForStatus(_ status: String, _ item: AllRecordsTelemedicineItem, _ type: String) -> String {
+    func creteJSONObjectNotificationForStatus(_ status: String, _ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, _ type: String) -> String {
         let noti: [String: Any] = [
             "title": "Медицинский помощник.Пациент",
             "body": status,
@@ -637,7 +637,7 @@ class T3RoomPresenter: ObservableObject {
                         self.recordTItem = res.response[0]
                         self.checkActiveItemOnComplete(res.response[0])
                         self.setUp()
-                        self.showLoading(false)
+                        //self.showLoading(false)
                     }
                 }else{
                     DispatchQueue.main.async {
@@ -659,7 +659,7 @@ class T3RoomPresenter: ObservableObject {
         })
         
     }
-    func checkActiveItemOnComplete(_ response: AllRecordsTelemedicineItem){
+    func checkActiveItemOnComplete(_ response: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         if (response.status! == Constants.TelemedicineStatusRecord.active() && response.dataServer != nil && response.dataStart != nil) {
             let currentTimeLong: Date = MDate.stringToDate(response.dataServer!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             let dateStartLong: Date = MDate.stringToDate(response.dataStart!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
@@ -673,7 +673,7 @@ class T3RoomPresenter: ObservableObject {
         }
     }
     //func closeRecordTelemedicine(_ idRoom: String, _ idTm: String){
-    func closeRecordTelemedicine(_ item: AllRecordsTelemedicineItem, _ isSendNoty: Bool = false, _ isDoc: Bool = false){
+    func closeRecordTelemedicine(_ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, _ isSendNoty: Bool = false, _ isDoc: Bool = false){
         self.showLoading(true)
         
         let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
@@ -716,7 +716,7 @@ class T3RoomPresenter: ObservableObject {
     
     
     func createImageMsg(_ imgFileName: String){
-        let msgItem = MessageRoomItem()
+        let msgItem = MessageRoomResponse.MessageRoomItem()
         msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
         msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
         msgItem.type = Constants.MsgRoomType.IMG()
@@ -732,7 +732,7 @@ class T3RoomPresenter: ObservableObject {
         
     }
     func createFileMsg(_ fileName: String){
-        let msgItem = MessageRoomItem()
+        let msgItem = MessageRoomResponse.MessageRoomItem()
         msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
         msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
         msgItem.type = Constants.MsgRoomType.FILE()
@@ -748,7 +748,7 @@ class T3RoomPresenter: ObservableObject {
         
     }
     func createRecordMsg(_ fileName: String){
-        let msgItem = MessageRoomItem()
+        let msgItem = MessageRoomResponse.MessageRoomItem()
         msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
         msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
         msgItem.type = Constants.MsgRoomType.REC_AUD()
@@ -823,7 +823,7 @@ class T3RoomPresenter: ObservableObject {
         }, textBtnOk: "да", textBtnCancel: "нет" )
     }
     
-    func toActiveRecordTelemedicine(_ item : AllRecordsTelemedicineItem){
+    func toActiveRecordTelemedicine(_ item : AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.showLoading(true)
         
         let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
@@ -858,6 +858,10 @@ class T3RoomPresenter: ObservableObject {
                     
     }
     
+
+    func getIdRoom() -> String {
+        return String(Int.init(truncating: recordTItem!.idRoom!))
+    }
     
     func showLoading(_ isShow : Bool){
         if(self.showDialogLoading == isShow){

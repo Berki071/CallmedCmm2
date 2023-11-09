@@ -13,7 +13,7 @@ import AVFoundation
 class BottombarTelemedicinePresenter: ObservableObject {
     
     
-    var itemRecord: Binding<AllRecordsTelemedicineItem?>? = nil
+    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>? = nil
     var listener: BottombarTelemedicineListener? = nil
     
     @Published var textFild: String = ""{
@@ -47,7 +47,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
     let workWithFiles = WorkWithFiles()
     
     
-    init(item: Binding<AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
         self.itemRecord = item
         self.listener = listener
     }

@@ -9,7 +9,7 @@ import SwiftUI
 import shared
 
 struct T3ItemTariff: View {
-    var item: MessageRoomItem
+    var item: MessageRoomResponse.MessageRoomItem
     
     var body: some View {
         HStack{
@@ -32,7 +32,7 @@ struct T3ItemTariff: View {
 
 struct T3ItemTariff_Previews: PreviewProvider {
     static var previews: some View {
-        T3ItemTariff(item: MessageRoomItem())
+        T3ItemTariff(item: MessageRoomResponse.MessageRoomItem())
     }
 }
 

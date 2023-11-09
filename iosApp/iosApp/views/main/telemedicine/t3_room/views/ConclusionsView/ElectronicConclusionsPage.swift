@@ -14,7 +14,7 @@ struct ElectronicConclusionsPage: View {
     @StateObject var presenter: ElectronicConclusionsPresenter
     @State var itemForShowBigImage: DataClassForElectronicRecyIos? = nil
     
-    init(clickBack: (() -> Void)?, recordTItem: AllRecordsTelemedicineItem){
+    init(clickBack: (() -> Void)?, recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.clickBack = clickBack
         _presenter = StateObject(wrappedValue: ElectronicConclusionsPresenter(recordTItem: recordTItem))
     }
@@ -106,6 +106,6 @@ struct ElectronicConclusionsPage: View {
 
 struct ElectronicConclusionsView_Previews: PreviewProvider {
     static var previews: some View {
-        ElectronicConclusionsPage(clickBack: nil, recordTItem: AllRecordsTelemedicineItem())
+        ElectronicConclusionsPage(clickBack: nil, recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem())
     }
 }

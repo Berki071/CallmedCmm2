@@ -1,4 +1,4 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.bottom_bar_chat
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.bottom_bar_chat
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -32,10 +32,10 @@ import com.medhelp.callmed2.data.Constants
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.File
-import java.io.InputStream
 
 class BottomBarChatView : RelativeLayout {
 

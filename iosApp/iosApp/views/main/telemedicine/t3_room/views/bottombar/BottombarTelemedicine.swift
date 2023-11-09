@@ -30,7 +30,7 @@ struct BottombarTelemedicine: View {
     @ObservedObject var mainPresenter2: BottombarTelemedicinePresenter2
     
 
-    init(item: Binding<AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
         _mainPresenter = StateObject(wrappedValue: BottombarTelemedicinePresenter(item: item, listener: listener))
         mainPresenter2 = BottombarTelemedicinePresenter2(item: item)
         
@@ -199,7 +199,7 @@ struct BottombarTelemedicine: View {
 }
 
 struct BottombarTelemedicine_Previews: PreviewProvider {
-    @State static var item: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem()
+    @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
     static let list = BottombarTelemedicineListener(sendMsg: {(String) -> Void in }, sendRecordMsg: {(String) -> Void in }, showAlertMsg: {(i: String, j: String) -> Void in}, makePhoto: {()->Void in }, selectFileFromPhotoLibrary: {()->Void in }, selectFileFromOtherPlace: {()->Void in })
     
     static var previews: some View {

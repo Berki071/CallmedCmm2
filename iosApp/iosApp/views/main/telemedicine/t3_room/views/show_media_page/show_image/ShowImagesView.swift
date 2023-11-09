@@ -24,7 +24,7 @@ struct ShowImagesView: View {
     
     var showBigImglistener : (ShowImagesFilesItemData) -> Void
     
-    init(item: Binding<AllRecordsTelemedicineItem?>, showBigImglistener: @escaping  (ShowImagesFilesItemData) -> Void){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, showBigImglistener: @escaping  (ShowImagesFilesItemData) -> Void){
         mainPresenter = ShowImagesPresenter(item: item)
         self.showBigImglistener = showBigImglistener
     }
@@ -62,7 +62,7 @@ struct ShowImagesView: View {
 }
 
 struct Demo1View_Previews: PreviewProvider {
-    @State static var item: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem()
+    @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
 
     static var previews: some View {
         ShowImagesView(item: $item, showBigImglistener: {(ShowImagesItemData) -> Void in})

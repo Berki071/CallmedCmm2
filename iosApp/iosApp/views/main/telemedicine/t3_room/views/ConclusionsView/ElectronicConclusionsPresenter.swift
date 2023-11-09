@@ -21,12 +21,12 @@ class ElectronicConclusionsPresenter: ObservableObject{
     let dm = DownloadManager()
     
     var analiseResultList : [AnaliseResponse] = []
-    var analiseResultList2 : [ResultZakl2Item] = []
+    var analiseResultList2 : [ResultZakl2Response.ResultZakl2Item] = []
     @Published var listForRecy: [DataClassForElectronicRecyIos] = []
     
-    var recordTItem: AllRecordsTelemedicineItem
+    var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
     
-    init(recordTItem: AllRecordsTelemedicineItem){
+    init(recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.recordTItem = recordTItem
         
         sdk = NetworkManagerCompatibleKMM()

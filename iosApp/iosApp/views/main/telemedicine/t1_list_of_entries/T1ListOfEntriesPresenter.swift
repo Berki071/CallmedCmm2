@@ -12,7 +12,7 @@ import shared
 class T1ListOfEntriesPresenter: ObservableObject {
     @Published var isShowBigTextAlert: ShowBigTextAlertData? = nil
     
-    @Published var isShowRoomView: AllRecordsTelemedicineItem? = nil
+    @Published var isShowRoomView: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = nil
     @Published var showEmptyScreen: Bool = false
     @Published var showDialogLoading: Bool = false
     @Published var isShowAlertStandart: StandartAlertData? = nil
@@ -23,7 +23,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
     
     @Published var whatDataShow: String = Constants.WhatDataShow.ACTIVE()
     @Published var recordsTelemedicineListNew :[DataForListOfEntriesRecy] = []
-    @Published var recordstTelemedicineListOld :[AllRecordsTelemedicineItem] = []
+    @Published var recordstTelemedicineListOld :[AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
     
     @Published var isShowRoomView2: NotificationData? = nil
     
@@ -36,22 +36,22 @@ class T1ListOfEntriesPresenter: ObservableObject {
         }
         
         listener = T1ListOfEntriesItemListener(
-            showInfo: {(item: AllRecordsTelemedicineItem) -> Void in
+            showInfo: {(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void in
                 if(item.aboutfull != nil){
                     self.isShowBigTextAlert = ShowBigTextAlertData(title: "Подробная информация", text: item.aboutfull!, clickClose: {()->Void in
                         self.isShowBigTextAlert = nil
                     })
                 }
             },
-            goToRoom: {(item: AllRecordsTelemedicineItem) -> Void in
+            goToRoom: {(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void in
                 LoggingTree.INSTANCE.d("переход в комнату idRoom tmId \(item.tmId)")
                 self.isShowRoomView = item
                 
             },
-            closeTm: {(item: AllRecordsTelemedicineItem) -> Void in
+            closeTm: {(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void in
                 self.closeRecordTelemedicine(item)
             },
-            sendNotyReminder: {(item: AllRecordsTelemedicineItem, msg: String, type: String) -> Void in
+            sendNotyReminder: {(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, msg: String, type: String) -> Void in
                 //todo
 //                self.sendMsgNotificationTimeReminder(item, msg)
 //                self.updateTelemedicineReminderDocAboutRecord(item,type)
@@ -146,7 +146,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
             }
         })
     }
-    func checkActiveItemOnComplete(_ list: [AllRecordsTelemedicineItem]){
+    func checkActiveItemOnComplete(_ list: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem]){
         for i in list {
             if(i.status! == Constants.TelemedicineStatusRecord.active()){
                 
@@ -172,9 +172,9 @@ class T1ListOfEntriesPresenter: ObservableObject {
             }
         }
     }
-    func removeWaitItemWhichNoPay(_ response: [AllRecordsTelemedicineItem]) -> [AllRecordsTelemedicineItem]{
+    func removeWaitItemWhichNoPay(_ response: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem]) -> [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem]{
         // удалить из списка не оплаченный wait
-        var newList: [AllRecordsTelemedicineItem] = []
+        var newList: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
         for i in response{
             if(i.statusPay == nil){
                 let tt3 = Int.init(i.idRoom!)
@@ -188,11 +188,11 @@ class T1ListOfEntriesPresenter: ObservableObject {
         }
         return newList
     }
-    func processingDataRecordsForRecy(_ response: [AllRecordsTelemedicineItem]) -> [DataForListOfEntriesRecy]{
+    func processingDataRecordsForRecy(_ response: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem]) -> [DataForListOfEntriesRecy]{
         var mainList: [DataForListOfEntriesRecy] = []
         
-        var masActive: [AllRecordsTelemedicineItem] = []
-        var masWait: [AllRecordsTelemedicineItem] = []
+        var masActive: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
+        var masWait: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
         
         let waitStr: String = Constants.TelemedicineStatusRecord.wait()
         let activeStr: String = Constants.TelemedicineStatusRecord.active()
@@ -219,7 +219,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
         return mainList
     }
     
-    func closeRecordTelemedicine(_ item: AllRecordsTelemedicineItem) {
+    func closeRecordTelemedicine(_ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) {
         self.showLoading(true)
         
         let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
@@ -283,7 +283,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
         })
         
     }
-    func processingHasNewMsg(_ list: [HasPacChatsItem]){
+    func processingHasNewMsg(_ list: [HasPacChatsResponse.HasPacChatsItem]){
         if(recordsTelemedicineListNew.count == 0 ){
             return
         }

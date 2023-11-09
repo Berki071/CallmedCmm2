@@ -13,7 +13,7 @@ struct ShowFilesView: View {
     @ObservedObject var mainPresenter: ShowFilesPresenter
     var showBigFileListener : (ShowImagesFilesItemData) -> Void
     
-    init(item: Binding<AllRecordsTelemedicineItem?>, showBigFileListener: @escaping (ShowImagesFilesItemData) -> Void ){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, showBigFileListener: @escaping (ShowImagesFilesItemData) -> Void ){
         mainPresenter = ShowFilesPresenter(item: item)
         self.showBigFileListener = showBigFileListener
     }
@@ -51,7 +51,7 @@ struct ShowFilesView: View {
 }
 
 struct ShowFilesView_Previews: PreviewProvider {
-    @State static var item: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem()
+    @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
     
     static var previews: some View {
         ShowFilesView(item: $item, showBigFileListener: {(ShowImagesFilesItemData) -> Void in})

@@ -10,7 +10,7 @@ import shared
 
 struct T1ListOfEntriesItem: View {
     //@Binding var item : AllRecordsTelemedicineItem
-    var item : AllRecordsTelemedicineItem
+    var item : AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
     var listener: T1ListOfEntriesItemListener? = nil
     
     @ObservedObject var presenter : T1ListOfEntriesItemPresenter
@@ -21,7 +21,7 @@ struct T1ListOfEntriesItem: View {
 //        
 //        presenter = T1ListOfEntriesItemPresenter(item: item, listener: listener)
 //    }
-    init(item : AllRecordsTelemedicineItem, listener : T1ListOfEntriesItemListener?){
+    init(item : AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, listener : T1ListOfEntriesItemListener?){
         self.item = item
         self.listener = listener
         
@@ -197,6 +197,6 @@ struct T1ListOfEntriesParentChild_Previews: PreviewProvider {
     //@State private static var item = AllRecordsTelemedicineItem()
     
     static var previews: some View {
-        T1ListOfEntriesItem(item: AllRecordsTelemedicineItem(), listener: nil)
+        T1ListOfEntriesItem(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem(), listener: nil)
     }
 }

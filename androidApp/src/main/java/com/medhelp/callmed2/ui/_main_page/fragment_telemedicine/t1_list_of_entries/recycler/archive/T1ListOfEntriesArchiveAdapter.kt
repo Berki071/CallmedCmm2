@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
 import com.medhelp.callmed2.databinding.ItemChatWithDoctorBinding
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 
 class T1ListOfEntriesArchiveAdapter(private val context: Context, private var list: List<AllRecordsTelemedicineItem>, val listener: T1ListOfEntriesArchiveHolder.T1ListOfEntriesArchiveHolderListener) : RecyclerView.Adapter<T1ListOfEntriesArchiveHolder>() {
 

@@ -9,8 +9,8 @@ import SwiftUI
 import shared
 
 struct T3ItemMsg: View {
-    var item: MessageRoomItem
-    var clickRemuveItem: (MessageRoomItem) -> Void
+    var item: MessageRoomResponse.MessageRoomItem
+    var clickRemuveItem: (MessageRoomResponse.MessageRoomItem) -> Void
     
     var body: some View {
         VStack{
@@ -91,6 +91,6 @@ struct T3ItemMsg: View {
 
 struct T3ItemMsg_Previews: PreviewProvider {
     static var previews: some View {
-        T3ItemMsg(item: MessageRoomItem(), clickRemuveItem: {(MessageRoomItem) -> Void in})
+        T3ItemMsg(item: MessageRoomResponse.MessageRoomItem(), clickRemuveItem: {(MessageRoomItem) -> Void in})
     }
 }

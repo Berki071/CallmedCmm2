@@ -17,8 +17,9 @@ import androidx.fragment.app.DialogFragment
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.OnStateChangedListener
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.DfShowImageTelemedicineBinding
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.File
 import java.util.*
 

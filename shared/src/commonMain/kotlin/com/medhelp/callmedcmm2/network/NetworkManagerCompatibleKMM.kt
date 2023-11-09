@@ -5,11 +5,12 @@ import com.medhelp.callmedcmm2.model.SimpleString2
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
 import com.medhelp.callmedcmm2.model.chat.AnaliseResultResponse
 import com.medhelp.callmedcmm2.model.chat.FCMResponse
+import com.medhelp.callmedcmm2.model.chat.FileForMsgResponse
 import com.medhelp.callmedcmm2.model.chat.HasPacChatsResponse
 import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
-import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
 import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response.ResultZakl2Item
 import com.medhelp.callmedcmm2.model.chat.ResultZaklResponse
 import com.medhelp.callmedcmm2.model.chat.SendMessageFromRoomResponse
 import com.medhelp.callmedcmm2.model.pasport_recognize.IAMTokenFormOurServerResponse
@@ -58,11 +59,11 @@ class NetworkManagerCompatibleKMM {
     @Throws(Exception::class)
     suspend fun getMessagesRoom (idRoom: String, idLastMsg: String,
                                  h_Auth: String, h_dbName: String, h_idDoc: String): MessageRoomResponse {
-        return httpClient.get(BASE_URL + "LoadAllMessagesSOTR/" + idRoom + "/" + idLastMsg) {
+        return httpClient.get(BASE_URL + "LoadAllMessagesSOTR_v2/" + idRoom + "/" + idLastMsg) {
             timeout {
-                requestTimeoutMillis = 120000
-                connectTimeoutMillis = 120000
-                socketTimeoutMillis = 120000
+                requestTimeoutMillis = 60000
+                connectTimeoutMillis = 60000
+                socketTimeoutMillis = 60000
             }
 
             headers {
@@ -75,6 +76,27 @@ class NetworkManagerCompatibleKMM {
         }
             .body()
     }
+
+    @Throws(Exception::class)
+    suspend fun getFileForMessageRoom (idMessage: String,
+                                       h_Auth: String, h_dbName: String, h_idDoc: String): FileForMsgResponse{
+        return httpClient.get(BASE_URL + "LoadAllMessagesSOTR_v2_fulldata/" + idMessage ) {
+            timeout {
+                requestTimeoutMillis = 60000
+                connectTimeoutMillis = 60000
+                socketTimeoutMillis = 60000
+            }
+
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_SOTR, h_idDoc)
+            }
+        }
+            .body()
+    }
+
 
     @Throws(Exception::class)
     suspend fun sendMessageFromRoom (idRoom: String, idTm: String,idUser: String, typeMsg: String, text: String,

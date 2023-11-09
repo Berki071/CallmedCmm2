@@ -7,8 +7,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.medhelp.callmed2.data.Constants
 import com.medhelp.callmed2.data.bg.Notification.SimpleNotificationForFCM
-
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
 import com.medhelp.callmed2.data.model.AllRecordsTelemedicineItemAndroid
 import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import com.medhelp.callmed2.data.pref.PreferencesManager
@@ -16,6 +14,8 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entri
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber

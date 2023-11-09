@@ -9,8 +9,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.DfShowImagesMediaTmBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowImageTelemedicineDf
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.ShowMediaTelemedicineDf
@@ -18,6 +16,10 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.dop
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.images.recy.ShowImagesMediaTmAdapter
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.images.recy.ShowImagesMediaTmHolder
 import com.medhelp.callmed2.utils.Different
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.File
 
 class ShowImagesMediaTmFragment : Fragment()  {

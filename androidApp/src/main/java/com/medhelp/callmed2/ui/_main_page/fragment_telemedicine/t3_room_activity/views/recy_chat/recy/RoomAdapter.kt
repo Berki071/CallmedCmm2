@@ -1,11 +1,10 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.recy
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.ItemChatFileBinding
 import com.medhelp.callmed2.databinding.ItemChatImgBinding
 import com.medhelp.callmed2.databinding.ItemChatMsgBinding
@@ -14,12 +13,13 @@ import com.medhelp.callmed2.databinding.ItemChatMsgTariffBinding
 import com.medhelp.callmed2.databinding.ItemChatRecordAudioBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.utils.main.MDate
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import io.realm.kotlin.types.ObjectId
 
 class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoomItem>, val recyListener: RecyListener, val recy: RecyclerView) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var recyList: MutableList<MessageRoomItem> = ArrayList<MessageRoomItem>()
-
 //    private val visibleThreshold = 10
 //    private var isLoading = false
     init {
@@ -128,6 +128,14 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
                 recyList[i].data = date
                 if(text!=null)
                     recyList[i].text=text
+                notifyItemChanged(i)
+                break
+            }
+        }
+    }
+    fun updateItemByItem(item: MessageRoomItem){
+        for (i in 0 until recyList.size){
+            if(recyList[i].idMessage == item.idMessage){
                 notifyItemChanged(i)
                 break
             }
@@ -264,10 +272,11 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
         fun clickedShowBigImage(item: MessageRoomItem)
         fun clickedShowFile(item: MessageRoomItem)
         //fun clickDeleteFile(item: MessageRoomItem)
-        fun clickLongClick(item: MessageRoomItem?) : Boolean
+        fun clickLongClick(item: MessageRoomItem) : Boolean
 
         fun getStateProximity() : T3RoomActivity.ProximitySensorState
         fun addListenerProximityState(listener: ListenerStateProximity?)
+        fun loadFile(message: MessageRoomItem)
     }
 
     interface ListenerStateProximity{

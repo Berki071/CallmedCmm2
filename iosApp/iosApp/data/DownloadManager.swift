@@ -201,7 +201,7 @@ class DownloadManager {
                 }
                 
             }else{
-                let itm = (i as! ResultZakl2Item)
+                let itm = (i as! ResultZakl2Response.ResultZakl2Item)
                 let searchI = sharePreferenses.getElectronicConclusions(pref: Constants.ConclusionZacPDF, nameU: nameUser, date: itm.datePer!, spec: itm.nameSpec!)
                 
                 if(searchI == nil){
@@ -365,7 +365,7 @@ class DownloadManager {
         }
     }
     
-    func loadFile2ForElectronicConclusions(tmpI: FileNameInfo ,item : ResultZakl2Item, result: @escaping ((String?) -> Void), recordTItem: AllRecordsTelemedicineItem) throws{
+    func loadFile2ForElectronicConclusions(tmpI: FileNameInfo ,item : ResultZakl2Response.ResultZakl2Item, result: @escaping ((String?) -> Void), recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) throws{
         let sharePreferenses : SharedPreferenses = SharedPreferenses()
         let sdk=NetworkManagerCompatibleKMM()
         
@@ -401,7 +401,7 @@ class DownloadManager {
         })
     }
     
-    func saveHtmlStringToFile(data: LoadDataZaklAmbItem, fileName: String, item: ResultZakl2Item, result: @escaping ((String?) -> ())){
+    func saveHtmlStringToFile(data: LoadDataZaklAmbResponse.LoadDataZaklAmbItem, fileName: String, item: ResultZakl2Response.ResultZakl2Item, result: @escaping ((String?) -> ())){
         guard let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
             result(nil)
             return
@@ -424,7 +424,7 @@ class DownloadManager {
             }
         }
     }
-    func downloadPdfFromInternet(data: LoadDataZaklAmbItem, fileName: String, item: ResultZakl2Item, result: @escaping ((String?) -> Void), fioClient: String){
+    func downloadPdfFromInternet(data: LoadDataZaklAmbResponse.LoadDataZaklAmbItem, fileName: String, item: ResultZakl2Response.ResultZakl2Item, result: @escaping ((String?) -> Void), fioClient: String){
         let sharePreferenses : SharedPreferenses = SharedPreferenses()
         
         // Create the session object

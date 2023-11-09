@@ -28,7 +28,7 @@ class T1ListOfEntriesItemPresenter : ObservableObject {
     var sharePreferenses : SharedPreferenses
     //var centerResponse : CenterResponse
  
-    var item : AllRecordsTelemedicineItem
+    var item : AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
     var listener : T1ListOfEntriesItemListener? = nil
     
     
@@ -42,7 +42,7 @@ class T1ListOfEntriesItemPresenter : ObservableObject {
 //        self.processingShowTimeLeft()
 //    }
     
-    init(item : AllRecordsTelemedicineItem, listener : T1ListOfEntriesItemListener?){
+    init(item : AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, listener : T1ListOfEntriesItemListener?){
         self.item = item
         self.listener = listener
 

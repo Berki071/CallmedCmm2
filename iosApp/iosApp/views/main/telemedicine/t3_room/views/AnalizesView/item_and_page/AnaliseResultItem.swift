@@ -16,7 +16,7 @@ struct AnaliseResultItem: View {
     
     @State var item : AnaliseResponseIos
     var clickShowBigImage: ((AnaliseResponseIos) -> ())?
-    var recordTItem: AllRecordsTelemedicineItem
+    var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
     
     var body: some View {
         ZStack{
@@ -124,6 +124,6 @@ struct AnaliseResultItem: View {
 
 struct AnaliseResultItem_Previews: PreviewProvider {
     static var previews: some View {
-        AnaliseResultItem(item: AnaliseResponseIos(date: "01.01.2022"), clickShowBigImage: nil, recordTItem: AllRecordsTelemedicineItem())
+        AnaliseResultItem(item: AnaliseResponseIos(date: "01.01.2022"), clickShowBigImage: nil, recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem())
     }
 }

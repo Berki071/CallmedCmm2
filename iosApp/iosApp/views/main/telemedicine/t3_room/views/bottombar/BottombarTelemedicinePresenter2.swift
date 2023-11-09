@@ -13,7 +13,7 @@ class BottombarTelemedicinePresenter2: ObservableObject {
     
     @Published var isDisableChat: Bool = false
     
-    init(item: Binding<AllRecordsTelemedicineItem?>){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>){
         
         if(item.wrappedValue == nil){
             self.isDisableChat = false

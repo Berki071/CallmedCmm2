@@ -163,7 +163,7 @@ class WorkWithFiles {
         }
     }
     
-    func renameImageWithId(_ item: MessageRoomItem, _ idMessage: String ) -> String?{
+    func renameImageWithId(_ item: MessageRoomResponse.MessageRoomItem, _ idMessage: String ) -> String?{
         let pathDir = self.getDocumentsDirectory()
         if let uriFile = pathDir?.appendingPathComponent(item.text!) {
             //telemedicine_555_4_1680172330439.jpg тут это  item.text!

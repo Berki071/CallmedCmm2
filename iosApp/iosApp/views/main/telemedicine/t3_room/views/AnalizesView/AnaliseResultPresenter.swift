@@ -22,9 +22,9 @@ class AnaliseResultPresenter: ObservableObject {
     let sharePreferenses : SharedPreferenses
     let dm = DownloadManager()
     
-    var recordTItem: AllRecordsTelemedicineItem
+    var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
     
-    init(recordTItem: AllRecordsTelemedicineItem){
+    init(recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.recordTItem = recordTItem
         
         sdk=NetworkManagerCompatibleKMM()

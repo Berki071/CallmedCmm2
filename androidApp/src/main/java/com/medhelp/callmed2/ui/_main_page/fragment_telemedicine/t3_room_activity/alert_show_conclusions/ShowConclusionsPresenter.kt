@@ -24,9 +24,9 @@ import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
 import com.medhelp.callmedcmm2.model.chat.AnaliseResponse
 import com.medhelp.callmedcmm2.model.chat.DataClassForElectronicRecy
-import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbItem
-import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
+import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse.LoadDataZaklAmbItem
 import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response.ResultZakl2Item
 import com.medhelp.callmedcmm2.model.chat.ResultZaklResponse
 import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import io.reactivex.android.schedulers.AndroidSchedulers

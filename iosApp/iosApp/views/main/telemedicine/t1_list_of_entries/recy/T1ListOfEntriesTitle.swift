@@ -9,10 +9,10 @@ import SwiftUI
 import shared
 
 struct T1ListOfEntriesItemListener{
-    let showInfo: (AllRecordsTelemedicineItem) -> Void
-    let goToRoom: (AllRecordsTelemedicineItem) -> Void
-    let closeTm: (AllRecordsTelemedicineItem) -> Void
-    let sendNotyReminder: (AllRecordsTelemedicineItem, String, String) -> Void
+    let showInfo: (AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void
+    let goToRoom: (AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void
+    let closeTm: (AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) -> Void
+    let sendNotyReminder: (AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, String, String) -> Void
 }
 
 struct T1ListOfEntriesTitle: View {

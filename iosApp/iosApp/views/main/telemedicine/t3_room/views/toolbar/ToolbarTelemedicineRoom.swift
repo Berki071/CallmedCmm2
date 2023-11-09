@@ -22,7 +22,7 @@ struct ToolbarTelemedicineRoomListener{
 struct ToolbarTelemedicineRoom: View {
     @ObservedObject var mainPresenter: ToolbarTelemedicineRoomPresenter
     
-    init(item: Binding<AllRecordsTelemedicineItem?>, listener: ToolbarTelemedicineRoomListener){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: ToolbarTelemedicineRoomListener){
 
         mainPresenter = ToolbarTelemedicineRoomPresenter(item: item, listener: listener)
        
@@ -117,7 +117,7 @@ struct ToolbarTelemedicineRoom: View {
 }
 
 struct ToolbarTelemedicineRoom_Previews: PreviewProvider {
-    @State static var item: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem()
+    @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
     static let list = ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in }, closeTm: {() -> Void in }, clickBack: {() -> Void in }, clickStartReception:  {() -> Void in },
                                                       clickCompleteReception: {() -> Void in }, showAnalizes: {() -> Void in }, showConclusions: {() -> Void in })
 

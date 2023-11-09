@@ -12,7 +12,9 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		56049C932A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */; };
 		56049C952A8F4A6200826899 /* AudioPlayerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */; };
+		562604192AFC7D19006FF22C /* T3ItemFilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */; };
 		5635C6F42A961A2A00DA2C65 /* AudioRecorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */; };
+		5683AB232AFB7A17005C5704 /* LoaderFileForChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */; };
 		56AD72E32A8DDB24005D3708 /* T3ItemRecordAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */; };
 		56EFDA9A2AA96E2700E75833 /* AnaliseResultPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EFDA992AA96E2700E75833 /* AnaliseResultPage.swift */; };
 		56EFDA9C2AA96E4F00E75833 /* AnaliseResultPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EFDA9B2AA96E4F00E75833 /* AnaliseResultPresenter.swift */; };
@@ -167,7 +169,9 @@
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudioPresenter.swift; sourceTree = "<group>"; };
 		56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerHandler.swift; sourceTree = "<group>"; };
+		562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemFilePresenter.swift; sourceTree = "<group>"; };
 		5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorHandler.swift; sourceTree = "<group>"; };
+		5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderFileForChat.swift; sourceTree = "<group>"; };
 		56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudio.swift; sourceTree = "<group>"; };
 		56EFDA992AA96E2700E75833 /* AnaliseResultPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnaliseResultPage.swift; sourceTree = "<group>"; };
 		56EFDA9B2AA96E4F00E75833 /* AnaliseResultPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnaliseResultPresenter.swift; sourceTree = "<group>"; };
@@ -328,6 +332,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		562604172AFC7CDD006FF22C /* t3_item_file */ = {
+			isa = PBXGroup;
+			children = (
+				56F259BC2A56CDB0002A016F /* T3ItemFile.swift */,
+				562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */,
+			);
+			path = t3_item_file;
+			sourceTree = "<group>";
+		};
 		56AD72E12A8DDAEF005D3708 /* t3_item_record_audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -419,11 +432,11 @@
 			isa = PBXGroup;
 			children = (
 				56F2599A2A56CDB0002A016F /* branch */,
-				56F2599E2A56CDB0002A016F /* TimetableDocPresenter.swift */,
 				56F2599F2A56CDB0002A016F /* spinner_branch */,
+				56F259A82A56CDB0002A016F /* views_page */,
 				56F259A32A56CDB0002A016F /* calendar_schedule */,
 				56F259A72A56CDB0002A016F /* TimetableDocView.swift */,
-				56F259A82A56CDB0002A016F /* views_page */,
+				56F2599E2A56CDB0002A016F /* TimetableDocPresenter.swift */,
 			);
 			path = timetable_doc;
 			sourceTree = "<group>";
@@ -530,12 +543,13 @@
 		56F259BB2A56CDB0002A016F /* recy */ = {
 			isa = PBXGroup;
 			children = (
-				56F259BC2A56CDB0002A016F /* T3ItemFile.swift */,
 				56F259BD2A56CDB0002A016F /* T3ItemTariff.swift */,
 				56F259BE2A56CDB0002A016F /* T3ItemMsg.swift */,
 				56F259BF2A56CDB0002A016F /* T3ItemDate.swift */,
+				562604172AFC7CDD006FF22C /* t3_item_file */,
 				56F259C02A56CDB0002A016F /* t3_item_img */,
 				56AD72E12A8DDAEF005D3708 /* t3_item_record_audio */,
+				5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */,
 			);
 			path = recy;
 			sourceTree = "<group>";
@@ -978,6 +992,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56F25A692A56D139002A016F /* SharedPreferenses.swift in Sources */,
+				5683AB232AFB7A17005C5704 /* LoaderFileForChat.swift in Sources */,
 				56F25A032A56CDB1002A016F /* StatisticsMcbItem.swift in Sources */,
 				56EFDAA72AA9710400E75833 /* FileNameInfo.swift in Sources */,
 				56EFDAAB2AA98AA600E75833 /* ElectronicConclusionsPresenter.swift in Sources */,
@@ -1094,6 +1109,7 @@
 				5635C6F42A961A2A00DA2C65 /* AudioRecorHandler.swift in Sources */,
 				56F25A1D2A56CDB1002A016F /* ShowImagesPresenter.swift in Sources */,
 				56F25A972A56D14D002A016F /* MDate.swift in Sources */,
+				562604192AFC7D19006FF22C /* T3ItemFilePresenter.swift in Sources */,
 				56F259F72A56CDB1002A016F /* DropdownCategory.swift in Sources */,
 				56F25A882A56D139002A016F /* DateItem.swift in Sources */,
 				56F25A2C2A56CDB2002A016F /* MyToolBarT1Telemedicine.swift in Sources */,

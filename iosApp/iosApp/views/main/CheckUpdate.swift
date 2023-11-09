@@ -135,13 +135,13 @@ class CheckUpdate: NSObject {
             
                 do {
                     if let error = error {
-                        print(">>>>>!!!!>>>>> \(error)")
+                        //print(">>>>>!!!!>>>>> \(error)")
                         throw error
                     }
                     guard let data = data else { throw VersionError.invalidResponse }
                     
                     let result = try JSONDecoder().decode(LookupResult.self, from: data)
-                    print(">>>>>!!!!>>>>> \(result)")
+                    //print(">>>>>!!!!>>>>> \(result)")
                     
                     if self.isTestFlight {
                         let info = result.data?.first

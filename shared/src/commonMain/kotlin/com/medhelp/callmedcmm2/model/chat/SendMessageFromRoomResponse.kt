@@ -13,4 +13,12 @@ class SendMessageFromRoomResponse {
 
     @SerialName("response")
     var response: List<SendMessageFromRoomItem> = ArrayList<SendMessageFromRoomItem>()
+
+    @Serializable
+    class SendMessageFromRoomItem {
+        @SerialName("id_message")
+        var idMessage: Int? = null
+        @SerialName("data_message")
+        var dataMessage: String? = null
+    }
 }

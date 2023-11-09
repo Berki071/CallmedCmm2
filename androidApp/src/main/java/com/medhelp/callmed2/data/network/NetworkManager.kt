@@ -11,9 +11,10 @@ import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_add_user.AddUserDialog.NewUserData
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_select_doctor_and_time.data_model.RecordData
 import com.medhelp.callmed2.utils.main.AppConstants
-import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbItem
-import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
-import com.medhelp.callmedcmm2.model.pasport_recognize.RecognizeTextResponse
+import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse
+import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse.LoadDataZaklAmbItem
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response.ResultZakl2Item
 import com.rx2androidnetworking.Rx2AndroidNetworking
 import io.reactivex.Completable
 import io.reactivex.Observable

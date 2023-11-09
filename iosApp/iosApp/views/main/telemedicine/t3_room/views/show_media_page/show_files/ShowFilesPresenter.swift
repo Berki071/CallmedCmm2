@@ -10,14 +10,14 @@ import SwiftUI
 import shared
 
 class ShowFilesPresenter: ObservableObject {
-    var itemRecord: Binding<AllRecordsTelemedicineItem?>
+    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
     
     @Published var arrayFilesUrl: [ShowImagesFilesItemData] = []
     @Published var isShowAlertStandart: StandartAlertData? = nil
     
     var sharePreferenses : SharedPreferenses = SharedPreferenses()
     
-    init(item: Binding<AllRecordsTelemedicineItem?>){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>){
         self.itemRecord = item
    
         if(itemRecord.wrappedValue != nil){

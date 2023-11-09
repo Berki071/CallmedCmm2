@@ -1,19 +1,24 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.recy
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.ItemChatMsgBinding
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 
 class RoomHolderMsg(val bindingItem: ItemChatMsgBinding, val recyListener: RoomAdapter.RecyListener) : RecyclerView.ViewHolder(bindingItem.root) {
     private var message: MessageRoomItem? = null
 
     init {
         bindingItem.root.setOnLongClickListener {
-            recyListener.clickLongClick(message)
+            if(message != null) {
+                recyListener.clickLongClick(message!!)
+                true
+            }else
+                false
         }
     }
 

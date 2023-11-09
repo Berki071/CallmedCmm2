@@ -12,7 +12,7 @@ struct DataForListOfEntriesRecy: Identifiable {
     var id: Int
     
     var title: String
-    var items: [AllRecordsTelemedicineItem]
+    var items: [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem]
     
     var isShowDop = false
 }

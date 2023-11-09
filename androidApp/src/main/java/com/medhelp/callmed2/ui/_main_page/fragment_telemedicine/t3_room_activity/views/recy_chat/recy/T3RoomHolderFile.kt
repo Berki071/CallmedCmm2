@@ -1,4 +1,4 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.recy
 
 import android.content.Context
 import android.net.Uri
@@ -7,10 +7,11 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.ItemChatFileBinding
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.main.MainUtils
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.InputStream
 
 
@@ -19,7 +20,11 @@ class T3RoomHolderFile(val itemBinding: ItemChatFileBinding, val recyListener: R
 
     init {
         itemBinding.root.setOnLongClickListener {
-            recyListener.clickLongClick(message)
+            if(message != null) {
+                recyListener.clickLongClick(message!!)
+                true
+            }else
+                false
         }
 
         itemBinding.root.setOnClickListener {
@@ -31,8 +36,19 @@ class T3RoomHolderFile(val itemBinding: ItemChatFileBinding, val recyListener: R
 
 
     fun onBinView(msg: MessageRoomItem) {
+        if(msg.isShowLoading)
+            showLoading()
+        else
+            hideLoading()
+
         message = msg
-        setData()
+        if(msg.text != null && !msg.text!!.isEmpty()) {
+            setData()
+        }else{
+            showLoading()
+            recyListener.loadFile(msg)
+        }
+
         tuningView()
     }
 

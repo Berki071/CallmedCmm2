@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 
 class ToolbarTelemedicineRoomPresenter: ObservableObject {
-    var itemRecord: Binding<AllRecordsTelemedicineItem?>
+    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
     var listener: ToolbarTelemedicineRoomListener
     
     @Published var iuImageLogo : UIImage =  UIImage(named: "sh_doc")!
@@ -30,7 +30,7 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
 //
 //    }
     
-    init(item: Binding<AllRecordsTelemedicineItem?>, listener: ToolbarTelemedicineRoomListener){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: ToolbarTelemedicineRoomListener){
         self.itemRecord = item
         self.listener = listener
         

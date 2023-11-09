@@ -22,11 +22,11 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowImgPdfHtm
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_analyzes.recy.AnaliseAdapter
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_analyzes.recy.AnaliseHolder
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 
 class ShowAnalyzesAlert: DialogFragment() {
     lateinit var recordItem: AllRecordsTelemedicineItem  //при создании диалога!!!
-
 
     lateinit var binding: DfShowAnalyzsesBinding
     var presenter: ShowAnalyzesPresenter? = null

@@ -1,6 +1,5 @@
 package com.medhelp.callmedcmm2.model.pasport_recognize
 
-import com.medhelp.callmedcmm2.model.ScheduleTomorrowItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

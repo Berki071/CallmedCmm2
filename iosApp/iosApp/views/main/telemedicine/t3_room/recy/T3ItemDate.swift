@@ -9,7 +9,7 @@ import SwiftUI
 import shared
 
 struct T3ItemDate: View {
-    var item: MessageRoomItem
+    var item: MessageRoomResponse.MessageRoomItem
     
     var body: some View {
         
@@ -34,7 +34,7 @@ struct T3ItemDate: View {
 
 struct T3ItemDate_Previews: PreviewProvider {
     static var previews: some View {
-        T3ItemDate(item: MessageRoomItem())
+        T3ItemDate(item: MessageRoomResponse.MessageRoomItem())
     }
 }
 

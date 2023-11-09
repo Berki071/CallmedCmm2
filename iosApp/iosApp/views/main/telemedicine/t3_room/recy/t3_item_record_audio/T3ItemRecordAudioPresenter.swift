@@ -13,7 +13,9 @@ import UIKit
 
 
 class T3ItemRecordAudioPresenter : ObservableObject {
-    var item: MessageRoomItem
+    var item: MessageRoomResponse.MessageRoomItem
+    var idRoom: String
+    var showAlert: ((String, String) -> Void)
     
     var audioP: AudioPlayerHandler? = nil
     @Published var isShowPlayIamge = true
@@ -25,14 +27,44 @@ class T3ItemRecordAudioPresenter : ObservableObject {
     
     var urlAudio: URL?
     
+    @Published var isShowLoad = false
+    
+    var loaderFileForChat: LoaderFileForChat = LoaderFileForChat()
     
     
-    init(item: MessageRoomItem){
+    init(item: MessageRoomResponse.MessageRoomItem, idRoom: String, showAlert: @escaping  (String, String) -> Void){
         self.item = item
+        self.idRoom = idRoom
+        self.showAlert = showAlert
         
-        self.getFile()
         self.getDurationFile()
+        
+        if(item.isShowLoading){
+            isShowLoad = true
+        }else{
+            isShowLoad = false
+        }
+        
+        if(item.text != nil && !item.text!.isEmpty){
+            self.getFile()
+        }else{
+            isShowLoad = true
+            loadFile(item)
+        }
     }
+    
+    func loadFile(_ item: MessageRoomResponse.MessageRoomItem){
+        loaderFileForChat.load(item: item, processingFileComplete: {(i: MessageRoomResponse.MessageRoomItem) -> Void in
+            RealmDb.shared.updateItemMessageText(item: item)
+            self.getFile()
+            self.isShowLoad = false
+            
+        }, errorBack: {(i: MessageRoomResponse.MessageRoomItem, title: String, text: String) -> Void in
+            self.isShowLoad = false
+            self.showAlert(title,text)
+        }, idRoom: self.idRoom)
+    }
+    
     
     func activateProximitySensor() {
         UIDevice.current.isProximityMonitoringEnabled = true

@@ -8,9 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
 import com.medhelp.callmed2.databinding.DfShowMediaTelemedicineBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.dop.SampleFragmentPagerAdapter
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 import java.util.*
 
 class ShowMediaTelemedicineDf: DialogFragment() {

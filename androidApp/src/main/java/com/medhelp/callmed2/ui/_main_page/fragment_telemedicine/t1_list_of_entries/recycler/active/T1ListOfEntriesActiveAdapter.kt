@@ -4,11 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.HasPacChatsItem
 import com.medhelp.callmed2.databinding.ItemChatWithDoctorBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesActiveChildHolder
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesActiveTitleHolder
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesDataModel
+import com.medhelp.callmedcmm2.model.chat.HasPacChatsResponse
+import com.medhelp.callmedcmm2.model.chat.HasPacChatsResponse.HasPacChatsItem
 import com.thoughtbot.expandablerecyclerview.MultiTypeExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 

@@ -3,17 +3,12 @@ package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activit
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.os.Handler
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.medhelp.callmed2.data.Constants
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.utils.Different
@@ -21,8 +16,8 @@ import com.medhelp.callmed2.utils.WorkTofFile.convert_Base64.ProcessingFileB64An
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
 import com.medhelp.callmed2.utils.timber_log.LoggingTree.Companion.getMessageForError
-import com.medhelp.callmedcmm2.db.RealmDb
-import kotlinx.coroutines.delay
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -38,216 +33,8 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     var networkManager: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
     var convertBase64: ProcessingFileB64AndImg = ProcessingFileB64AndImg()
 
-    var lastIdMessage = 0
-
-
-//    fun terxzt(){
-//        val tmp = ResultZakl2Item()
-//        tmp.idKl = "15"
-//        tmp.idFilial = 2
-//        tmp.nameSpec = "Гинекология 2"
-//        tmp.dataPriema = "05.12.2021"
-//
-//        mainView.lifecycleScope.launch {
-//            kotlin.runCatching {
-//                networkManager.geDataResultZakl2(tmp, "ODU2UG7O1U4EK0CRNO2J", "vpraktikdemo", "5", "1")
-//            }
-//                .onSuccess {
-//                   Log.wtf("","")
-//                }.onFailure {
-//                    Log.wtf("","")
-//                }
-//        }
-//    }
-
-    fun getNewMessagesInLoopFromServer(idRoom: String) {
-        // за счет повторения запроса в цикле должна вызываться только раз и крутится внутри while
-
-        //Different.showLoadingDialog(mainView)
-        checkLastIdMessage()
-
-        val lifecycle = mainView
-
-        lifecycle.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                while (true) {
-                    kotlin.runCatching {
-                        networkManager.getMessagesRoom(idRoom, lastIdMessage.toString(), prefManager.accessToken!!, prefManager.centerInfo!!.db_name!!,
-                            prefManager.currentUserId.toString()
-                        )
-                    }
-                        .onSuccess {
-                            if (it.response.size > 1 || it.response[0].idMessage != null) {
-
-                                processingOnImageOrFile(it.response)
-                                val listNewMFromRealm = addMessagesToRealm(it.response, true)
-
-                                if(listNewMFromRealm.isNotEmpty()){
-                                    processingAndAddListItemsInRecy(listNewMFromRealm as MutableList<MessageRoomItem>)
-                                    checkLastIdMessage()
-                                }else{
-                                    checkLastIdMessage()
-                                }
-                            }
-                            Different.hideLoadingDialog()
-                        }.onFailure {
-                            if(it.message==null || (it.message!=null  && !it.message!!.contains("connect_timeout=unknown ms")))
-                                Timber.tag("my").w(LoggingTree.getMessageForError(it, "T3RoomPresenter(LoadAllMessagesPAC/)"))
-
-                            if (mainView == null) {
-                                return@onFailure
-                            }
-
-                            Different.hideLoadingDialog()
-                        }
-
-                    delay(1000)
-                }
-            }
-        }
-    }
-
-    fun  getAllMessageFromRealm(idRoom: Int){
-        val list = RealmDb.getAllMessageByIdRoom(idRoom.toString())
-        if(list.isNotEmpty()){
-            var newList = processingAddTariffMessages(list)
-            newList = processingAddDateInMessages(newList)
-            mainView.initRecy(newList)
-        }else{
-            mainView.initRecy(mutableListOf())
-        }
-    }
-    fun addMessagesToRealm(list: List<MessageRoomItem>, isNeedProcessing: Boolean = false): List<MessageRoomItem>{
-        // от вставки двух сообщений сразy
-        if(RealmDb.latchWrite == false) {
-            Log.wtf("fatttt", "processingAndAddListItemsInRecy id " + list[0]._id.toString())
-            return RealmDb.addListMessages(list)
-        }else{
-            val handler = Handler()
-            handler.postDelayed({
-                Log.wtf("fatttt", "processingAndAddListItemsInRecy id "+ list[0]._id.toString() )
-                val rList = RealmDb.addListMessages(list)
-
-                if(isNeedProcessing) {
-                    if(rList.size>0)
-                        processingAndAddListItemsInRecy(rList as MutableList<MessageRoomItem>)
-                    checkLastIdMessage()
-                }
-            },100L)
-
-            return listOf()
-        }
-    }
-
-
-    fun processingOnImageOrFile(list: List<MessageRoomItem>){
-        for (i in list){
-            if(i.type == T3RoomActivity.MsgRoomType.IMG.toString() || i.type == T3RoomActivity.MsgRoomType.FILE.toString()
-                || i.type == T3RoomActivity.MsgRoomType.REC_AUD.toString()){
-                val ext = when(i.type){
-                    T3RoomActivity.MsgRoomType.IMG.toString() -> "png"
-                    T3RoomActivity.MsgRoomType.FILE.toString() -> "pdf"
-                    T3RoomActivity.MsgRoomType.REC_AUD.toString() -> "wav"
-                    else -> "pdf"
-                }
-
-                val newUri = getNewUriForNewFile(mainView.recordItem!!.idRoom.toString(),ext, i.idMessage!!.toString())?.first
-
-                if(newUri==null){
-                   Different.showAlertInfo(mainView, "Ошибка!", "Не удалось создать файл для сохранения")
-                }else{
-                   val tmp = convertBase64.base64ToFile(mainView, i.text!!, newUri)
-
-                    if (!tmp)
-                        Different.showAlertInfo(mainView, "Ошибка!", "Не удалось скопировать файл для сохранения")
-                    else{
-                        i.text = newUri.toString()
-                    }
-                }
-            }
-        }
-    }
-    fun processingAndAddListItemsInRecy(list: MutableList<MessageRoomItem>){
-        val lastItem = mainView.adapter?.getLastMessage()
-
-        var newList = processingAddTariffMessages(list, lastItem)
-        newList = processingAddDateInMessages(newList, lastItem)
-        mainView.adapter?.let{
-            it.addMessagesForShow(newList)
-        }
-    }
-
-    fun processingAddTariffMessages(list: List<MessageRoomItem>, lastMsg: MessageRoomItem? = null): MutableList<MessageRoomItem>{
-        var nList = mutableListOf<MessageRoomItem>()
-
-        if(lastMsg == null) {
-            var tmp = MessageRoomItem()
-            tmp.data = list[0].data!!
-            tmp.type = T3RoomActivity.MsgRoomType.TARIFF.toString()
-            tmp.idTm = list[0].idTm
-            tmp.nameTm = list[0].nameTm!!
-            nList.add(tmp)
-            nList.add(list[0])
-        }else{
-           if(lastMsg!!.idTm != list[0].idTm){
-               var tmp = MessageRoomItem()
-               tmp.data = list[0].data
-               tmp.type = T3RoomActivity.MsgRoomType.TARIFF.toString()
-               tmp.idTm = list[0].idTm
-               tmp.nameTm = list[0].nameTm!!
-               nList.add(tmp)
-           }
-            nList.add(list[0])
-        }
-
-        for (i in 1 until list.size) {
-            if (list[i].nameTm != list[i-1].nameTm) {
-                var tmp = MessageRoomItem()
-                tmp.data = list[i].data
-                tmp.type = T3RoomActivity.MsgRoomType.TARIFF.toString()
-                tmp.idTm = list[i].idTm
-                tmp.nameTm = list[i].nameTm!!
-                nList.add(tmp)
-            }
-            nList.add(list[i])
-        }
-
-        return nList
-    }
-    fun processingAddDateInMessages(list: MutableList<MessageRoomItem>, lastMsg: MessageRoomItem? = null) : MutableList<MessageRoomItem>{
-        var nList = mutableListOf<MessageRoomItem>()
-
-        if(lastMsg == null) {
-            var tmp = MessageRoomItem()
-            tmp.data = list[0].data
-            tmp.type = T3RoomActivity.MsgRoomType.DATE.toString()
-            nList.add(tmp)
-            nList.add(list[0])
-        }else{
-            if(lastMsg.data!!.substring(0,10) != list[0].data!!.substring(0,10)){
-                var tmp = MessageRoomItem()
-                tmp.data = list[0].data
-                tmp.type = T3RoomActivity.MsgRoomType.DATE.toString()
-                nList.add(tmp)
-            }
-            nList.add(list[0])
-        }
-
-        for(i in 1 until  list.size){
-            if(list[i].data!!.substring(0,10) != list[i-1].data!!.substring(0,10)){
-                var tmp = MessageRoomItem()
-                tmp.data = list[i].data
-                tmp.type = T3RoomActivity.MsgRoomType.DATE.toString()
-                nList.add(tmp)
-            }
-            nList.add(list[i])
-        }
-
-        return nList
-    }
-
     fun sendMessageToServer(idUser: String, item: MessageRoomItem, idBranch: String){
-        processingAndAddListItemsInRecy(mutableListOf(item))
+        mainView.binding.recyCustom.presenter.processingAndAddListItemsInRecy(mutableListOf(item))
 
         mainView.lifecycleScope.launch {
             // елсли фаил то в сообщении будет его бэйс64
@@ -275,12 +62,12 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                     if(response.response[0].idMessage != null){
                         if(response.response[0].idMessage!! == -1){
                             getOneRecordInfo(item.idRoom!!, item.idTm!!.toString())
-                            mainView.adapter!!.deleteItem(item)
+                            mainView.binding.recyCustom.adapter!!.deleteItem(item)
                             return@onSuccess
                         }
 
-                        if(lastIdMessage < response.response[0].idMessage!!)
-                            lastIdMessage = response.response[0].idMessage!!
+                        if(mainView.binding.recyCustom.presenter.lastIdMessage < response.response[0].idMessage!!)
+                            mainView.binding.recyCustom.presenter.lastIdMessage = response.response[0].idMessage!!
 
                         //если файл то надо пересохранить с idMessage
                         val newUriFileStr = if(item.type == T3RoomActivity.MsgRoomType.TEXT.toString())
@@ -307,14 +94,14 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                             }
                             Log.wtf("dfdfd", "" + isExistFile)
                         }
-                        addMessagesToRealm(mutableListOf(item))
+                        mainView.binding.recyCustom.presenter.addMessagesToRealm(mutableListOf(item))
 
-                        mainView.adapter?.let{
-                            mainView.adapter!!.updateItemIdMessageById(item._id, response.response[0].idMessage!!, response.response[0].dataMessage!!, newUriFileStr)
+                        mainView.binding.recyCustom.adapter?.let{
+                            mainView.binding.recyCustom.adapter!!.updateItemIdMessageById(item._id, response.response[0].idMessage!!, response.response[0].dataMessage!!, newUriFileStr)
                         }
                         sendMsgNotification()
                     }else{
-                        mainView.adapter!!.deleteItem(item)
+                        mainView.binding.recyCustom.adapter!!.deleteItem(item)
                     }
                 }
                 .onFailure { error ->
@@ -322,7 +109,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                     if (mainView == null) {
                         return@onFailure
                     }else{
-                        mainView.adapter?.let {
+                        mainView.binding.recyCustom.adapter?.let {
                             it.deleteItem(item)
                         }
                     }
@@ -386,7 +173,7 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
             val extension = convertBase64.getExtensionByUri(mainView, uriFile)
             val timeMillis= it.substring(it.lastIndexOf("_")+1, it.lastIndexOf("."))
 
-            val newUri = getNewUriForNewFile(item.idRoom!!, extension!!, idMessage, timeMillis)?.first
+            val newUri = mainView?.binding?.recyCustom?.presenterItems?.getNewUriForNewFile(item.idRoom!!, extension!!, idMessage, timeMillis)?.first
 
             newUri?.let{ur ->
                 convertBase64.copyFileByUri(mainView,uriFile, ur)
@@ -398,80 +185,6 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
         }
 
         return null
-    }
-
-
-    fun deleteMessageFromServer(item: MessageRoomItem){
-        Different.showLoadingDialog(mainView) //скроет показ загрузки getAllMessagesInLoo
-
-        mainView.lifecycleScope.launch {
-            kotlin.runCatching {
-                networkManager.deleteMessageFromServer(item.idMessage!!.toString(),
-                    prefManager.accessToken!!, prefManager.centerInfo!!.db_name!!, prefManager.currentUserId.toString())
-            }
-                .onSuccess {
-                    if(item.type == T3RoomActivity.MsgRoomType.IMG.toString() || item.type == T3RoomActivity.MsgRoomType.FILE.toString()){
-                        val uriF: Uri = Uri.parse(item.text!!)
-                        val contentResolver: ContentResolver = mainView.getContentResolver()
-                        contentResolver.delete(uriF, null, null)
-                    }
-
-                    RealmDb.deleteMessage(item)
-                    mainView.adapter?.let {
-                        it.deleteItem(item)
-                    }
-                }.onFailure {
-                    RealmDb.deleteMessage(item)
-                    mainView.adapter?.let {
-                        it.deleteItem(item)
-                    }
-
-                    Timber.tag("my").w(LoggingTree.getMessageForError(it, "T3RoomPresenter(ChatDeleteMessagePAC/)"))
-                    if (mainView == null) {
-                        return@onFailure
-                    }
-
-                }
-        }
-    }
-
-
-    fun getNewUriForNewFile(idRoom: String, extensionF: String, idMessage: String? = null, timeMillis: String? = null): Pair<Uri,File>?  {
-        if(extensionF.isEmpty())
-            return null
-
-        val idCenter: String = prefManager.centerInfo!!.idCenter.toString()
-
-        val pathToCacheFolder: File = mainView.getCacheDir()
-        val pathToFolderScanner = File(pathToCacheFolder, T3RoomActivity.FOLDER_TELEMEDICINE)
-
-        if (!pathToFolderScanner.exists()) {
-            pathToFolderScanner.mkdirs()
-        }
-
-        val nameNewFile = if(idMessage != null)
-            "/"+T3RoomActivity.PREFIX_NAME_FILE + "_" + idCenter + "_" + idRoom + "_"+idMessage+"_" + (timeMillis ?: System.currentTimeMillis()) + "." + extensionF
-        else
-            "/"+T3RoomActivity.PREFIX_NAME_FILE + "_" + idCenter + "_" + idRoom +"_" + (timeMillis ?: System.currentTimeMillis()) + "." + extensionF
-
-        val newFile = File(pathToFolderScanner, nameNewFile)
-
-        try {
-            newFile.createNewFile()
-           // return FileProvider.getUriForFile(mainView, "com.medhelp.callmed2.fileprovider", newFile)
-            return Pair(FileProvider.getUriForFile(mainView, "com.medhelp.callmed2.fileprovider", newFile),newFile)
-
-        } catch (e: IOException) {
-            Timber.e(LoggingTree.getMessageForError(e, "T3RoomPresenter/generateFileCamera "))
-        }
-        return null
-    }
-
-
-    fun checkLastIdMessage(){
-        mainView.recordItem?.let{
-           lastIdMessage = RealmDb.getMaxIdMessageByIdRoom(it.idRoom.toString())
-        }
     }
 
     fun closeRecordTelemedicine(item: AllRecordsTelemedicineItem, isSendNoty:Boolean = false, isDoc: Boolean = false){
@@ -617,7 +330,6 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
                 closeRecordTelemedicine(response)
         }
     }
-
 
     fun Context.getFileName(uri: Uri): String? = when(uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)

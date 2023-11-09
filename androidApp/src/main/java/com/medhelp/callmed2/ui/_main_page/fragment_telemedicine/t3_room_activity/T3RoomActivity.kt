@@ -39,19 +39,22 @@ import com.medhelp.callmed2.ui._main_page.MainPageActivity
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowFileTelemedicineDf
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowImageTelemedicineDf
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.showMedia.ShowMediaTelemedicineDf
-import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.bottom_bar_chat.BottomBarChatView
-import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy.RoomAdapter
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.bottom_bar_chat.BottomBarChatView
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.recy.RoomAdapter
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.main.MainUtils
 import com.medhelp.callmedcmm2.db.RealmDb
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import timber.log.Timber
 import java.io.File
 import android.os.PowerManager
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_analyzes.ShowAnalyzesAlert
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_conclusions.ShowConclusionsAlert
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.RecyChatView
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 
 
 class T3RoomActivity: AppCompatActivity(){
@@ -61,9 +64,7 @@ class T3RoomActivity: AppCompatActivity(){
 
     var recordItem: AllRecordsTelemedicineItem? = null
     var whatDataShow: String? = null  // для Т1 что бы знать что показывать
-    var adapter: RoomAdapter? = null
 
-    private val scroll: Parcelable? = null
 
     var mCurrentFilePath: Uri? = null
 
@@ -126,7 +127,7 @@ class T3RoomActivity: AppCompatActivity(){
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         lock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK,"callmed2:tag")
 
-        //presenter.terxzt()
+        binding.recyCustom.onCreateMainView()
     }
     fun baseInit(){
         binding.timer.visibility  = View.GONE
@@ -136,7 +137,7 @@ class T3RoomActivity: AppCompatActivity(){
         val kvl = object : KeyboardVisibilityListener {
             override fun onKeyboardVisibilityChanged(keyboardVisible: Boolean) {
                 if (keyboardVisible) {
-                    recyScrollToStart()
+                    binding.recyCustom.recyScrollToStart()
                 }
             }
         }
@@ -149,7 +150,7 @@ class T3RoomActivity: AppCompatActivity(){
             }
 
             override fun getNewUriForNewFile(idRoom: String, extensionF: String, idMessage: String?, timeMillis: String?): Pair<Uri, File>? {
-                return presenter.getNewUriForNewFile(idRoom, extensionF, idMessage, timeMillis)
+                return binding.recyCustom.presenterItems.getNewUriForNewFile(idRoom, extensionF, idMessage, timeMillis)
             }
 
             override fun setMCurrentFilePath(uri: Uri?) {
@@ -161,6 +162,36 @@ class T3RoomActivity: AppCompatActivity(){
             }
 
         }
+
+        binding.recyCustom.setData(object: RecyChatView.RecyChatViewListener{
+            override fun clickedShowBigImage(item: MessageRoomItem, list : MutableList<MessageRoomResponse.MessageRoomItem>) {
+                val dialog = ShowImageTelemedicineDf()
+                dialog.setData(item, list)
+                dialog.show(supportFragmentManager, ShowImageTelemedicineDf::class.java.canonicalName)
+            }
+
+            override fun clickedShowFile(item: MessageRoomItem) {
+                val dialog = ShowFileTelemedicineDf()
+                dialog.uriFile = Uri.parse(item.text)
+                dialog.show(supportFragmentManager, ShowFileTelemedicineDf::class.java.canonicalName)
+            }
+
+            override fun getRecordItem(): AllRecordsTelemedicineItem? {
+                return recordItem
+            }
+
+            override fun getStateProximity(): ProximitySensorState {
+                return stateProximity
+            }
+
+            override fun setListenerStateProximity(item: RoomAdapter.ListenerStateProximity?) {
+                listenerStateProximity = item
+            }
+
+            override fun getListenerStateProximity(): RoomAdapter.ListenerStateProximity? {
+                return listenerStateProximity
+            }
+        })
     }
     fun initProximitySensor(){
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -252,8 +283,7 @@ class T3RoomActivity: AppCompatActivity(){
 
         setInfoToolbar()
         recordItem?.let{
-            presenter.getAllMessageFromRealm(it.idRoom!!)
-            presenter.getNewMessagesInLoopFromServer(it.idRoom!!.toString())
+            binding.recyCustom.setUp(it.idRoom!!)
             PadForMyFirebaseMessagingService.showIdRoom = it.idRoom.toString()
             PadForMyFirebaseMessagingService.listener = object: MyFirebaseMessagingService.MyFirebaseMessagingServiceListener{
                 override fun updateRecordInfo() {
@@ -266,6 +296,9 @@ class T3RoomActivity: AppCompatActivity(){
         checkTimer()
     }
 
+    fun initRecy(listMsg: MutableList<MessageRoomItem>){
+        binding.recyCustom.initRecy(listMsg)
+    }
 
     var timerTimeStop = 0L
     fun checkTimer(){
@@ -416,7 +449,7 @@ class T3RoomActivity: AppCompatActivity(){
             dialogDoc.recItem = it
             dialogDoc.listener = object : ShowMediaTelemedicineDf.ShowMediaTelemedicineListener{
                 override fun deleteFile(uriStringFile: String) {
-                    adapter?.let{
+                    binding.recyCustom.adapter?.let{
                         it.updateItemByPathFileUri(uriStringFile)
                     }
                 }
@@ -438,102 +471,6 @@ class T3RoomActivity: AppCompatActivity(){
     }
     //endregion
 
-
-    var latchScrollToEnd = true
-    fun initRecy(listMsg: MutableList<MessageRoomItem>) {
-        val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL)
-        linearLayoutManager.setReverseLayout(true)
-
-
-        adapter = RoomAdapter(this, listMsg, object : RoomAdapter.RecyListener {
-            override fun finishLoading() {
-                if (latchScrollToEnd) {
-                    if (scroll == null)
-                        recyScrollToStart();
-                    else
-                        binding.recy.getLayoutManager()?.onRestoreInstanceState(scroll);
-                }
-            }
-
-            override fun clickedShowBigImage(item: MessageRoomItem) {
-                val dialog = ShowImageTelemedicineDf()
-                dialog.setData(item, adapter!!.getAllMessageWithImage())
-                dialog.show(
-                    supportFragmentManager,
-                    ShowImageTelemedicineDf::class.java.canonicalName
-                )
-            }
-
-            override fun clickedShowFile(item: MessageRoomItem) {
-                val dialog = ShowFileTelemedicineDf()
-                dialog.uriFile = Uri.parse(item.text)
-                dialog.show(
-                    supportFragmentManager,
-                    ShowFileTelemedicineDf::class.java.canonicalName
-                )
-            }
-
-            override fun clickLongClick(item: MessageRoomItem?): Boolean {
-                item?.let {
-
-                    val isPossibleDeleteCheckMsgUserAfterSelect = RealmDb.isPossibleDeleteCheckMsgUserAfterSelect(item)
-
-                    if(isPossibleDeleteCheckMsgUserAfterSelect) {
-                        if (it.otpravitel == "sotr" && recordItem!!.status != Constants.TelemedicineStatusRecord.complete.toString() /*&& it.viewKl == "false"*/) {
-//                            val msg =
-//                                if (it.type == MsgRoomType.TEXT.toString()) "Удалить собщение \"" + it.text + "\"?" else "Удалить файл?"
-
-                            Different.showAlertInfo(
-                                this@T3RoomActivity, "", "Удалить собщение?",
-                                object : Different.AlertInfoListener {
-                                    override fun clickOk() {
-                                        presenter.deleteMessageFromServer(it)
-                                    }
-
-                                    override fun clickNo() {}
-                                }, true
-                            )
-                            return true
-                        }
-                    }
-                }
-                return false
-            }
-
-            override fun getStateProximity(): ProximitySensorState {
-                return stateProximity
-            }
-
-            override fun addListenerProximityState(listener: RoomAdapter.ListenerStateProximity?) {
-
-                if(listener == null){
-                    listenerStateProximity = null
-                }
-                else if(listenerStateProximity == null)
-                    listenerStateProximity = listener
-                else{
-                    listenerStateProximity?.changeState(null)
-                    listenerStateProximity = listener
-                }
-            }
-
-        }, binding.recy)
-
-        binding.recy.setLayoutManager(linearLayoutManager)
-        binding.recy.setAdapter(adapter);
-
-        recyScrollToStart()
-    }
-
-    private fun recyScrollToStart() {
-        if (adapter == null)
-            return
-
-        binding.recy.scrollToPosition(0)
-    }
-
-
     private fun takeAPhoto() {
         if (permissionGranted()) {
             val isCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
@@ -544,7 +481,7 @@ class T3RoomActivity: AppCompatActivity(){
 
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (takePictureIntent.resolveActivity(packageManager) != null) {
-                val photoURI = presenter!!.getNewUriForNewFile(recordItem!!.idRoom.toString(), "jpg")?.first
+                val photoURI = binding.recyCustom.presenterItems.getNewUriForNewFile(recordItem!!.idRoom.toString(), "jpg")?.first
 
                 photoURI?.let {
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, it)
@@ -574,7 +511,7 @@ class T3RoomActivity: AppCompatActivity(){
                         Different.showAlertInfo(this, "Ошибка!", "Извините, такой тип файла не разрешен")
                         return
                     }else {
-                        val newFileInCacheUri = presenter.getNewUriForNewFile(recordItem?.idRoom.toString(), extF)?.first
+                        val newFileInCacheUri = binding.recyCustom.presenterItems.getNewUriForNewFile(recordItem?.idRoom.toString(), extF)?.first
                         if (newFileInCacheUri != null) {
                             presenter.convertBase64.copyFileByUri(this, contentURI, newFileInCacheUri)
                             mCurrentFilePath = newFileInCacheUri
@@ -666,6 +603,8 @@ class T3RoomActivity: AppCompatActivity(){
         finish()
     }
     override fun onDestroy() {
+        binding.recyCustom.onDestroyMainView()
+
         PadForMyFirebaseMessagingService.showIdRoom = null
         PadForMyFirebaseMessagingService.listener = null
 

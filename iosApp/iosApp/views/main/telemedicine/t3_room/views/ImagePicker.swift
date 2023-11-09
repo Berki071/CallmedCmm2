@@ -17,7 +17,7 @@ struct ImagePickerListener{
 struct ImagePicker: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    var item: Binding<AllRecordsTelemedicineItem?>
+    var item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
     var listener : ImagePickerListener
     
     var sharePreferenses : SharedPreferenses = SharedPreferenses()

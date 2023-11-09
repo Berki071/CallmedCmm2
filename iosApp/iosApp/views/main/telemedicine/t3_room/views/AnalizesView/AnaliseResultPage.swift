@@ -14,7 +14,7 @@ struct AnaliseResultPage: View {
     @StateObject var presenter: AnaliseResultPresenter
     @State var itemForShowBigImage: AnaliseResponseIos? = nil
     
-    init(clickBack: (() -> Void)?, recordTItem: AllRecordsTelemedicineItem){
+    init(clickBack: (() -> Void)?, recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.clickBack = clickBack
         _presenter = StateObject(wrappedValue: AnaliseResultPresenter(recordTItem: recordTItem))
     }
@@ -101,6 +101,6 @@ struct AnaliseResultPage: View {
 
 struct AnaliseResult_Previews: PreviewProvider {
     static var previews: some View {
-        AnaliseResultPage(clickBack: nil, recordTItem: AllRecordsTelemedicineItem())
+        AnaliseResultPage(clickBack: nil, recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem())
     }
 }

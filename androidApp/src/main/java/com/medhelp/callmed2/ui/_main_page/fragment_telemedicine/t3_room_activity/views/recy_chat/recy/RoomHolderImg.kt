@@ -1,14 +1,17 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.recy
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.recy
 
 import android.net.Uri
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
 import com.medhelp.callmed2.databinding.ItemChatImgBinding
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.InputStream
 
 class RoomHolderImg(val bindingItem: ItemChatImgBinding, val recyListener: RoomAdapter.RecyListener) : RecyclerView.ViewHolder(bindingItem.root) {
@@ -16,7 +19,11 @@ class RoomHolderImg(val bindingItem: ItemChatImgBinding, val recyListener: RoomA
 
     init {
         bindingItem.img.setOnLongClickListener {
-            recyListener.clickLongClick(message)
+            if(message != null) {
+                recyListener.clickLongClick(message!!)
+                 true
+            }else
+                 false
         }
 
         bindingItem.img.setOnClickListener{
@@ -26,10 +33,22 @@ class RoomHolderImg(val bindingItem: ItemChatImgBinding, val recyListener: RoomA
         }
     }
 
-    fun onBinView(message: MessageRoomItem?) {
+    fun onBinView(message: MessageRoomItem) {
         this.message = message
         setTime()
-        setImage()
+
+        if(message.isShowLoading)
+            showLoading()
+        else
+            hideLoading()
+
+        if(message.text != null && !message.text!!.isEmpty()){
+            setImage()
+        }else{
+            showLoading()
+            recyListener.loadFile(message)
+        }
+
         tuningView()
     }
 

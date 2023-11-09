@@ -20,7 +20,7 @@ class ShowImagePresenter : ObservableObject{
     let sharePreferenses : SharedPreferenses
     
     var analiseResponseElectronic: AnaliseResponse? = nil
-    var resultZakl2ItemElectronic: ResultZakl2Item? = nil
+    var resultZakl2ItemElectronic: ResultZakl2Response.ResultZakl2Item? = nil
     var analiseResponseIos: AnaliseResponseIos? = nil
     var telemendItemData: ShowImagesFilesItemData? = nil
     var url: URL? = nil
@@ -64,7 +64,7 @@ class ShowImagePresenter : ObservableObject{
         if(dataClassForElectronicRecy?.item is AnaliseResponse){
             analiseResponseElectronic = dataClassForElectronicRecy?.item as? AnaliseResponse
         }else{
-            resultZakl2ItemElectronic = dataClassForElectronicRecy?.item as? ResultZakl2Item
+            resultZakl2ItemElectronic = dataClassForElectronicRecy?.item as? ResultZakl2Response.ResultZakl2Item
         }
         
         if(analiseResponseElectronic != nil ){

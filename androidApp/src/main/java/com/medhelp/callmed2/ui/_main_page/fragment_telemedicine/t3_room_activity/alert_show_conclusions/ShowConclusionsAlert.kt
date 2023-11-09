@@ -19,15 +19,15 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.df.ShowImgPdfHtm
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_analyzes.ShowAnalyzesPresenter
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_conclusions.recy.ElectronicConclusionsAdapter
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_conclusions.recy.ElectronicConclusionsHolder
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
+import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 import com.medhelp.callmedcmm2.model.chat.AnaliseResponse
 import com.medhelp.callmedcmm2.model.chat.DataClassForElectronicRecy
-import com.medhelp.callmedcmm2.model.chat.ResultZakl2Item
-import timber.log.Timber
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
+import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response.ResultZakl2Item
 
 class ShowConclusionsAlert: DialogFragment() {
     lateinit var recordItem: AllRecordsTelemedicineItem  //при создании диалога!!!
-
 
     lateinit var binding: DfShowConclusionsBinding
     var presenter: ShowConclusionsPresenter? = null

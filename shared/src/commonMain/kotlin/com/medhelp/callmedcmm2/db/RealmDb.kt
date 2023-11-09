@@ -1,7 +1,7 @@
 package com.medhelp.callmedcmm2.db
 
-
-import com.medhelp.callmedcmm2.model.chat.MessageRoomItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
@@ -65,6 +65,16 @@ object RealmDb {
             }
 
             return listNewM
+    }
+    fun updateItemMessageText(item : MessageRoomItem){
+        GlobalScope.launch {
+            realm.write {
+                // fetch a frog from the realm by primary key
+                val itemTmp: MessageRoomItem? = this.query<MessageRoomItem>("_id == $0", item._id).first().find()
+                // modify the frog's age in the write transaction to persist the new age to the realm
+                itemTmp?.text = item.text
+            }
+        }
     }
 
 

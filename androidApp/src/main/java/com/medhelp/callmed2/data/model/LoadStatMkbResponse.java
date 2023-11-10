@@ -1,8 +1,6 @@
 package com.medhelp.callmed2.data.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.medhelp.callmed2.data.model.timetable.VisitResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 

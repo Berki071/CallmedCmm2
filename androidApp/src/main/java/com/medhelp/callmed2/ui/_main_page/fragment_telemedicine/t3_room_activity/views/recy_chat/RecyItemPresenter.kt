@@ -60,7 +60,8 @@ class RecyItemPresenter() {
 
         val newUri = getNewUriForNewFile(mainView!!.listener!!.getRecordItem()?.idRoom.toString(), ext, item.idMessage!!.toString())?.first
 
-        if (newUri == null) {
+        if (newUri == null || item.text == null) {
+            item.text = "null"
             listener.error(item,"Ошибка!","Не удалось создать файл для сохранения")
         } else {
             val tmp = convertBase64!!.base64ToFile(mainView!!.context, item.text!! , newUri)

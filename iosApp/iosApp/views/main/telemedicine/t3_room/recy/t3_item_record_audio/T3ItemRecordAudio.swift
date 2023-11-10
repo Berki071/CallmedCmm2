@@ -47,7 +47,7 @@ struct T3ItemRecordAudio: View {
                                     .foregroundColor(Color("dark_gray"))
                                     .padding(5)
                                     .onTapGesture {
-                                        if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty){
+                                        if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty && self.mainPresenter.item.text != "null"){
                                             self.mainPresenter.clickPlay()
                                         }
                                     }
@@ -59,7 +59,7 @@ struct T3ItemRecordAudio: View {
                                     .foregroundColor(Color("dark_gray"))
                                     .padding(5)
                                     .onTapGesture {
-                                        if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty){
+                                        if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty && self.mainPresenter.item.text != "null"){
                                             self.mainPresenter.clickStop()
                                         }
                                     }

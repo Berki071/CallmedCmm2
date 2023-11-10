@@ -29,7 +29,8 @@ class T3RoomHolderFile(val itemBinding: ItemChatFileBinding, val recyListener: R
 
         itemBinding.root.setOnClickListener {
             message?.let{
-                recyListener.clickedShowFile(it)
+                if(it.text != "null" && it.text != null && it.text!!.isNotEmpty())
+                    recyListener.clickedShowFile(it)
             }
         }
     }
@@ -53,6 +54,8 @@ class T3RoomHolderFile(val itemBinding: ItemChatFileBinding, val recyListener: R
     }
 
     private fun setData() {
+        if (message == null || message!!.text == null || message!!.text.equals("")) return
+
         message?.let{
             val uriFile = Uri.parse(it.text)
 

@@ -100,7 +100,7 @@ struct T3ItemImg: View {
             
         }
         .onTapGesture {
-            if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty){
+            if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty && self.mainPresenter.item.text != "null"){
                 self.showBigImage(self.mainPresenter.item)
             }
         }

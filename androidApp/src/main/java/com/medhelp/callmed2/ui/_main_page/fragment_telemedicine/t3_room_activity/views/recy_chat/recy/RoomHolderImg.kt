@@ -28,7 +28,8 @@ class RoomHolderImg(val bindingItem: ItemChatImgBinding, val recyListener: RoomA
 
         bindingItem.img.setOnClickListener{
             message?.let{
-                recyListener.clickedShowBigImage(it)
+                if(it.text != "null" && it.text != null && it.text!!.isNotEmpty())
+                    recyListener.clickedShowBigImage(it)
             }
         }
     }

@@ -102,7 +102,7 @@ struct T3ItemFile: View {
                 
             }
             .onTapGesture {
-                if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty){
+                if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty && self.mainPresenter.item.text != "null"){
                     self.showBigDoc(self.mainPresenter.item)
                 }
             }

@@ -54,7 +54,8 @@ class LoaderFileForChat{
         //String(Int.init(truncating: recordTItem!.idRoom!))
         let newFileName = workWithFiles.getNewNameForNewFile(idRoom, ext, String(Int.init(truncating: item.idMessage!)))
         
-        if(newFileName == nil){
+        if(newFileName == nil || item.text == nil){
+            item.text = "null"
             errorBack(item, "Ошибка!", "Не удалось создать файл для сохранения")
         }else{
             let tmp = workWithFiles.base64ToFile(item.text!, newFileName!, errorListener: {(i:String, j:String) in

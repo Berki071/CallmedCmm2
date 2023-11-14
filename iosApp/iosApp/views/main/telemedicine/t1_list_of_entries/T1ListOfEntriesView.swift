@@ -37,8 +37,8 @@ struct T1ListOfEntriesView: View {
                         }
                         .listStyle(PlainListStyle())
                         
-                    }else if(self.mainPresenter.recordstTelemedicineListOld.count > 0){
-                        List(mainPresenter.recordstTelemedicineListOld, id: \.self) {item in
+                    }else if(self.mainPresenter.recordstTelemedicineListOldFilter.count > 0){
+                        List(mainPresenter.recordstTelemedicineListOldFilter, id: \.self) {item in
                             T1ListOfEntriesItem(item: item, listener: mainPresenter.listener)
                                 .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                 .listRowSeparator(.hidden)
@@ -56,7 +56,7 @@ struct T1ListOfEntriesView: View {
                     }, clickWhatDataShow: {(i: String) -> Void in
                         self.mainPresenter.whatDataShow = i
                         self.mainPresenter.getData((self.mainPresenter.whatDataShow == Constants.WhatDataShow.ACTIVE()) ? "new" : "old")
-                    } ,whatDataShow: self.$mainPresenter.whatDataShow)
+                    } ,whatDataShow: self.$mainPresenter.whatDataShow, isShowSearchView: self.$mainPresenter.isShowSearchView, strSerch: self.$mainPresenter.textSearch)
                     
                     Spacer()
                 }

@@ -4,17 +4,21 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.medhelp.callmed2.R
+import com.medhelp.callmed2.data.model.ServiceItem
 import com.medhelp.callmed2.databinding.ItemChatWithDoctorBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesActiveChildHolder
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesActiveTitleHolder
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesDataModel
+import com.medhelp.callmed2.ui._main_page.fragment_user_record.recy_and_spinner.SearchHolder
 import com.medhelp.callmedcmm2.model.chat.HasPacChatsResponse
 import com.medhelp.callmedcmm2.model.chat.HasPacChatsResponse.HasPacChatsItem
 import com.thoughtbot.expandablerecyclerview.MultiTypeExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
+import java.util.Locale
 
 class T1ListOfEntriesActiveAdapter(val context: Context, var list: MutableList<T1ListOfEntriesDataModel>, val listener : T1ListOfEntriesActiveChildHolder.ChatWithDoctorActiveChildHolderListener) :
     MultiTypeExpandableRecyclerViewAdapter<T1ListOfEntriesActiveTitleHolder, T1ListOfEntriesActiveChildHolder>(list) {
+
 
     override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): T1ListOfEntriesActiveTitleHolder {
        val view = LayoutInflater.from(context).inflate(R.layout.item_groupe,parent, false)

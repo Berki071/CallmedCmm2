@@ -8,6 +8,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.medhelp.callmed2.data.Constants
 import com.medhelp.callmed2.data.bg.Notification.SimpleNotificationForFCM
 import com.medhelp.callmed2.data.model.AllRecordsTelemedicineItemAndroid
+import com.medhelp.callmed2.data.model.ServiceItem
 import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.recycler.active.T1ListOfEntriesDataModel
@@ -19,10 +20,16 @@ import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllReco
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.ArrayList
+import java.util.Locale
 
 class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
     var prefManager: PreferencesManager = PreferencesManager(mainView.requireContext())
     val networkManagerKMM: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
+
+    var mainList: MutableList<AllRecordsTelemedicineItem>? = null
+    //var searchList: MutableList<T1ListOfEntriesDataModel>? = null
+    var query = ""
 
     fun getData(type: String) {  //type = "old" or any string
         Different.showLoadingDialog(mainView.requireContext())
@@ -43,13 +50,15 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
                            //it.response[0].tmTimeForTm = 2
 
                             checkActiveItemOnComplete(it.response)
-                            val tmpList0 = removeWaitItemWhichNoPay(it.response)
+                            mainList = removeWaitItemWhichNoPay(it.response)
+                            val tmpList = processingDataRecordsForRecy(mainList!!)
 
-                            val tmpList = processingDataRecordsForRecy(tmpList0)
                             mainView.updateRecyActive(tmpList)
 
                         } else {
-                            mainView.updateRecyArchive(it.response)
+                            mainList = it.response!!.toMutableList()
+                            val tmp = filtrationList()
+                            mainView.updateRecyArchive(tmp)
                         }
                     }else{
                         if(mainView.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString())
@@ -74,6 +83,35 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
                     Different.hideLoadingDialog()
                 }
         }
+    }
+    fun setFilterService(query: String) {
+        var query = query
+        query = query.lowercase(Locale.getDefault())
+        if (this.query == query) return
+        this.query = query
+
+        val tmpL = filtrationList()
+        mainView.updateRecyArchive(tmpL)
+    }
+    private fun filtrationList() : MutableList<AllRecordsTelemedicineItem> {
+        if(mainList == null)
+            return mutableListOf()
+
+        if(query.isEmpty())
+            return mainList!!
+
+        val filteredModelList: MutableList<AllRecordsTelemedicineItem> = ArrayList()
+        for (item in mainList!!) {
+            val text = item.fullNameKl!!.lowercase(Locale.getDefault())
+            if (text.contains(query)) {
+                filteredModelList.add(item)
+            }
+        }
+
+        return if (filteredModelList.size == 0)
+            mutableListOf()
+        else
+            filteredModelList
     }
 
     fun checkActiveItemOnComplete(response: List<AllRecordsTelemedicineItem>){
@@ -100,7 +138,6 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
         }
         return newList
     }
-
     fun processingDataRecordsForRecy(response: MutableList<AllRecordsTelemedicineItem>) : MutableList<T1ListOfEntriesDataModel>{
         var mainList = mutableListOf<T1ListOfEntriesDataModel>()
 

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.gson.Gson
@@ -94,25 +96,47 @@ class T1ListOfEntriesFragment : BaseFragment() {
         }
         binding.toolbar!!.setNavigationOnClickListener { (context as MainPageActivity?)!!.showNavigationMenu() }
     }
+    var searchViewItem: MenuItem? = null
+    var searchViewAndroidActionBar: SearchView? = null
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_chat_with_doctor, menu)
 
         val btnArchive = menu.findItem(R.id.archive)
         val btnUnarchive = menu.findItem(R.id.unarchive)
 
+        searchViewItem = menu.findItem(R.id.searchBtn)
+        searchViewAndroidActionBar = MenuItemCompat.getActionView(searchViewItem) as SearchView
+
 
         if(whatDataShow == WhatDataShow.ACTIVE.toString()) {
             binding.toolbar!!.title = "Рабочие чаты"
             btnUnarchive.isVisible=false
+            searchViewItem?.isVisible=false
         }else {
             binding.toolbar!!.title = "Архивные чаты"
             btnArchive.isVisible=false
+            searchViewItem?.isVisible=true
         }
 
+        if (searchViewAndroidActionBar != null) {
+            searchViewAndroidActionBar!!.setOnQueryTextListener(object :
+                SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    searchViewAndroidActionBar?.clearFocus()
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String): Boolean { presenter?.setFilterService(newText)
+                    return true
+                }
+            })
+        }
 
         btnArchive.setOnMenuItemClickListener {
             btnArchive.isVisible=false
             btnUnarchive.isVisible=true
+            searchViewItem?.isVisible=true
+            presenter.query = ""
             binding.toolbar!!.title = "Архивные чаты"
             whatDataShow = WhatDataShow.ARCHIVE.toString()
             presenter.getData(if(whatDataShow == WhatDataShow.ACTIVE.toString()) "new" else "old")
@@ -122,9 +146,21 @@ class T1ListOfEntriesFragment : BaseFragment() {
         btnUnarchive.setOnMenuItemClickListener {
             btnArchive.isVisible=true
             btnUnarchive.isVisible=false
+
+            presenter.query = ""
             binding.toolbar!!.title = "Рабочие чаты"
             whatDataShow = WhatDataShow.ACTIVE.toString()
             presenter.getData(if(whatDataShow == WhatDataShow.ACTIVE.toString()) "new" else "old")
+
+            searchViewAndroidActionBar?.let{
+                if(!it.isIconified) {
+                    it.isIconified = true
+                    it.onActionViewCollapsed()
+                    binding.toolbar.collapseActionView();
+                }
+            }
+            searchViewItem?.isVisible=false
+
             true
         }
     }

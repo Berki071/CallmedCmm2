@@ -23,11 +23,20 @@ class T1ListOfEntriesPresenter: ObservableObject {
     
     @Published var whatDataShow: String = Constants.WhatDataShow.ACTIVE()
     @Published var recordsTelemedicineListNew :[DataForListOfEntriesRecy] = []
-    @Published var recordstTelemedicineListOld :[AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
+    var recordstTelemedicineListOldFull :[AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
+    @Published var recordstTelemedicineListOldFilter :[AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
     
     @Published var isShowRoomView2: NotificationData? = nil
     
     var listener: T1ListOfEntriesItemListener?
+    
+    var textSearch: String = "" {
+        didSet{
+             print(">>>>>>>> >>>>>> \(textSearch)")
+             self.filterList()
+         }
+    }
+    @Published var isShowSearchView = false
     
     init(){
         
@@ -108,7 +117,8 @@ class T1ListOfEntriesPresenter: ObservableObject {
                         self.showEmptyScreen(false)
                         
                         if(self.whatDataShow == Constants.WhatDataShow.ACTIVE()){
-                            self.recordstTelemedicineListOld = []
+                            self.recordstTelemedicineListOldFull = []
+                            self.recordstTelemedicineListOldFilter = []
                             
                             self.checkActiveItemOnComplete(res.response)
                             let tmpList0 = self.removeWaitItemWhichNoPay(res.response)
@@ -121,11 +131,13 @@ class T1ListOfEntriesPresenter: ObservableObject {
                             
                         }else{
                             self.recordsTelemedicineListNew = []
-                            self.recordstTelemedicineListOld = res.response
+                            self.recordstTelemedicineListOldFull = res.response
+                            self.filterList()
                         }
                     }else{
-                        self.recordstTelemedicineListOld = []
                         self.recordsTelemedicineListNew = []
+                        self.recordstTelemedicineListOldFull = []
+                        self.recordstTelemedicineListOldFilter = []
                         self.showEmptyScreen(true)
                     }
                     
@@ -136,7 +148,8 @@ class T1ListOfEntriesPresenter: ObservableObject {
                     LoggingTree.INSTANCE.e("T1ListOfEntriesPresenter/getData \(t)")
                 }
                 
-                self.recordstTelemedicineListOld = []
+                self.recordstTelemedicineListOldFull = []
+                self.recordstTelemedicineListOldFilter = []
                 self.recordsTelemedicineListNew = []
                 
                 self.showEmptyScreen(true)
@@ -218,6 +231,29 @@ class T1ListOfEntriesPresenter: ObservableObject {
         
         return mainList
     }
+    
+    func filterList(){
+        if(self.recordstTelemedicineListOldFull.count == 0){
+            self.recordstTelemedicineListOldFilter = []
+            return
+        }
+        
+        if(textSearch.isEmpty){
+            self.recordstTelemedicineListOldFilter = self.recordstTelemedicineListOldFull
+            return
+        }
+        
+        var tmpList : [AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem] = []
+        
+        self.recordstTelemedicineListOldFull.forEach{ i in
+            if(i.fullNameKl!.lowercased().contains(textSearch.lowercased())){
+                tmpList.append(i)
+            }
+        }
+    
+        self.recordstTelemedicineListOldFilter = tmpList
+    }
+    
     
     func closeRecordTelemedicine(_ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) {
         self.showLoading(true)

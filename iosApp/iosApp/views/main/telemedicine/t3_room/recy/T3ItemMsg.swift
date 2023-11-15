@@ -25,7 +25,7 @@ struct T3ItemMsg: View {
                     Spacer()
                     
                     VStack(alignment: .trailing){
-                        Text(item.text!)
+                        Text(LocalizedStringKey(item.text!))
                             .font(.system(size: 15))
                             .foregroundColor(Color.black)
                         
@@ -56,9 +56,11 @@ struct T3ItemMsg: View {
                         .frame(width: 8)
                     
                     VStack(alignment: .leading){
-                        Text(item.text!)
+                        Text(LocalizedStringKey(item.text!))
                             .font(.system(size: 15))
                             .foregroundColor(Color.black)
+                            
+                            
                         
                         if(item.data != nil && !item.data!.isEmpty && item.idMessage != nil){
                             Text(MDate.getNewFormatString(item.data!, MDate.DATE_FORMAT_yyyyMMdd_HHmmss, MDate.DATE_FORMAT_HHmm))
@@ -86,6 +88,17 @@ struct T3ItemMsg: View {
             }
         }
         
+    }
+}
+
+extension LocalizedStringKey {
+
+    // This will mirror the `LocalizedStringKey` so it can access its
+    // internal `key` property. Mirroring is rather expensive, but it
+    // should be fine performance-wise, unless you are
+    // using it too much or doing something out of the norm.
+    var stringKey: String? {
+        Mirror(reflecting: self).children.first(where: { $0.label == "key" })?.value as? String
     }
 }
 

@@ -32,7 +32,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
     
     var textSearch: String = "" {
         didSet{
-             print(">>>>>>>> >>>>>> \(textSearch)")
+             //print(">>>>>>>> >>>>>> \(textSearch)")
              self.filterList()
          }
     }

@@ -95,6 +95,8 @@ class T1ListOfEntriesItemPresenter : ObservableObject {
         let dateEndLong = MDate.datePlasTimeInterval(dateStartLong, Int.init(truncating: item.tmTimeForTm!))
         
         if(dateEndLong <= currentTimeServerLong){
+            LoggingTree.INSTANCE.d("T1ListOfEntriesItemPresenter closeTm dataServer:\(item.dataServer!), dataStart:\(item.dataStart!), tmTimeForTm:\(item.tmTimeForTm!), tmId:\(item.tmId)")
+            
             self.isShowTimeLeft = false
             self.listener?.closeTm(item)
         }else{
@@ -105,6 +107,8 @@ class T1ListOfEntriesItemPresenter : ObservableObject {
                 self.timeLeftInSecForActive = tmp
                 self.startTimerActive()
             }else{
+                LoggingTree.INSTANCE.d("T1ListOfEntriesItemPresenter2 closeTm dataServer:\(item.dataServer!), dataStart:\(item.dataStart!), tmTimeForTm:\(item.tmTimeForTm!), tmId:\(item.tmId)")
+                
                 self.isShowTimeLeft = false
                 self.listener?.closeTm(item)
             }
@@ -114,6 +118,8 @@ class T1ListOfEntriesItemPresenter : ObservableObject {
     func startTimerActive(){
         
         if(self.timeLeftInSecForActive == nil || self.timeLeftInSecForActive! <= 0){
+            LoggingTree.INSTANCE.d("T1ListOfEntriesItemPresenter startTimerActive closeTm dataServer:\(item.dataServer!), dataStart:\(item.dataStart!), tmTimeForTm:\(item.tmTimeForTm!), tmId:\(item.tmId)")
+            
             self.isShowTimeLeft = false
             self.listener?.closeTm(item)
             return

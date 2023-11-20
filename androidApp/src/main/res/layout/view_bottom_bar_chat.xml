@@ -54,22 +54,35 @@
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/takeAPhoto"
-            app:layout_constraintRight_toLeftOf="@+id/sendMsg"
+            app:layout_constraintRight_toLeftOf="@+id/btnAction"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_photo_library_white_24dp" />
 
-        <ImageButton
-            android:id="@+id/sendMsg"
+<!--        <ImageButton-->
+<!--            android:id="@+id/sendMsg"-->
+<!--            android:layout_width="44dp"-->
+<!--            android:layout_height="44dp"-->
+<!--            android:background="@drawable/rounded_bg_send"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/openLibraryPhoto"-->
+<!--            android:src="@drawable/baseline_mic_24_white"-->
+<!--            android:layout_margin="@dimen/base_margin_8dp"-->
+<!--            android:clickable="false"-->
+<!--            />-->
+        <com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.BtnActionForChatView
+            android:id="@+id/btnAction"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:background="@drawable/rounded_bg_send"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/openLibraryPhoto"
             android:src="@drawable/baseline_mic_24_white"
             android:layout_margin="@dimen/base_margin_8dp"
             android:clickable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/openLibraryPhoto"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
 
@@ -87,7 +100,7 @@
             android:drawableStart="@drawable/baseline_chevron_left_gray_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/sendMsg"
+            app:layout_constraintEnd_toStartOf="@+id/btnAction"
             />
 
         <LinearLayout

@@ -131,6 +131,7 @@ class T3RoomActivity: AppCompatActivity(){
     }
     fun baseInit(){
         binding.timer.visibility  = View.GONE
+        binding.videoPreviewContainer.visibility = View.GONE
 
         presenter = T3RoomPresenter(this)
 
@@ -301,12 +302,13 @@ class T3RoomActivity: AppCompatActivity(){
     }
 
     var timerTimeStop = 0L
+    var currentTimePhoneForProcessing = 0L
     fun checkTimer(){
         if(recordItem!=null && recordItem!!.dataStart!=null && recordItem!!.status == Constants.TelemedicineStatusRecord.active.toString()) {
 
-            val currentTimePhone = MDate.getCurrentDate()
+            currentTimePhoneForProcessing = MDate.getCurrentDate()
             val currentTimeServerLong: Long = MDate.stringToLong(recordItem!!.dataServer!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss) ?: 0L
-            var differenceCurrentTime = currentTimeServerLong - currentTimePhone
+            var differenceCurrentTime = currentTimeServerLong - currentTimePhoneForProcessing
 
             val dateStartLong: Long = MDate.stringToLong(recordItem!!.dataStart!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss) ?: 0L
             val dateEndLong: Long = dateStartLong + (recordItem!!.tmTimeForTm!!.toLong()*60*1000)
@@ -329,6 +331,11 @@ class T3RoomActivity: AppCompatActivity(){
     fun startTimer(){
         val currentTimePhone = MDate.getCurrentDate()
         if(currentTimePhone >= timerTimeStop){
+            Timber.tag("my").d("T3RoomActivity closeTm startTimer currentTimePhone:${MDate.longToString(currentTimePhone,MDate.DATE_FORMAT_ddMMyyyy_HHmmss)}, " +
+                    "timerTimeStop:${MDate.longToString(timerTimeStop,MDate.DATE_FORMAT_ddMMyyyy_HHmmss)}, " +
+                    "item.dataServe:${recordItem?.dataServer}, item.dataStart:${recordItem?.dataStart!!}, item.tmTimeForTm:${recordItem?.tmTimeForTm}, " +
+                    "currentTimePhoneForProcessing:${currentTimePhoneForProcessing}, tmId:${recordItem?.tmId}")
+
             binding.timer.visibility = View.GONE
             presenter.closeRecordTelemedicine(recordItem!!)
             return
@@ -412,6 +419,9 @@ class T3RoomActivity: AppCompatActivity(){
             R.id.completeReception -> {
                 Different.showAlertInfo(this, "Внимание!", "Вы действительно хотите завершить прием? ",object: Different.AlertInfoListener{
                     override fun clickOk() {
+                        Timber.tag("my").d("T3RoomActivity closeTm OptionsItemSelected" +
+                                "item.dataServe:${recordItem?.dataServer!!}, item.dataStart:${recordItem?.dataStart!!}, item.tmTimeForTm:${recordItem?.tmTimeForTm!!}, tmId:${recordItem?.tmId}")
+
                         presenter.closeRecordTelemedicine(recordItem!!, true, isDoc=true)
                     }
                     override fun clickNo() {}
@@ -596,6 +606,7 @@ class T3RoomActivity: AppCompatActivity(){
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
         val intent = Intent(this, MainPageActivity::class.java)
         intent.putExtra(Constants.KEY_FOR_INTENT_POINTER_TO_PAGE, MainPageActivity.MENU_CHAT_WITH_DOC)
         intent.putExtra("whatDataShow", whatDataShow)

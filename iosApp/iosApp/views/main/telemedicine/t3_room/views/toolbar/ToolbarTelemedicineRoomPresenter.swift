@@ -80,6 +80,8 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
                     self.timeLeftInSecForActive = tmp
                     self.startTimerActive()
                 }else{
+                    LoggingTree.INSTANCE.d("T3 ToolbarTelemedicineRoomPresenter2 timeLeftInSecForActive closeTm dataServer:\(itemRecord.wrappedValue!.dataServer!), dataStart:\(itemRecord.wrappedValue!.dataStart!), tmTimeForTm:\(itemRecord.wrappedValue!.tmTimeForTm!), tmId:\(itemRecord.wrappedValue!.tmId)")
+                    
                     self.isShowTimer = false
                     self.listener.closeTm()
                    
@@ -123,6 +125,8 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
     }
     func startTimerActive(){
         if(self.timeLeftInSecForActive == nil || self.timeLeftInSecForActive! <= 0){
+            LoggingTree.INSTANCE.d("T3 ToolbarTelemedicineRoomPresenter1 startTimerActive closeTm dataServer:\(itemRecord.wrappedValue!.dataServer!), dataStart:\(itemRecord.wrappedValue!.dataStart!), tmTimeForTm:\(itemRecord.wrappedValue!.tmTimeForTm!), tmId:\(itemRecord.wrappedValue!.tmId)")
+            
             self.isShowTimer = false
             self.listener.closeTm()
             return

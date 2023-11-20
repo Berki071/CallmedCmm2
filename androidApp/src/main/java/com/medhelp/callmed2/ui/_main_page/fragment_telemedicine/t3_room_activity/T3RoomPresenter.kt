@@ -320,14 +320,16 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     }
     fun checkActiveItemOnComplete(response: AllRecordsTelemedicineItem){
         if (response.status!! == Constants.TelemedicineStatusRecord.active.toString()) {
-            val currentTimeLong: Long =
-                MDate.stringToLong(response.dataServer!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
-            val dateStartLong: Long =
-                MDate.stringToLong(response.dataStart!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss) ?: 0L
+            val currentTimeLong: Long = MDate.stringToLong(response.dataServer!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
+            val dateStartLong: Long = MDate.stringToLong(response.dataStart!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss) ?: 0L
             val dateEndLong: Long = dateStartLong + (response.tmTimeForTm!!.toLong() * 60 * 1000)
 
-            if (currentTimeLong >= dateEndLong)
+            if (currentTimeLong >= dateEndLong) {
+               Timber.tag("my").d("T3RoomPresenter closeTm " +
+                        "item.dataServe:${response.dataServer!!}, item.dataStart:${response.dataStart!!}, item.tmTimeForTm:${response.tmTimeForTm!!}, tmId:${response.tmId}")
+
                 closeRecordTelemedicine(response)
+            }
         }
     }
 

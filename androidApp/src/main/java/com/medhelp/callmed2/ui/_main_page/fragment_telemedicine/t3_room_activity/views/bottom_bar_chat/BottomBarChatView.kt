@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
-import android.media.MediaMetadataRetriever
-import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
@@ -30,16 +28,16 @@ import androidx.core.content.ContextCompat
 import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.Constants
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.BtnActionForChatView
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
+import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import java.io.File
 
 class BottomBarChatView : RelativeLayout {
-
-    var isAudioRecordingAllowed = true  // флаг для разрешения аудио записи
+    val MAX_DURATION_OF_ONE_AUDIO_MSG = 180 // в секундах
 
     //region constructors
     constructor(context: Context) : super(context) {
@@ -55,17 +53,24 @@ class BottomBarChatView : RelativeLayout {
     }
     //endregion
 
+    //region инициализировать перед использованием View
+    var listener: BottomBarChatViewListener? = null
+    //endregion
+
     lateinit var editT: EditText
     lateinit var takeAPhoto: ImageButton
     lateinit var openLibraryPhoto: ImageButton
-    lateinit var sendMsg: ImageButton
+    lateinit var btnAction: BtnActionForChatView
     lateinit var disableChat: LinearLayout
     lateinit var cardBox: ConstraintLayout
     lateinit var forDeleteMsg: TextView
 
+    lateinit var presenter: BottomBarChatPresenter
+    lateinit var recAudio: BottomBarChatViewRecAudio
+    lateinit var recVideo: BottomBarChatViewRecVideo
+
     var ocl = View.OnClickListener { v: View ->
         when (v.id) {
-            //R.id.sendMsg -> sendMessage()
             R.id.takeAPhoto ->  takeAPhoto()
             R.id.openLibraryPhoto -> openLibraryPhoto()
             R.id.disableChat ->{
@@ -73,10 +78,6 @@ class BottomBarChatView : RelativeLayout {
             }
         }
     }
-
-    //region инициализировать перед использованием
-    var listener: BottomBarChatViewListener? = null
-    //endregion
 
     var pointTimerStarted: Long? = null  //время старта аудиозаписи
         set(value){
@@ -88,8 +89,9 @@ class BottomBarChatView : RelativeLayout {
             }
         }
     var swipePath: MutableList<Pair<Int,Int>>? = null //координаты движения при записи аудио
-    var audioRecorder: MediaRecorder? = null
-    var pathToFileRecord: Pair<Uri, File>? = null
+    var cardBoxLastTouchState: Pair<Int, Long>? = null
+
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun init(context: Context) {
@@ -97,7 +99,7 @@ class BottomBarChatView : RelativeLayout {
         editT = findViewById(R.id.editT)
         takeAPhoto = findViewById(R.id.takeAPhoto)
         openLibraryPhoto = findViewById(R.id.openLibraryPhoto)
-        sendMsg = findViewById(R.id.sendMsg)
+        btnAction = findViewById(R.id.btnAction)
         disableChat = findViewById(R.id.disableChat)
         cardBox = findViewById(R.id.cardBox)
         forDeleteMsg = findViewById(R.id.forDeleteMsg)
@@ -109,11 +111,9 @@ class BottomBarChatView : RelativeLayout {
         disableChat.visibility = View.GONE
         forDeleteMsg.visibility = View.GONE
 
-        if (isAudioRecordingAllowed){
-            sendMsg.setImageResource(R.drawable.baseline_mic_24_white)
-        }else{
-            sendMsg.setImageResource(R.drawable.ic_send_white_24dp)
-        }
+        recAudio = BottomBarChatViewRecAudio(context)
+        //recVideo = BottomBarChatViewRecVideo()
+        presenter = BottomBarChatPresenter()
 
         editT.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -129,8 +129,8 @@ class BottomBarChatView : RelativeLayout {
                 val eY: Int? = p1?.y?.toInt()
 
                 val offsetViewBounds = Rect()
-                sendMsg.getDrawingRect(offsetViewBounds)   //returns the visible bounds
-                cardBox.offsetDescendantRectToMyCoords(sendMsg, offsetViewBounds)   // calculates the relative coordinates to the parent
+                btnAction.getDrawingRect(offsetViewBounds)   //returns the visible bounds
+                cardBox.offsetDescendantRectToMyCoords(btnAction, offsetViewBounds)   // calculates the relative coordinates to the parent
 
                 val xTop : Int = offsetViewBounds.left
                 val yTop : Int = offsetViewBounds.top
@@ -144,23 +144,31 @@ class BottomBarChatView : RelativeLayout {
                 when (p1?.action) {
                     MotionEvent.ACTION_DOWN -> {
                         if (eX>=xTop && eX<=xBottom && eY>=yTop && eY <= yBottom){
-                            if(isEmptyEditText() && isAudioRecordingAllowed){
-                                if(!permissionGrantedRecordAudio()) {
-                                    ActivityCompat.requestPermissions((context as AppCompatActivity), arrayOf(android.Manifest.permission.RECORD_AUDIO), 777)
-                                    return false
+
+                            cardBoxLastTouchState = Pair(MotionEvent.ACTION_DOWN, MDate.getCurrentDate())
+
+                            val handler = Handler()
+                            val delay = 100 //milliseconds
+                            handler.postDelayed({
+                                //что бы запустить запись нажатие должно быть более 100 мс
+                                if(btnAction.isForRecordState() && cardBoxLastTouchState!!.first == MotionEvent.ACTION_DOWN){
+                                    if (isEmptyEditText() ) {
+                                        if (!permissionGrantedRecordAudio()) {
+                                            ActivityCompat.requestPermissions((context as AppCompatActivity), arrayOf(android.Manifest.permission.RECORD_AUDIO), 777)
+                                            cardBoxLastTouchState = null
+                                            return@postDelayed
+                                        }
+
+                                        pointTimerStarted = MDate.getCurrentDate()
+                                        swipePath = mutableListOf()
+                                        startRecord()
+                                    }
                                 }
-
-                                pointTimerStarted = MDate.getCurrentDate()
-                                swipePath = mutableListOf()
-
-                                startRecord()
-                                startRepeatShowTimer()
-                            }
+                            }, delay.toLong())
 
                             return true
                         }
                     }
-
                     MotionEvent.ACTION_MOVE -> {
                         if(swipePath == null)
                             return false
@@ -169,16 +177,27 @@ class BottomBarChatView : RelativeLayout {
                         checkSwipePathOnCancelAudioMsg(xTop, yTop, xBottom, yBottom)
                     }
                     MotionEvent.ACTION_UP -> {
-                        if(pointTimerStarted != null){
+                        if(pointTimerStarted != null){   //if pointTimerStarted != null идет запись и первод в null ее остановит
                             pointTimerStarted = null
                         }else{
-                            sendMessage()
+                            if(btnAction.isForRecordState()){
+
+                                //если нажатие менее 100мс то сменить значек
+
+                                val currentTime = MDate.getCurrentDate()
+                                if(cardBoxLastTouchState!=null && (currentTime-cardBoxLastTouchState!!.second)<100){
+                                    btnAction.clickChangeToNextState()
+                                }
+                            }else{
+                                sendTextMessage()
+                            }
                         }
 
+                        cardBoxLastTouchState = Pair(MotionEvent.ACTION_UP, MDate.getCurrentDate())
                         return true
-
                     }
                     MotionEvent.ACTION_CANCEL -> {
+                        cardBoxLastTouchState = Pair(MotionEvent.ACTION_CANCEL, MDate.getCurrentDate())
                         pointTimerStarted = null
                     }
                 }
@@ -186,6 +205,50 @@ class BottomBarChatView : RelativeLayout {
             }
         })
     }
+
+    fun startRecord(){
+        if (btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.AUDIO) {
+            //Log.wtf("adsaaaad", "startRecord AUDIO")
+            listener?.getNewUriForNewFile(listener!!.getRecordItem()!!.idRoom.toString(), "wav")
+                ?.let {
+                    recAudio.startRecord(it)
+                }
+        }else if(btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.VIDEO){
+            //Log.wtf("adsaaaad", "startRecord VIDEO")
+
+            listener?.getNewUriForNewFile(listener!!.getRecordItem()!!.idRoom.toString(), "wav")
+                ?.let {
+                   // recVideo.startRecord(it)
+                }
+        }
+
+        startRepeatShowTimer()
+    }
+    fun stopRecord(){
+        if (btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.AUDIO) {
+            //Log.wtf("adsaaaad", "stopRecord AUDIO")
+            recAudio.stopRecord()
+
+            if(recAudio.pathToFileRecord != null) {
+                presenter.createAudioMessage(listener!!.getRecordItem(), recAudio.pathToFileRecord!!.first.toString())?.let {
+                    listener!!.sendMessageToServer(it.first, it.second, it.third)
+                }
+            }
+        }else if(btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.VIDEO){
+           // Log.wtf("adsaaaad", "stopRecord VIDEO")
+            recVideo.stopRecord()
+        }
+    }
+    fun canselRecord(){
+        if (btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.AUDIO) {
+            //Log.wtf("adsaaaad", "canselRecord AUDIO")
+            recAudio.cancelRecord()
+        }else if(btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.VIDEO){
+           // Log.wtf("adsaaaad", "canselRecord VIDEO")
+            recVideo.cancelRecord()
+        }
+    }
+
 
     fun startRepeatShowTimer(){
         if(swipePath == null){
@@ -197,6 +260,7 @@ class BottomBarChatView : RelativeLayout {
         if(pointTimerStarted == null) {
             swipePath=null
             editT.setText("")
+
             stopRecord()
             return
         }
@@ -205,8 +269,8 @@ class BottomBarChatView : RelativeLayout {
         val timeHasPassedL: Long = currentTime - pointTimerStarted!!
         val timeHasPassedAllSec: Int = if(timeHasPassedL == 0L) 0 else (timeHasPassedL/1000).toInt()
 
-        if(timeHasPassedAllSec >= Constants.MAX_DURATION_OF_ONE_AUDIO_MSG){
-            pointTimerStarted = null  //????
+        if(timeHasPassedAllSec >= MAX_DURATION_OF_ONE_AUDIO_MSG){
+            pointTimerStarted = null
             startRepeatShowTimer()
             return
         }
@@ -245,115 +309,31 @@ class BottomBarChatView : RelativeLayout {
                 if(swipePath!![i].first>=xTopBtn && swipePath!![i].first<=xBottomBtn && swipePath!![i].second>=yTopBtn && swipePath!![i].second <= yBottomBtn){
                     //свайп на отмену аудиозаписи нормальный, можно отменять
                     swipePath=null
-                    cancelRecord()
+                    canselRecord()
+
                     return
                 }
             }
         }
     }
 
-    fun startRecord(){
-        Log.wtf("myLogdd", "startRecord")
-
-        pathToFileRecord = listener?.getNewUriForNewFile(listener!!.getRecordItem()!!.idRoom.toString(), "wav") ?: return
-
-
-        // val p3: String = pathToFileRecord!!.second.absolutePath
-
-
-        //Log.wtf("","")
-
-        audioRecorder = MediaRecorder().apply{
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            //setOutputFile(file!!.canonicalPath)
-            setOutputFile(pathToFileRecord!!.second.absolutePath)
-            prepare()
-            start()
-        }
-    }
-    private fun getAudioPath(): String {
-        return "${context.cacheDir.absolutePath}${File.pathSeparator}${System.currentTimeMillis()}.wav"
-    }
-
-    fun stopRecord(){
-        audioRecorder?.let {
-            Log.wtf("myLogdd", "stopRecord")
-            it.stop()
-            it.release()
-        }
-        audioRecorder = null
-
-        val duration = getDuration(pathToFileRecord!!.first)
-        if(duration < 1000){
-            pathToFileRecord?.let{
-                it.second.delete()
-            }
-            pathToFileRecord = null
-            return
-        }
-
-        val recordItem = listener!!.getRecordItem()
-        recordItem?.let {
-            var msgItem = MessageRoomItem()
-            msgItem.idRoom = it.idRoom!!.toString()
-            msgItem.data = MDate.longToString(MDate.getCurrentDate(),MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
-            msgItem.type = T3RoomActivity.MsgRoomType.REC_AUD.toString()
-            msgItem.text = pathToFileRecord!!.first.toString()
-            msgItem.otpravitel = "sotr"
-            msgItem.idTm = it.tmId!!
-            msgItem.nameTm = it.tmName
-            msgItem.viewKl = "false"
-            msgItem.viewSotr = "true"
-
-            listener!!.sendMessageToServer(it.idKl!!.toString(), msgItem, it.idFilial!!.toString())
-        }
-    }
-
-    fun getDuration(uri: Uri): Long{ //millsec
-        try {
-            val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(context, uri)
-            return retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
-        }catch (e: Exception){}
-
-        return 0L
-    }
-    fun cancelRecord(){
-        audioRecorder?.let {
-            Log.wtf("myLogdd", "cancelRecord")
-            it.stop()
-            it.release()
-        }
-        audioRecorder = null
-
-        pathToFileRecord?.let{
-            it.second.delete()
-        }
-        pathToFileRecord = null
-
-        Toast.makeText(context,"Отменено", Toast.LENGTH_SHORT).show()
-    }
-
-
     private fun testShowPhotoButtons(s: String) {
         if (s.trim { it <= ' ' }.length > 0) {
             takeAPhoto.visibility = View.GONE
             openLibraryPhoto.visibility = View.GONE
-            if(pointTimerStarted == null)
-                sendMsg.setImageResource(R.drawable.ic_send_white_24dp)
-            else {
-                if (isAudioRecordingAllowed) {
-                    sendMsg.setImageResource(R.drawable.baseline_mic_24_white)
+            if(pointTimerStarted == null) {
+                btnAction.setState(BtnActionForChatView.BtnActionForChatState.TEXT)
+            }else {
+                if (btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.TEXT && btnAction.isAllowStateAudioRecord) {
+                    btnAction.setState(BtnActionForChatView.BtnActionForChatState.AUDIO)
                 }
             }
         } else {
             takeAPhoto.visibility = View.VISIBLE
             openLibraryPhoto.visibility = View.VISIBLE
 
-            if (isAudioRecordingAllowed) {
-                sendMsg.setImageResource(R.drawable.baseline_mic_24_white)
+            if (btnAction.stateBtn == BtnActionForChatView.BtnActionForChatState.TEXT && btnAction.isAllowStateAudioRecord) {
+                btnAction.setState(BtnActionForChatView.BtnActionForChatState.AUDIO)
             }
         }
     }
@@ -362,29 +342,14 @@ class BottomBarChatView : RelativeLayout {
         return str.trim { it <= ' ' }.length <= 0
     }
 
-    private fun sendMessage() {
+    private fun sendTextMessage() {
         //hideKeyboard();
-        val msg = editT.getText().toString();
-        editT.setText("");
-
+        val msg = editT.getText().toString()
+        editT.setText("")
         val trimMsg = msg.trim { it <= ' ' }.length > 0
-
         if(trimMsg) {
-            val recordItem = listener!!.getRecordItem()
-
-            recordItem?.let {
-                var msgItem = MessageRoomItem()
-                msgItem.idRoom = it.idRoom!!.toString()
-                msgItem.data = MDate.longToString(MDate.getCurrentDate(),MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
-                msgItem.type = T3RoomActivity.MsgRoomType.TEXT.toString()
-                msgItem.text = msg
-                msgItem.otpravitel = "sotr"
-                msgItem.idTm = it.tmId!!
-                msgItem.nameTm = it.tmName
-                msgItem.viewKl = "false"
-                msgItem.viewSotr = "true"
-
-                listener!!.sendMessageToServer(it.idKl!!.toString(), msgItem, it.idFilial!!.toString())
+            presenter.createTextMessage(listener!!.getRecordItem(), msg)?.let {
+                listener!!.sendMessageToServer(it.first, it.second, it.third)
             }
         }
     }

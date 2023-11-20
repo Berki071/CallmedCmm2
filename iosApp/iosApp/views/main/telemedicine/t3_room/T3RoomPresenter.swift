@@ -667,6 +667,7 @@ class T3RoomPresenter: ObservableObject {
 
             if (currentTimeLong >= dateEndLong){
                 DispatchQueue.main.async {
+                    LoggingTree.INSTANCE.d("T3RoomPresenter checkActiveItemOnComplete closeTm item.dataServe:\(response.dataServer!), item.dataStart:\(response.dataStart!), item.tmTimeForTm:\(response.tmTimeForTm!), tmId:\(response.tmId)")
                     self.closeRecordTelemedicine(response)
                 }
             }
@@ -814,6 +815,8 @@ class T3RoomPresenter: ObservableObject {
     }
     func clickCompleteReception(){
         self.isShowAlertStandart = StandartAlertData(titel: "Внимание!", text: "Вы действительно хотите завершить прием?", isShowCansel: true, someFuncOk: {() -> Void in
+            LoggingTree.INSTANCE.d("T3RoomPresenter clickCompleteReception closeTm item.dataServe:\(self.recordTItem!.dataServer!), item.dataStart:\(self.recordTItem!.dataStart!), item.tmTimeForTm:\(self.recordTItem!.tmTimeForTm!), tmId:\(self.recordTItem!.tmId)")
+            
             self.isShowAlertStandart = nil
             
             self.closeRecordTelemedicine(self.recordTItem!, true, true)

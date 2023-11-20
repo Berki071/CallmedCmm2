@@ -9,7 +9,9 @@ import com.medhelp.callmed2.data.model.AllRecordsTelemedicineItemAndroid
 import com.medhelp.callmed2.databinding.ItemChatWithDoctorBinding
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.main.MainUtils
+import com.medhelp.callmed2.utils.timber_log.LoggingTree
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder
+import timber.log.Timber
 
 class T1ListOfEntriesActiveChildHolder(val bindingItem: ItemChatWithDoctorBinding, val listener : ChatWithDoctorActiveChildHolderListener): ChildViewHolder(bindingItem.root) {
     private var item: AllRecordsTelemedicineItemAndroid? = null
@@ -63,13 +65,14 @@ class T1ListOfEntriesActiveChildHolder(val bindingItem: ItemChatWithDoctorBindin
     }
 
     var timerTimeStop = 0L
+    var currentTimePhoneForProcessing = 0L
     private fun checkTimerActive(){
         if(item!=null) {
             bindingItem.timeLeft.text = "Время до завершения:"
 
-            val currentTimePhone = MDate.getCurrentDate()
+            currentTimePhoneForProcessing = MDate.getCurrentDate()
             val currentTimeServerLong: Long = MDate.stringToLong(item!!.dataServer, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
-            var differenceCurrentTime = currentTimeServerLong - currentTimePhone
+            var differenceCurrentTime = currentTimeServerLong - currentTimePhoneForProcessing
 
             val dateStartLong: Long = MDate.stringToLong(item!!.dataStart!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss) ?: 0L
             val dateEndLong: Long = dateStartLong + (item!!.tmTimeForTm!!.toLong()*60*1000)
@@ -97,6 +100,10 @@ class T1ListOfEntriesActiveChildHolder(val bindingItem: ItemChatWithDoctorBindin
             bindingItem.redDot.visibility = View.GONE
 
             item?.let{
+                Timber.tag("my").d("T1ListOfEntriesActiveChildHolder closeTm currentTimePhone:${MDate.longToString(currentTimePhone,MDate.DATE_FORMAT_ddMMyyyy_HHmmss)}, " +
+                        "timerTimeStop:${MDate.longToString(timerTimeStop,MDate.DATE_FORMAT_ddMMyyyy_HHmmss)}, " +
+                        "item.dataServe:${item!!.dataServer}, item.dataStart:${item!!.dataStart!!}, item.tmTimeForTm:${item!!.tmTimeForTm}, " +
+                        "currentTimePhoneForProcessing:${currentTimePhoneForProcessing}, tmId:${item!!.tmId}")
                 listener.closeTm(it)
             }
 

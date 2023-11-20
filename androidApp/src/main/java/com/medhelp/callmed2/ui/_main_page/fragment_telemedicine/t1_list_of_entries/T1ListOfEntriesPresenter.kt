@@ -123,8 +123,12 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
                 val dateStartLong: Long = MDate.stringToLong(i.dataStart!!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss) ?: 0L
                 val dateEndLong: Long = dateStartLong + (i.tmTimeForTm!!.toLong()*60*1000)
 
-                if(currentTimeLong>=dateEndLong)
+                if(currentTimeLong>=dateEndLong) {
+                    Timber.tag("my").d("T1ListOfEntriesPresenter closeTm " +
+                            "item.dataServe:${i.dataServer!!}, item.dataStart:${i.dataStart!!}, item.tmTimeForTm:${i.tmTimeForTm!!}, tmId:${i.tmId}")
+
                     closeRecordTelemedicine(i)
+                }
             }
         }
     }

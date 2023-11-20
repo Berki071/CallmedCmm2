@@ -169,6 +169,8 @@ class T1ListOfEntriesPresenter: ObservableObject {
                 
                 if(dateEndLong <= currentTimeServerLong){
                     DispatchQueue.main.async {
+                        LoggingTree.INSTANCE.d("T1ListOfEntriesPresenter closeTm item.dataServe:\(i.dataServer!), item.dataStart:\(i.dataStart!), item.tmTimeForTm:\(i.tmTimeForTm!), tmId:\(i.tmId)")
+                        
                         self.closeRecordTelemedicine(i)
                     }
                 }

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScheduleResponce {
-    @SerializedName("imgError")
+    @SerializedName("error")
     private boolean error;
 
-    @SerializedName("Message")
+    @SerializedName("message")
     private String message;
 
     @SerializedName("response")

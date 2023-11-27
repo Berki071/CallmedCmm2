@@ -6,10 +6,9 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
-import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.gson.Gson
 import com.medhelp.callmed2.data.Constants
-import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.WorkTofFile.convert_Base64.ProcessingFileB64AndImg
@@ -18,14 +17,13 @@ import com.medhelp.callmed2.utils.timber_log.LoggingTree
 import com.medhelp.callmed2.utils.timber_log.LoggingTree.Companion.getMessageForError
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
+import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
-import java.io.IOException
 import java.io.InputStream
-import java.lang.Exception
 
 
 class T3RoomPresenter(val mainView: T3RoomActivity) {
@@ -33,26 +31,65 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     var networkManager: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
     var convertBase64: ProcessingFileB64AndImg = ProcessingFileB64AndImg()
 
-    fun sendMessageToServer(idUser: String, item: MessageRoomItem, idBranch: String){
+    fun videoToJsonObjWithBase64(idUser: String, item: MessageRoomItem, idBranch: String) {
         mainView.binding.recyCustom.presenter.processingAndAddListItemsInRecy(mutableListOf(item))
 
         mainView.lifecycleScope.launch {
-            // елсли фаил то в сообщении будет его бэйс64
-            val valueText: String =  if(item.type == T3RoomActivity.MsgRoomType.TEXT.toString()) item.text!! else convertBase64.fileToBase64String(mainView, Uri.parse(item.text!!))
+            val base64: String = convertBase64.fileToBase64String(mainView, Uri.parse(item.text!!))
+            val uriFile = Uri.parse(item.text!!)
+            val name2 = mainView.getFileName(uriFile)  //telemedicine_555_4_1680172330439.mp4
 
-//            if(item.type != T3RoomActivity.MsgRoomType.TEXT.toString()){
-//                val uriFile = Uri.parse(item.text!!)
-//                var isExistFile = false    //проверка которая работает
-//                if (null != uriFile) {
-//                    try {
-//                        val inputStream: InputStream? = mainView.getContentResolver().openInputStream(uriFile)
-//                        isExistFile = inputStream != null
-//                        inputStream?.close()
-//                    } catch (e: Exception) {
-//                    }
-//                }
-//                Log.wtf("dfdfd",""+isExistFile)
-//            }
+            if (name2 != null) {
+                val name2WithoutMp4 = name2.replace(".mp4", "")
+                val jsonObj = createGsonWithVideo(base64, name2WithoutMp4).toString()
+                sendViedeo(idUser, item, idBranch, jsonObj, name2)
+            } else {
+                Different.showAlertInfo(mainView,"Ошибка", "Что-то пошло не так.")
+                mainView.binding.recyCustom.adapter?.let {
+                    it.deleteItem(item)
+                }
+            }
+        }
+    }
+    fun sendViedeo(idUser: String, item: MessageRoomItem, idBranch: String, jsonObj: String, nameFile: String){
+        mainView.lifecycleScope.launch {
+
+
+            kotlin.runCatching {
+                networkManager.uploadVideoFile(prefManager.centerInfo!!.ip_download!!,jsonObj)
+            }
+                .onSuccess { response ->
+                    sendMessageToServer(idUser, item, idBranch, nameFile=nameFile)
+                }
+                .onFailure { error ->
+                    Timber.tag("my").w(LoggingTree.getMessageForError(error, "T3RoomPresenter/sendViedeo"))
+                    if (mainView == null) {
+                        return@onFailure
+                    }else{
+                        Timber.tag("my").w(LoggingTree.getMessageForError(error, "T3RoomPresenter/sendViedeo)"))
+                        Different.showAlertInfo(mainView,"Ошибка", "Что-то пошло не так.")
+                        mainView.binding.recyCustom.adapter?.let {
+                            it.deleteItem(item)
+                        }
+                    }
+                }
+        }
+    }
+
+    fun sendMessageToServer(idUser: String, item: MessageRoomItem, idBranch: String, nameFile: String = "" ){
+
+        if(item.type != T3RoomActivity.MsgRoomType.VIDEO.toString())
+            mainView.binding.recyCustom.presenter.processingAndAddListItemsInRecy(mutableListOf(item))
+
+        mainView.lifecycleScope.launch {
+            // елсли фаил то в сообщении будет его бэйс64
+            val valueText: String =
+                if (item.type == T3RoomActivity.MsgRoomType.TEXT.toString())
+                    item.text!!
+                else if (item.type == T3RoomActivity.MsgRoomType.VIDEO.toString())
+                    nameFile
+                else
+                    convertBase64.fileToBase64String(mainView, Uri.parse(item.text!!))
 
             kotlin.runCatching {
                 networkManager.sendMessageFromRoom(item.idRoom!!, item.idTm!!.toString(), idUser, item.type!!, valueText,
@@ -343,5 +380,19 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
             return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME).let(cursor::getString)
         }
     }.getOrNull()
+
+
+    private fun createGsonWithVideo(base64: String, name: String): JSONObject? {
+        val jsonObject = JSONObject()
+        return try {
+            jsonObject.accumulate("FileName", name)
+            jsonObject.accumulate("FileFormat", "mp4")
+            jsonObject.accumulate("Base64Data", base64)
+            jsonObject
+        } catch (e: JSONException) {
+            Timber.tag("my").e(getMessageForError(e, "SendImageByService.createGson $name"))
+            null
+        }
+    }
 
 }

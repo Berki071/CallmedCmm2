@@ -49,7 +49,8 @@ class RecordAdapter(groups: List<ExpandableGroup<*>?>?, var context: Context, va
     private fun getCountTimes(group: ExpandableGroup<*>): Int {
         var count = 0
         for (tmpItem in group.items as List<ScheduleItem>) {
-            count += tmpItem.admTime.size
+            if(tmpItem.admTime != null)
+                count += tmpItem.admTime.size
         }
         return count
     }

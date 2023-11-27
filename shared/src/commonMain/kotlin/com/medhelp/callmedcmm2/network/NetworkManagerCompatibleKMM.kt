@@ -26,6 +26,7 @@ import io.ktor.client.plugins.timeout
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.http.ContentDisposition.Companion.File
 import io.ktor.serialization.kotlinx.json.*
 
 
@@ -360,6 +361,23 @@ class NetworkManagerCompatibleKMM {
         }
             .body()
     }
+
+    @Throws(Exception::class)
+    suspend fun uploadVideoFile(ipDownload: String, json : String): Boolean {
+        return httpClient.post("http://"+ipDownload+":4080/api/file/upload" ) {
+            contentType(ContentType.Application.Json)
+            setBody(json)
+        }
+            .body()
+    }
+//    @Throws(Exception::class)
+//    suspend fun loadVideoFile(url: String, dirPath: String, fileName: String){
+//       // val outputFile = File(dirPath, fileName)
+//
+//        return httpClient.get(url){
+//
+//        }
+//    }
 
 
     private val httpClient = HttpClient(){

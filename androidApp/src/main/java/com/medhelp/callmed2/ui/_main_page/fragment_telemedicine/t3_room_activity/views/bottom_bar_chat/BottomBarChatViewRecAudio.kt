@@ -36,6 +36,9 @@ class BottomBarChatViewRecAudio(val context: Context) {
         }
         audioRecorder = null
 
+        if(pathToFileRecord == null)
+            return
+
         val duration = getDuration(pathToFileRecord!!.first)
         if(duration < 1000){
             pathToFileRecord?.let{

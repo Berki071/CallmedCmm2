@@ -1,4 +1,4 @@
-package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views
+package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.bottom_bar_chat
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -22,7 +22,7 @@ class BtnActionForChatView: AppCompatImageButton {
     //endregion
 
     var isAllowStateAudioRecord = true  // флаг для разрешения аудио записи
-    var isAllowStateVideoRecord = false
+    var isAllowStateVideoRecord = true
 
     
     var stateBtn: BtnActionForChatState = BtnActionForChatState.TEXT

@@ -11,9 +11,9 @@ import com.medhelp.callmed2.databinding.ItemChatMsgBinding
 import com.medhelp.callmed2.databinding.ItemChatMsgDateBinding
 import com.medhelp.callmed2.databinding.ItemChatMsgTariffBinding
 import com.medhelp.callmed2.databinding.ItemChatRecordAudioBinding
+import com.medhelp.callmed2.databinding.ItemChatRecordVideoBinding
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.T3RoomActivity
 import com.medhelp.callmed2.utils.main.MDate
-import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
 import io.realm.kotlin.types.ObjectId
 
@@ -36,6 +36,7 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
             T3RoomActivity.MsgRoomType.IMG.toString() -> T3RoomActivity.MsgRoomType.IMG.id
             T3RoomActivity.MsgRoomType.FILE.toString() -> T3RoomActivity.MsgRoomType.FILE.id
             T3RoomActivity.MsgRoomType.REC_AUD.toString() -> T3RoomActivity.MsgRoomType.REC_AUD.id
+            T3RoomActivity.MsgRoomType.VIDEO.toString() -> T3RoomActivity.MsgRoomType.VIDEO.id
             else -> -1
         }
     }
@@ -72,6 +73,11 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
                 val bindingItem = ItemChatRecordAudioBinding.bind(view)
                 return T3RoomHolderRecordAudio(bindingItem, recyListener)
             }
+            T3RoomActivity.MsgRoomType.VIDEO.id -> {
+                val view = LayoutInflater.from(contex).inflate(R.layout.item_chat_record_video, parent, false)
+                val bindingItem = ItemChatRecordVideoBinding.bind(view)
+                return T3RoomHolderRecordVideo(bindingItem, recyListener)
+            }
         }
 
         val view = LayoutInflater.from(contex).inflate(R.layout.item_chat_msg_date, parent, false)
@@ -88,6 +94,7 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
             T3RoomActivity.MsgRoomType.IMG.toString() -> (holder as RoomHolderImg).onBinView(recyList[position])
             T3RoomActivity.MsgRoomType.FILE.toString() -> (holder as T3RoomHolderFile).onBinView(recyList[position])
             T3RoomActivity.MsgRoomType.REC_AUD.toString() -> (holder as T3RoomHolderRecordAudio).onBinView(recyList[position])
+            T3RoomActivity.MsgRoomType.VIDEO.toString() -> (holder as T3RoomHolderRecordVideo).onBinView(recyList[position])
         }
     }
     override fun getItemCount(): Int {
@@ -184,12 +191,16 @@ class RoomAdapter(private val contex: Context, var list: MutableList<MessageRoom
                 }
             }
 
-            if (listMsg[i].type == T3RoomActivity.MsgRoomType.TEXT.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.IMG.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.FILE.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.REC_AUD.toString()) {
+            if (listMsg[i].type == T3RoomActivity.MsgRoomType.TEXT.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.IMG.toString()
+                || listMsg[i].type == T3RoomActivity.MsgRoomType.FILE.toString() || listMsg[i].type == T3RoomActivity.MsgRoomType.REC_AUD.toString()
+                || listMsg[i].type == T3RoomActivity.MsgRoomType.VIDEO.toString()) {
                 var isExist: Int? = null
 
                 if(listMsg[i].idMessage != null) {
                     for (j in 0 until recyList.size) {
-                        if (recyList[j].type == T3RoomActivity.MsgRoomType.TEXT.toString() || recyList[j].type == T3RoomActivity.MsgRoomType.IMG.toString() || recyList[j].type == T3RoomActivity.MsgRoomType.FILE.toString()) {
+                        if (recyList[j].type == T3RoomActivity.MsgRoomType.TEXT.toString() || recyList[j].type == T3RoomActivity.MsgRoomType.IMG.toString()
+                            || recyList[j].type == T3RoomActivity.MsgRoomType.FILE.toString() || recyList[j].type == T3RoomActivity.MsgRoomType.REC_AUD.toString()
+                            || recyList[j].type == T3RoomActivity.MsgRoomType.VIDEO.toString()) {
                             if (listMsg[i].idMessage == recyList[j].idMessage) {
                                 isExist = j
                                 break

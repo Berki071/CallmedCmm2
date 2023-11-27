@@ -25,6 +25,7 @@ public class CenterResponse {
     @SerializedName("vers_kl") private String vers_kl;
     @SerializedName("vers_sotr") private String vers_sotr;
     @SerializedName("db_name") private String db_name;
+    @SerializedName("ip_download") private String ip_download;
 
     public String getVers_kl() {
         return vers_kl;
@@ -150,6 +151,13 @@ public class CenterResponse {
     }
     public void setDb_name(String db_name) {
         this.db_name = db_name;
+    }
+
+    public String getIp_download() {
+        return ip_download;
+    }
+    public void setIp_download(String ip_download) {
+        this.ip_download = ip_download;
     }
 
     public CenterResponse() {

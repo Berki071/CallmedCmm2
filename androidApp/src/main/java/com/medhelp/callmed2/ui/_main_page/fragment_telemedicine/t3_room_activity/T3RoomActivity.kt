@@ -15,7 +15,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import android.view.KeyEvent
@@ -28,7 +27,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.Constants
@@ -44,14 +42,12 @@ import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity
 import com.medhelp.callmed2.utils.Different
 import com.medhelp.callmed2.utils.main.MDate
 import com.medhelp.callmed2.utils.main.MainUtils
-import com.medhelp.callmedcmm2.db.RealmDb
 import timber.log.Timber
 import java.io.File
 import android.os.PowerManager
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_analyzes.ShowAnalyzesAlert
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.alert_show_conclusions.ShowConclusionsAlert
 import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat.RecyChatView
-import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse
 import com.medhelp.callmedcmm2.model.chat.MessageRoomResponse.MessageRoomItem
@@ -147,7 +143,11 @@ class T3RoomActivity: AppCompatActivity(){
     fun initView(){
         binding.bottomBarChat.listener = object : BottomBarChatView.BottomBarChatViewListener {
             override fun sendMessageToServer(idSotr: String, item: MessageRoomItem, idFilial: String) {
-                presenter.sendMessageToServer(idSotr, item, idFilial)
+                if(item.type != MsgRoomType.VIDEO.toString() )
+                    presenter.sendMessageToServer(idSotr, item, idFilial)
+                else{
+                    presenter.videoToJsonObjWithBase64(idSotr, item, idFilial)
+                }
             }
 
             override fun getNewUriForNewFile(idRoom: String, extensionF: String, idMessage: String?, timeMillis: String?): Pair<Uri, File>? {
@@ -615,6 +615,7 @@ class T3RoomActivity: AppCompatActivity(){
     }
     override fun onDestroy() {
         binding.recyCustom.onDestroyMainView()
+        binding.bottomBarChat.onDestroyMainView()
 
         PadForMyFirebaseMessagingService.showIdRoom = null
         PadForMyFirebaseMessagingService.listener = null
@@ -663,7 +664,7 @@ class T3RoomActivity: AppCompatActivity(){
     //endregion
 
     enum class MsgRoomType (val id: Int){
-        DATE(0),TARIFF(1), TEXT(2), IMG(3), FILE(4), REC_AUD(5)
+        DATE(0),TARIFF(1), TEXT(2), IMG(3), FILE(4), REC_AUD(5), VIDEO(6)
     }
 
     enum class ProximitySensorState{

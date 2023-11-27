@@ -61,7 +61,7 @@ class ProcessingFileB64AndImg {
 //        return if (file.exists()) file.absolutePath else null
 //    }
 
-    fun fileToBase64String(context:Context, fileUri: Uri): String {
+    suspend fun fileToBase64String(context:Context, fileUri: Uri): String {
 
 //        if(img.length() > 1024*1024*9)
 //            return Single.error(new Throwable("Ограничение на размер изображения 9 мегабайт"));

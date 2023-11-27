@@ -90,8 +90,7 @@ class RecordItemHolder(val bindingItem: ItemRecordItemHolderBinding, listener: R
 
     private fun fillingTimeBox() {
         bindingItem.timeBox!!.removeAllViews()
-        val lines =
-            if (data!!.admTime.size % 4 != 0) data!!.admTime.size / 4 + 1 else data!!.admTime.size / 4
+        val lines =if(data!!.admTime == null) 0 else {if (data!!.admTime.size % 4 != 0) data!!.admTime.size / 4 + 1 else data!!.admTime.size / 4}
         val listTimetable = creteButton(data!!.admTime)
         for (i in 0 until lines) {
             val tmpLL = LinearLayout(context)

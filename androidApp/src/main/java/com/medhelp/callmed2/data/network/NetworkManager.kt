@@ -1,19 +1,34 @@
 package com.medhelp.callmed2.data.network
 
 import android.content.Context
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.OkHttpResponseListener
-import com.medhelp.callmed2.data.model.*
-import com.medhelp.callmed2.data.model.timetable.*
+import com.medhelp.callmed2.data.model.CenterList
+import com.medhelp.callmed2.data.model.FilialResponse
+import com.medhelp.callmed2.data.model.IPDataResponse
+import com.medhelp.callmed2.data.model.LoadStatMkbResponse
+import com.medhelp.callmed2.data.model.LogData
+import com.medhelp.callmed2.data.model.NewSyncResponse
+import com.medhelp.callmed2.data.model.RefreshStatusResponse
+import com.medhelp.callmed2.data.model.ResponseString
+import com.medhelp.callmed2.data.model.ScheduleResponce
+import com.medhelp.callmed2.data.model.ServiceList
+import com.medhelp.callmed2.data.model.SimpleResponseBoolean
+import com.medhelp.callmed2.data.model.SimpleResponseString
+import com.medhelp.callmed2.data.model.SimpleString
+import com.medhelp.callmed2.data.model.SpecialtyList
+import com.medhelp.callmed2.data.model.UserForRecordResponse
+import com.medhelp.callmed2.data.model.UserList
+import com.medhelp.callmed2.data.model.timetable.AllRaspSotrResponse
+import com.medhelp.callmed2.data.model.timetable.DoctorList
+import com.medhelp.callmed2.data.model.timetable.SettingsAllBaranchHospitalList
+import com.medhelp.callmed2.data.model.timetable.SimpleBooleanList
+import com.medhelp.callmed2.data.model.timetable.TimetableDocNotificationList
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_add_user.AddUserDialog.NewUserData
 import com.medhelp.callmed2.ui._main_page.fragment_user_record.df_select_doctor_and_time.data_model.RecordData
 import com.medhelp.callmed2.utils.main.AppConstants
-import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse
 import com.medhelp.callmedcmm2.model.chat.LoadDataZaklAmbResponse.LoadDataZaklAmbItem
-import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response
 import com.medhelp.callmedcmm2.model.chat.ResultZakl2Response.ResultZakl2Item
 import com.rx2androidnetworking.Rx2AndroidNetworking
 import io.reactivex.Completable
@@ -21,7 +36,6 @@ import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import org.json.JSONObject
-import java.net.URL
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -71,9 +85,6 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
 
     val allIPCall: Observable<String>
         get() {
-            val toc = prefManager.accessToken
-            val dd = prefManager.currentUserId.toString()
-            val sdfs = prefManager.centerInfo!!.db_name
             return Rx2AndroidNetworking.get(CenterEndPoint.GET_ALL_IP_LIST)
                 .addHeaders("host", "oneclick.tmweb.ru")
                 .addHeaders(DB_NAME, prefManager.centerInfo!!.db_name)
@@ -85,9 +96,6 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
         }
 
     fun getClientBD(datee: String, ip: String): Observable<JSONObject> {
-//        val dbName = prefManager.centerInfo!!.db_name
-//        val token = prefManager.accessToken
-//        val id_doc = prefManager.currentUserId.toString()
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
@@ -436,6 +444,16 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
                 })
         }
     }
+
+
+    fun loadVideoFile(url: String, dirPath: String, fileName: String): Observable<String>{
+        return Rx2AndroidNetworking.download(url, dirPath, fileName)
+            .build()
+            .setDownloadProgressListener { bytesDownloaded, totalBytes -> }
+            .downloadObservable
+    }
+
+
     interface Load2FileListener {
         fun onResponse(response: Response, dirPath: String, fileName: String, item: ResultZakl2Item)
         fun onError(anError: ANError, item: ResultZakl2Item)

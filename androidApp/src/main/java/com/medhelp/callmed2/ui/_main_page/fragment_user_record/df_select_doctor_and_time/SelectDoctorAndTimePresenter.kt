@@ -120,7 +120,7 @@ class SelectDoctorAndTimePresenter(var mainView: SelectDoctorAndTimeDialog?, var
                 mainList.removeAt(i)
                 i--
             } else if (mainList[i].dateLong == currentDayLong) {
-                if (mainList[i].admTime.size == 0) {
+                if (mainList[i].admTime==null || mainList[i].admTime.size == 0) {
                     i++
                     continue
                 }

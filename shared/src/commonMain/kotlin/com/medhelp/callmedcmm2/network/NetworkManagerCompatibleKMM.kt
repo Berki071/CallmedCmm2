@@ -370,14 +370,6 @@ class NetworkManagerCompatibleKMM {
         }
             .body()
     }
-//    @Throws(Exception::class)
-//    suspend fun loadVideoFile(url: String, dirPath: String, fileName: String){
-//       // val outputFile = File(dirPath, fileName)
-//
-//        return httpClient.get(url){
-//
-//        }
-//    }
 
 
     private val httpClient = HttpClient(){

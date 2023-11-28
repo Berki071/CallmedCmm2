@@ -137,9 +137,9 @@ class BottomBarChatViewRecVideo(var context: Context?,val videoPreviewContainer:
 
                             if(typeLastStop != null){
                                 if(typeLastStop == TypeLastStop.STOP){
-                                    val msg = "Video capture succeeded: " + "${recordEvent.outputResults.outputUri}"
-                                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
-                                    Log.wtf("CameraXApp", msg)
+                                    //val msg = "Video capture succeeded: " + "${recordEvent.outputResults.outputUri}"
+                                    //Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                                    //Log.wtf("CameraXApp", msg)
                                     listener.videoRecordFinalizeWithoutError(pathToFileRecord)
                                 }else{
                                     deleteFile()

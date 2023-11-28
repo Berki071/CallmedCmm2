@@ -70,8 +70,16 @@ class RecyChatPresenter {
                             //Log.wtf("sdfgetNewMessagesInLoopFromServer" ,"end")
                             if (it.response.size > 1 || it.response[0].idMessage != null) {
 
-                                // processingOnImageOrFile(it.response)
-                                val listNewMFromRealm = addMessagesToRealm(it.response, true)
+                                val newResponse: MutableList<MessageRoomItem> = mutableListOf()
+                                for(i in it.response){
+                                    if(i.type == T3RoomActivity.MsgRoomType.VIDEO.toString() && i.text != null && i.text!!.length > 100){
+                                        deleteMessageFromServer(i)
+                                    }else{
+                                        newResponse.add(i)
+                                    }
+                                }
+
+                                val listNewMFromRealm = addMessagesToRealm(newResponse, true)
 
                                 if(listNewMFromRealm.isNotEmpty()){
                                     processingAndAddListItemsInRecy(listNewMFromRealm as MutableList<MessageRoomItem>)

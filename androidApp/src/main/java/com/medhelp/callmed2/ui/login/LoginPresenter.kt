@@ -80,7 +80,7 @@ class LoginPresenter (private val mainView: LoginActivity) {
             .subscribe({ response: UserResponse ->
                 if (response.username != null) {
                     saveUserPref(response)
-                    Timber.v("Вход в приложение VERSION_SDK" + Build.VERSION.SDK_INT)
+                    Timber.v("Вход в приложение VERSION_SDK " + Build.VERSION.SDK_INT)
                     savePrivateData(username, password)
 
 //                        if (mainView.isNeedSave()) {
@@ -205,8 +205,6 @@ class LoginPresenter (private val mainView: LoginActivity) {
 
                     fBToken
 
-                   // mainView.hideLoading()
-                    //mainView.openProfileActivity()
                     cd.dispose()
                 }
                 ) { throwable: Throwable? ->

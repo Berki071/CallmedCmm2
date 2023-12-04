@@ -42,6 +42,8 @@ struct T3RoomView: View {
 //    @State var itemTmp: AllRecordsTelemedicineItem? = AllRecordsTelemedicineItem(server_key: "1", data_server:"2", id_room: 3, status: "4", id_kl: 5, id_filial: 6, specialty: "7", full_name_kl: "8", dr_kl: "9", komment_kl: "10", fcm_kl: "11", tmId: 12, tm_name: "13", tm_type: "14", tm_price: 15, tm_time_for_tm: 16, timeStartAfterPay: 17, dataStart: "18", data_end: "19", dataPay: "20", status_pay: "21", about: "22", about_full: "23", notif_24: "24", notif_12: "25", notif_4: "26", notif_1: "27")
     
     init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, clickBack: @escaping () -> Void){
+        //print(">>>>>>> T3RoomView.init \(item.idRoom)")
+        
         self.clickBack = clickBack
         _mainPresenter = StateObject(wrappedValue:T3RoomPresenter(item: item))
         //mainPresenter = T3RoomPresenter(item: item)
@@ -49,6 +51,8 @@ struct T3RoomView: View {
        /// UIDevice.current.isProximityMonitoringEnabled = true
     }
     init(idRoom: String, idTm: String, clickBack: @escaping () -> Void){
+        //print(">>>>>>> T3RoomView.init \(idRoom)")
+        
         self.clickBack = clickBack
         _mainPresenter = StateObject(wrappedValue:T3RoomPresenter(idRoom: idRoom, idTm: idTm ))
         
@@ -56,6 +60,9 @@ struct T3RoomView: View {
     }
     
     var body: some View {
+        
+        //let _ = Self._printChanges()
+        
         if(self.mainPresenter.isShowMediaView == true){
             ShowMediaTelemedicineView(itemRecord: self.$mainPresenter.recordTItem, clickBack: {() -> Void in
                 self.mainPresenter.isShowMediaView = false
@@ -135,6 +142,16 @@ struct T3RoomView: View {
                                         .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
                                         .id(Int.init(truncating: i.idMessage!))
                                         .flippedUpsideDown()
+                                    }else if(i.type  == Constants.MsgRoomType.VIDEO()){
+                                        T3ItemVideo(item: i, clickRemuveItem: {(k: MessageRoomResponse.MessageRoomItem) -> Void in
+                                            self.mainPresenter.clickRemuveItem(k)
+                                        }, idRoom: self.mainPresenter.getIdRoom(), showAlert: {(i: String, j: String) -> Void in
+                                            self.mainPresenter.showAlet(i,j)}
+                                        )
+                                        .listRowSeparator(.hidden)
+                                        .listRowInsets(EdgeInsets(top: 0, leading: -1, bottom: 0, trailing: 0))
+                                        .id(Int.init(truncating: i.idMessage!))
+                                        .flippedUpsideDown()
                                     }else{
                                         Text("")
                                             .listRowSeparator(.hidden)
@@ -205,8 +222,11 @@ struct T3RoomView: View {
                     StandartAlert(dataOb: mainPresenter.isShowAlertStandart!)
                 }
                 
-                if(self.mainPresenter.showDialogLoading == true){
-                    LoadingView()
+                ZStack{
+                    if(self.mainPresenter.showDialogLoading == true){
+                        LoadingView()
+                        //.opacity(self.mainPresenter.showDialogLoading == true ? 1 : 0)
+                    }
                 }
 
                 

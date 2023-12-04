@@ -11,6 +11,7 @@ import shared
 import AVFoundation
 
 class BottombarTelemedicinePresenter: ObservableObject {
+    let MAX_LENGTH_SIMPLE_CLICK = 0.15
     
     
     var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>? = nil
@@ -29,22 +30,33 @@ class BottombarTelemedicinePresenter: ObservableObject {
             }
         }
     }
+    
+    @Published var typeRecordBtn = Constants.MsgRoomType.REC_AUD
     @Published var isShowRecordBtn = true
     @Published var isButtonRecordPressed = false
     {
         didSet {
             if(isButtonRecordPressed){
                 self.textFild = "0.00"
-                self.startRecord()
+                if(typeRecordBtn == Constants.MsgRoomType.REC_AUD){
+                    self.startRecordAudio()
+                }else{
+                    self.startRecordVideo()
+                }
             }else{
                 self.textFild = ""
-                self.stopRecord()
+                if(typeRecordBtn == Constants.MsgRoomType.REC_AUD){
+                    self.stopRecordAudio()
+                }else{
+                    self.stopRecordVideo()
+                }
             }
         }
     }
     @Published var selectedShow: TVShow?
-    
     let workWithFiles = WorkWithFiles()
+    
+    var pathToFileRecord : URL? = nil
     
     
     init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
@@ -61,7 +73,6 @@ class BottombarTelemedicinePresenter: ObservableObject {
     
     func clickSendMsg(){
         let tmp = self.textFild
-        //print(">>>>>>!!!>>>>>> onTapGesture \(tmp)")
         
         if(tmp.count != 0){
             self.textFild = ""
@@ -69,26 +80,51 @@ class BottombarTelemedicinePresenter: ObservableObject {
         }
     }
     
+    var lastClickRecord: Date? = nil
+    var isPresCurrent: Bool = false
     func setIsButtonPressed(_ isPres: Bool){
-        if(self.isButtonRecordPressed != isPres){
-            self.isButtonRecordPressed = isPres
-            //print(">>>>> onTapGesture \(isPres)")
+        if(self.isPresCurrent != isPres){
+            //print(">>>>>-2 setIsButtonPressed \(isPres)")
+            if(isPres){
+                self.lastClickRecord = MDate.getCurrentDate()
+                self.asincProcessingStateRecordBtn()
+            }else{
+                let currDateTpm = MDate.getCurrentDate()
+                if(self.lastClickRecord != nil && (currDateTpm.timeIntervalSince1970 - self.lastClickRecord!.timeIntervalSince1970 ) >  MAX_LENGTH_SIMPLE_CLICK){
+                    self.isButtonRecordPressed = isPres
+                }
+                self.lastClickRecord = nil
+            }
+            self.isPresCurrent = isPres
         }
     }
+    func asincProcessingStateRecordBtn(){
+        DispatchQueue.main.asyncAfter(deadline: .now() + MAX_LENGTH_SIMPLE_CLICK) {
+            //print(">>>>>0 lastClickRecord == nil \(self.lastClickRecord == nil)")
+            if(self.lastClickRecord != nil){
+                if(self.isPresCurrent == true){
+                    //print(">>>>>1 lastClickRecord != nil")
+                    self.isButtonRecordPressed = self.isPresCurrent
+                }
+            }else{
+                if(self.isPresCurrent == false){
+                    self.nextRecordType()
+                    //print(">>>>>2 nextRecordType \(self.typeRecordBtn.rawValue)")
+                }
+            }
+        }
+    }
+    
     func cancelRecord(){
-        AudioRecorHandler.shared.finishRecording()
-        if(pathToFileRecord != nil){
-            self.workWithFiles.deleteFileFromDocumentsByURL(pathToFileRecord!)
-            self.pathToFileRecord = nil
+        if(typeRecordBtn == Constants.MsgRoomType.REC_AUD){
+            cancelRecordAudio()
+        }else{
+            cancelRecordVideo()
         }
-        
-        self.selectedShow = TVShow(name: "Отменено")
-        
     }
     
-    
-    var pathToFileRecord : URL? = nil
-    func startRecord(){
+ 
+    func startRecordAudio(){
         DispatchQueue.main.async {
             self.pointTimerStarted = MDate.getCurrentDate()
             self.startRepeatShowTimer()
@@ -108,7 +144,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
             }, filePath: self.pathToFileRecord!)
         }
     }
-    func stopRecord(){
+    func stopRecordAudio(){
         if(self.pointTimerStarted == nil){
             return
         }
@@ -123,7 +159,6 @@ class BottombarTelemedicinePresenter: ObservableObject {
         
         
         if(pathToFileRecord != nil){
-            
             Task {
                 let asset = AVURLAsset(url: pathToFileRecord!, options: nil)
                 // Returns a CMTime value.
@@ -146,12 +181,89 @@ class BottombarTelemedicinePresenter: ObservableObject {
             }
         }
     }
+    func cancelRecordAudio(){
+        AudioRecorHandler.shared.finishRecording()
+        if(pathToFileRecord != nil){
+            self.workWithFiles.deleteFileFromDocumentsByURL(pathToFileRecord!)
+            self.pathToFileRecord = nil
+        }
+        self.selectedShow = TVShow(name: "Отменено")
+    }
+    
+    
+    
+    func startRecordVideo(){
+        DispatchQueue.main.async {
+            self.pointTimerStarted = MDate.getCurrentDate()
+            self.startRepeatShowTimer()
+            
+            let idRoom: String = String(Int(self.itemRecord!.wrappedValue!.idRoom!))
+            let nameFile = self.workWithFiles.getNewNameForNewFile(idRoom, "mp4")
+            if(nameFile != nil){
+                self.pathToFileRecord = self.workWithFiles.getDocumentsDirectory()?.appendingPathComponent(nameFile!)
+            }
+            
+            if(self.pathToFileRecord == nil){
+                return
+            }
+            
+//            AudioRecorHandler.shared.clickRecord(failMsg: {(i: String) -> Void in
+//                self.selectedShow = TVShow(name: i)
+//            }, filePath: self.pathToFileRecord!)
+        }
+
+    }
+    func stopRecordVideo(){
+        if(self.pointTimerStarted == nil){
+            return
+        }
+        
+        //AudioRecorHandler.shared.finishRecording()
+        
+        self.stopRepeatShowTimer()
+        
+        if(self.isButtonRecordPressed == true){
+            self.isButtonRecordPressed = false
+        }
+        
+        
+//        if(pathToFileRecord != nil){
+//            Task {
+//                let asset = AVURLAsset(url: pathToFileRecord!, options: nil)
+//                // Returns a CMTime value.
+//                let duration = try await asset.load(.duration)
+//                let t1 =  duration.seconds
+//                
+//                let allSec = Int.init(t1)
+//               
+//                DispatchQueue.main.async {
+//                    if(allSec < 1){
+//                        self.workWithFiles.deleteFileFromDocumentsByURL(self.pathToFileRecord!)
+//                        self.pathToFileRecord = nil
+//                    }else{
+//                        let tmp = self.pathToFileRecord!.lastPathComponent
+//                        self.listener?.sendRecordMsg(self.pathToFileRecord!.lastPathComponent)
+//                        self.pathToFileRecord = nil
+//                    }
+//                }
+//
+//            }
+//        }
+    }
+    func cancelRecordVideo(){
+        //AudioRecorHandler.shared.finishRecording()
+        if(pathToFileRecord != nil){
+            self.workWithFiles.deleteFileFromDocumentsByURL(pathToFileRecord!)
+            self.pathToFileRecord = nil
+        }
+        self.selectedShow = TVShow(name: "Отменено")
+    }
     
     
     var pointTimerStarted: Date? = nil
     func startRepeatShowTimer(){
         if(pointTimerStarted == nil){
-            self.stopRecord()
+            self.stopRecordAudio()
             return
         }
         
@@ -186,5 +298,13 @@ class BottombarTelemedicinePresenter: ObservableObject {
     }
     func stopRepeatShowTimer(){
         self.pointTimerStarted = nil
+    }
+    
+    func nextRecordType(){
+        if(self.typeRecordBtn == Constants.MsgRoomType.REC_AUD){
+            self.typeRecordBtn = Constants.MsgRoomType.VIDEO
+        }else{
+            self.typeRecordBtn = Constants.MsgRoomType.REC_AUD
+        }
     }
 }

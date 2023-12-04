@@ -16,6 +16,8 @@
 		5635C6F42A961A2A00DA2C65 /* AudioRecorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */; };
 		5683AB232AFB7A17005C5704 /* LoaderFileForChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */; };
 		56AD72E32A8DDB24005D3708 /* T3ItemRecordAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */; };
+		56CEF7382B15C05F003E644F /* T3ItemVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56CEF7372B15C05F003E644F /* T3ItemVideo.swift */; };
+		56CEF73A2B15C07D003E644F /* T3ItemVideoPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56CEF7392B15C07D003E644F /* T3ItemVideoPresenter.swift */; };
 		56EFDA9A2AA96E2700E75833 /* AnaliseResultPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EFDA992AA96E2700E75833 /* AnaliseResultPage.swift */; };
 		56EFDA9C2AA96E4F00E75833 /* AnaliseResultPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EFDA9B2AA96E4F00E75833 /* AnaliseResultPresenter.swift */; };
 		56EFDA9F2AA96EB900E75833 /* AnaliseResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EFDA9E2AA96EB900E75833 /* AnaliseResultItem.swift */; };
@@ -169,6 +171,8 @@
 		5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorHandler.swift; sourceTree = "<group>"; };
 		5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderFileForChat.swift; sourceTree = "<group>"; };
 		56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudio.swift; sourceTree = "<group>"; };
+		56CEF7372B15C05F003E644F /* T3ItemVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemVideo.swift; sourceTree = "<group>"; };
+		56CEF7392B15C07D003E644F /* T3ItemVideoPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemVideoPresenter.swift; sourceTree = "<group>"; };
 		56EFDA992AA96E2700E75833 /* AnaliseResultPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnaliseResultPage.swift; sourceTree = "<group>"; };
 		56EFDA9B2AA96E4F00E75833 /* AnaliseResultPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnaliseResultPresenter.swift; sourceTree = "<group>"; };
 		56EFDA9E2AA96EB900E75833 /* AnaliseResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnaliseResultItem.swift; sourceTree = "<group>"; };
@@ -341,6 +345,15 @@
 				56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */,
 			);
 			path = t3_item_record_audio;
+			sourceTree = "<group>";
+		};
+		56CEF7362B15C03A003E644F /* t3_item_video */ = {
+			isa = PBXGroup;
+			children = (
+				56CEF7372B15C05F003E644F /* T3ItemVideo.swift */,
+				56CEF7392B15C07D003E644F /* T3ItemVideoPresenter.swift */,
+			);
+			path = t3_item_video;
 			sourceTree = "<group>";
 		};
 		56EFDA972AA96DD200E75833 /* AnalizesView */ = {
@@ -541,6 +554,7 @@
 				562604172AFC7CDD006FF22C /* t3_item_file */,
 				56F259C02A56CDB0002A016F /* t3_item_img */,
 				56AD72E12A8DDAEF005D3708 /* t3_item_record_audio */,
+				56CEF7362B15C03A003E644F /* t3_item_video */,
 				5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */,
 			);
 			path = recy;
@@ -642,9 +656,9 @@
 			isa = PBXGroup;
 			children = (
 				56F259E02A56CDB0002A016F /* BottombarTelemedicine.swift */,
-				56F259E12A56CDB0002A016F /* TextViewM.swift */,
 				56F259E22A56CDB0002A016F /* BottombarTelemedicinePresenter.swift */,
 				56F259E32A56CDB0002A016F /* BottombarTelemedicinePresenter2.swift */,
+				56F259E12A56CDB0002A016F /* TextViewM.swift */,
 				5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */,
 			);
 			path = bottombar;
@@ -1001,6 +1015,7 @@
 				56F259FE2A56CDB1002A016F /* TimetableDocMonthView.swift in Sources */,
 				56F259942A56CD95002A016F /* LoginPresenter.swift in Sources */,
 				56F25A6B2A56D139002A016F /* MessageRoomItem.swift in Sources */,
+				56CEF73A2B15C07D003E644F /* T3ItemVideoPresenter.swift in Sources */,
 				56EFDAB22AA9A12400E75833 /* WebView.swift in Sources */,
 				56F25A3A2A56CDCD002A016F /* MenuView.swift in Sources */,
 				56F25A2B2A56CDB2002A016F /* T1ListOfEntriesItem.swift in Sources */,
@@ -1102,6 +1117,7 @@
 				56F25A702A56D139002A016F /* AllRaspSotrItem.swift in Sources */,
 				56EFDA9F2AA96EB900E75833 /* AnaliseResultItem.swift in Sources */,
 				56F25A762A56D139002A016F /* AllRaspSotrResponse.swift in Sources */,
+				56CEF7382B15C05F003E644F /* T3ItemVideo.swift in Sources */,
 				56F25A112A56CDB1002A016F /* ToolbarTelemedicineRoom.swift in Sources */,
 				56F25A6D2A56D139002A016F /* DoctorItem.swift in Sources */,
 				56F259F62A56CDB1002A016F /* DropdownRowCategory.swift in Sources */,

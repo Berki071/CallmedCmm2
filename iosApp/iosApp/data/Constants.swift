@@ -33,7 +33,7 @@ class Constants{
     }
     
     enum MsgRoomType: String{
-        case DATE, TARIFF, TEXT, IMG, FILE, REC_AUD
+        case DATE, TARIFF, TEXT, IMG, FILE, REC_AUD, VIDEO
         func callAsFunction() -> String {
             rawValue
         }

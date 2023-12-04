@@ -12,6 +12,7 @@ import shared
 class T3RoomPresenter: ObservableObject {
     
     @Published var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
+
     
     @Published var isShowMediaView: Bool = false
     @Published var isShowAlertStandart: StandartAlertData? = nil
@@ -35,6 +36,8 @@ class T3RoomPresenter: ObservableObject {
     
     
     init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
+        //print(">>>>>>> T3RoomPresenter.init \(item.idRoom)")
+        
         self.isStoppedT3View = false
     
         let tmIdC = item.tmId == nil ? "null" : String(Int.init(truncating: item.tmId!))
@@ -42,6 +45,8 @@ class T3RoomPresenter: ObservableObject {
         
     }
     init(idRoom: String, idTm: String){
+       // print(">>>>>>> T3RoomPresenter.init \(idRoom)")
+        
         self.isStoppedT3View = false
     
         self.getOneRecordInfo(idRoom, idTm)
@@ -83,64 +88,68 @@ class T3RoomPresenter: ObservableObject {
     func getNewMessagesInLoopFromServer(idRoom: String) {
         // за счет повторения запроса в цикле должна вызываться только раз и крутится внутри while
         
-        if(self.isStoppedT3View == true){
-            return
-        }
+        self.showLoading(false)
+//
+//        if(self.isStoppedT3View == true){
+//            return
+//        }
+//
+//        if(self.recordTItem == nil){
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                self.getNewMessagesInLoopFromServer(idRoom: idRoom)
+//            }
+//            return
+//        }
+//
+//        checkLastIdMessage()
+//
+//        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+//        let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
+//        let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
+//
+//
 
-        if(self.recordTItem == nil){
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.getNewMessagesInLoopFromServer(idRoom: idRoom)
-            }
-            return
-        }
-
-        checkLastIdMessage()
-
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
-        let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
-        let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
-
-        sdk.getMessagesRoom(idRoom: idRoom, idLastMsg: String(lastIdMessage),
-                            h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, completionHandler: { response, error in
-            if let res : MessageRoomResponse = response {
-
-                if(self.isStoppedT3View == true){
-                    return
-                }
-
-                if (res.response.count > 1 || res.response[0].idMessage != nil) {
-
-                    //self.processingOnImageOrFile(res.response)
-                    let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
-
-                    if(!listNewMFromRealm.isEmpty){
-                        self.processingAndAddListItemsInRecy(listNewMFromRealm)
-                        self.checkLastIdMessage()
-                    }else{
-                        self.checkLastIdMessage()
-                    }
-
-                }
-                self.showLoading(false)
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
-                }
-            } else {
-                if let t=error{
-                    LoggingTree.INSTANCE.e("T3RoomPresenter/getNewMessagesInLoopFromServer \(t)")
-                }
-                self.showLoading(false)
-
-                if(self.isStoppedT3View == true){
-                    return
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
-                }
-            }
-        })
+//        sdk.getMessagesRoom(idRoom: idRoom, idLastMsg: String(lastIdMessage),
+//                            h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, completionHandler: { response, error in
+//            if let res : MessageRoomResponse = response {
+//
+//                if(self.isStoppedT3View == true){
+//                    return
+//                }
+//
+//                if (res.response.count > 1 || res.response[0].idMessage != nil) {
+//
+//                    //self.processingOnImageOrFile(res.response)
+//                    let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
+//
+//                    if(!listNewMFromRealm.isEmpty){
+//                        self.processingAndAddListItemsInRecy(listNewMFromRealm)
+//                        self.checkLastIdMessage()
+//                    }else{
+//                        self.checkLastIdMessage()
+//                    }
+//
+//                }
+//                self.showLoading(false)
+//
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
+//                }
+//            } else {
+//                if let t=error{
+//                    LoggingTree.INSTANCE.e("T3RoomPresenter/getNewMessagesInLoopFromServer \(t)")
+//                }
+//                self.showLoading(false)
+//
+//                if(self.isStoppedT3View == true){
+//                    return
+//                }
+//
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
+//                }
+//            }
+//        })
     }
     
     func addMessagesToRealm(_ list: [MessageRoomResponse.MessageRoomItem], _ isNeedProcessing: Bool = false) -> [MessageRoomResponse.MessageRoomItem]{
@@ -189,41 +198,6 @@ class T3RoomPresenter: ObservableObject {
         }
         
     }
-    
-    
-//    func processingOnImageOrFile(_ list: [MessageRoomResponse.MessageRoomItem]){
-//         for i in list {
-//             if(i.type == Constants.MsgRoomType.IMG() || i.type == Constants.MsgRoomType.FILE() || i.type == Constants.MsgRoomType.REC_AUD()){
-//                 var ext: String
-//                 if(i.type == Constants.MsgRoomType.IMG()){
-//                     ext = "png"     
-//                 }else if(i.type == Constants.MsgRoomType.FILE()){
-//                     ext = "pdf"
-//                 }else if(i.type == Constants.MsgRoomType.REC_AUD()){
-//                     ext = "wav"
-//                 }else{
-//                     ext = "pdf"
-//                 }
-//                            
-//                 let newFileName = self.workWithFiles.getNewNameForNewFile(String(Int.init(truncating: recordTItem!.idRoom!)), ext, String(Int.init(truncating: i.idMessage!)))
-//
-//                 if(newFileName == nil){
-//                     self.showAlet("Ошибка!", "Не удалось создать файл для сохранения")
-//                 }else{
-//                     let tmp = workWithFiles.base64ToFile(i.text!, newFileName!, errorListener: {(i:String, j:String) in
-//                         //self.showAlet(i, j)
-//                     })
-//
-//                     if (!tmp){
-//                         self.showAlet("Ошибка!", "Не удалось скопировать файл для сохранения")
-//                     }else{
-//                         i.text = newFileName
-//                     }
-//                 }
-//             }
-//         }
-//     }
-    
 
     
     func checkLastIdMessage(){
@@ -870,17 +844,21 @@ class T3RoomPresenter: ObservableObject {
         if(self.showDialogLoading == isShow){
             return
         }
-        
-        if(isShow){
-            self.showDialogLoading = true
-        }else{
-            self.showDialogLoading = false
+
+        DispatchQueue.main.async {
+            if(isShow){
+                self.showDialogLoading = true
+            }else{
+                self.showDialogLoading = false
+            }
         }
     }
     func showAlet(_ title: String, _ text: String) {
-        self.isShowAlertStandart = StandartAlertData(titel: title, text: text, isShowCansel: false, someFuncOk: {() -> Void in
-            self.isShowAlertStandart = nil
-        }, someFuncCancel: {() -> Void in } )
+        DispatchQueue.main.async {
+            self.isShowAlertStandart = StandartAlertData(titel: title, text: text, isShowCansel: false, someFuncOk: {() -> Void in
+                self.isShowAlertStandart = nil
+            }, someFuncCancel: {() -> Void in } )
+        }
     }
     
 }

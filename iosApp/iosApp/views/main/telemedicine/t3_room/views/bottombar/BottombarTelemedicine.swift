@@ -109,7 +109,7 @@ struct BottombarTelemedicine: View {
                         .frame(width: 5.0)
                       
                     if(self.mainPresenter.isShowRecordBtn){
-                        Image("mic")
+                        Image(self.mainPresenter.typeRecordBtn == Constants.MsgRoomType.REC_AUD ? "mic" : "videocam")
                             .resizable()
                             .foregroundColor(Color.white)
                             .padding(12.0)
@@ -142,6 +142,9 @@ struct BottombarTelemedicine: View {
                                         //print(">>>>> onTapGesture onEnded")
                                     })
                             )
+//                            .onTapGesture {
+//                                self.mainPresenter.nextRecordType()
+//                            }
                     }else{
                         
                         Image("send")
@@ -155,11 +158,6 @@ struct BottombarTelemedicine: View {
                                 RoundedRectangle(cornerRadius: 21)
                             )
                             .onTapGesture {
-                                
-//                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-//                                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//                                }
-                                
                                 self.mainPresenter.clickSendMsg()
                             }
                     }

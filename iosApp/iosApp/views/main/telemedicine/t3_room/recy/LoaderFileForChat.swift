@@ -71,4 +71,91 @@ class LoaderFileForChat{
         }
     }
     
+    
+    func loadVideo(item: MessageRoomResponse.MessageRoomItem, processingFileComplete: @escaping ((MessageRoomResponse.MessageRoomItem) -> Void), errorBack: @escaping ((MessageRoomResponse.MessageRoomItem, String, String) -> Void), idRoom: String){
+        let sdk: NetworkManagerIos = NetworkManagerIos()
+        let sharePreferenses = SharedPreferenses()
+        let workWithFiles = WorkWithFiles()
+        
+        let pathDir = getDocumentsDirectory()
+        let newFileName = workWithFiles.getNewNameForNewFile(idRoom, "mp4", String(Int.init(truncating: item.idMessage!)))
+        
+        let apiKey = String.init(sharePreferenses.currentUserInfo!.token!)
+        
+        if(newFileName == nil || item.text == nil){
+            item.text = "null"
+            errorBack(item, "Ошибка!", "Не удалось создать файл для сохранения")
+        }else{
+            let destinationUrl = pathDir?.appendingPathComponent(newFileName!)
+            
+            if let destinationUrl = pathDir?.appendingPathComponent(newFileName!) {
+                sdk.loadVideoFile(urlStr: "\(item.text!)&token=\(apiKey)", savedURL: destinationUrl, responseF: {() -> Void in
+                    self.convertingToFileVideo(newFileName!, destinationUrl, item, processingFileComplete, errorBack)
+                }, errorM: {(e: String) -> Void in
+                    LoggingTree.INSTANCE.e("LoaderFileForChat/loadStatMkb \(e)")
+                    errorBack(item, "Ошибка!", "Не удалось загрузить файл")
+                })
+            }else{
+                item.text = "null"
+                errorBack(item, "Ошибка2!", "Не удалось создать файл для сохранения")
+            }
+        }
+    }
+    
+    func convertingToFileVideo(_ newFileName: String ,_ destinationUrl: URL, _ item: MessageRoomResponse.MessageRoomItem, _ processingFileComplete: @escaping ((MessageRoomResponse.MessageRoomItem) -> Void), _ errorBack: @escaping ((MessageRoomResponse.MessageRoomItem, String, String) -> Void)){
+        
+        if FileManager.default.fileExists(atPath: destinationUrl.path){
+            
+            let b64Str: String? = self.gerStringFromFile(destinationUrl, item, errorBack)
+            
+            if(b64Str == nil){
+                errorBack(item, "Ошибка2!", "Файла не существует")
+                return
+            }
+            
+            //let strB64 = String(decoding: b64Data!, as: UTF8.self)
+            
+            var decodedData: Data? = Data(base64Encoded: b64Str!, options: .ignoreUnknownCharacters)
+            
+            if(decodedData == nil){
+                errorBack(item, "Ошибка!", "Что-то пошло не так.")
+                return
+            }
+            
+            let text = ""
+            do {
+                try text.write(to: destinationUrl, atomically: false, encoding: .utf8)
+            } catch {
+                print(error)
+            }
+            
+            try? decodedData?.write(to: destinationUrl)
+            
+            item.text = newFileName
+            
+            processingFileComplete(item)
+            
+        }else{
+            LoggingTree.INSTANCE.e("LoaderFileForChat/convertingToFileVideo destinationUrl not exist")
+            errorBack(item, "Ошибка!", "Файла не существует")
+        }
+    }
+    func gerStringFromFile(_ destinationUrl: URL, _ item: MessageRoomResponse.MessageRoomItem, _ errorBack: @escaping ((MessageRoomResponse.MessageRoomItem, String, String) -> Void)) -> String?{
+        var string: String? = nil
+        do {
+           // data = try? Data(contentsOf: destinationUrl)
+            string = try String(contentsOf: destinationUrl)
+        } catch {
+            errorBack(item, "Ошибка!", "Не удалось создать файл для сохранения \((error.localizedDescription))")
+        }
+        
+        return  string
+    }
+    
+    func getDocumentsDirectory() -> URL? {
+        // find all possible documents directories for this user
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        // just send back the first one, which ought to be the only one
+        return paths[0]
+    }
 }

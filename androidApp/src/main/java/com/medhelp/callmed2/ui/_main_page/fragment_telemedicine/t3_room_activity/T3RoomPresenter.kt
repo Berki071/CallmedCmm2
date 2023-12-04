@@ -157,9 +157,17 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     //region notification msg
     fun sendMsgNotification() {
         mainView.recordItem?.let{
-            val notiObj = creteJSONObjectNotificationForMsg(it.fcmKl!! , it.idRoom.toString(), it.tmId.toString(),  it.idKl.toString(), it.idFilial.toString()) ?: throw Exception("Не удалось создать объект для отправки нотификации")
-            val servK = mainView.recordItem!!.serverKey
-            sendMsgNotification2(notiObj, servK!!, Constants.SENDER_ID_FCM_PATIENT, true, it.tmId.toString())
+            if(it.fcmKl == null || it.idRoom == null || it.tmId == null || it.idKl == null || it.idFilial == null || it.serverKey == null) {
+                Timber.tag("my").w("T3RoomPresenter/sendMsgNotification ${it.fcmKl == null}  ${it.idRoom == null}  ${it.tmId == null}  ${it.idKl == null}  ${it.idFilial == null}  ${it.serverKey == null}")
+                return
+            }
+
+            val notiObj = creteJSONObjectNotificationForMsg(it.fcmKl!! , it.idRoom.toString(), it.tmId.toString(),  it.idKl.toString(), it.idFilial.toString()) /*?: throw Exception("Не удалось создать объект для отправки нотификации")*/
+            val servK = it.serverKey
+            if(notiObj != null)
+                sendMsgNotification2(notiObj, servK!!, Constants.SENDER_ID_FCM_PATIENT, true, it.tmId.toString())
+            else
+                Timber.tag("my").w("T3RoomPresenter/sendMsgNotification ${notiObj != null}")
         }
     }
     private fun creteJSONObjectNotificationForMsg(fcmKey: String, idRoom: String, idTm: String, idKl: String, idFilial: String): String? {
@@ -292,9 +300,13 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
     //region send status noty
     fun sendStatusNotification(status: String, item: AllRecordsTelemedicineItem, type: String) {
         mainView.recordItem?.let{
-            val notiObj = creteJSONObjectNotificationForStatus(status, item, type) ?: throw Exception("Не удалось создать объект для отправки нотификации")
-            val servK = mainView.recordItem!!.serverKey
-            sendMsgNotification2(notiObj, servK!!, Constants.SENDER_ID_FCM_PATIENT, false, item.tmId.toString(),status)
+            val notiObj = creteJSONObjectNotificationForStatus(status, item, type) /*?: throw Exception("Не удалось создать объект для отправки нотификации")*/
+            val servK = it.serverKey
+
+            if(notiObj != null && servK != null)
+                sendMsgNotification2(notiObj, servK, Constants.SENDER_ID_FCM_PATIENT, false, item.tmId.toString(),status)
+            else
+                Timber.tag("my").w("T3RoomPresenter/sendStatusNotification ${notiObj != null}  ${servK != null}")
         }
     }
     private fun creteJSONObjectNotificationForStatus(status: String, item: AllRecordsTelemedicineItem, type: String): String? {

@@ -39,7 +39,7 @@ class VisitResponse {
         var komment: String? = null
 
         @SerialName("id_client")
-        var id_client = 0
+        var id_client: Int? = null
 
         @SerialName("naim")
         var naim: String? = null

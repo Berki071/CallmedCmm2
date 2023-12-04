@@ -146,7 +146,6 @@ struct T3ItemRecordAudio: View {
 struct T3ItemRecordAudio_Previews: PreviewProvider {
     @State static var msgItem : MessageRoomResponse.MessageRoomItem = MessageRoomResponse.MessageRoomItem()
    
-    
     static var previews: some View {
         T3ItemRecordAudio(item: msgItem, clickRemuveItem: {(MessageRoomItem) -> Void in }, idRoom: "1", showAlert: {(i: String, j: String) -> Void in })
     }

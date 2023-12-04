@@ -519,9 +519,16 @@ class T3RoomPresenter: ObservableObject {
     
     func sendStatusNotification(_ status: String, _ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, _ type: String) {
         if(self.recordTItem != nil){
+            if(recordTItem!.tmId == nil || recordTItem!.serverKey == nil){
+                LoggingTree.INSTANCE.e("T3RoomPresenter/sendStatusNotification \(recordTItem!.tmId == nil) \(recordTItem!.serverKey == nil)")
+                return
+            }
+            
             let notiObj = self.creteJSONObjectNotificationForStatus(status, item, type)
             let servK = self.recordTItem!.serverKey!
             self.sendMsgNotification2(notiObj, servK, Constants.SENDER_ID_FCM_PATIENT, false, String.init(Int.init(truncating: item.tmId!)), status)
+        }else{
+            LoggingTree.INSTANCE.e("T3RoomPresenter/sendStatusNotification \(self.recordTItem != nil)")
         }
     }
     func creteJSONObjectNotificationForStatus(_ status: String, _ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, _ type: String) -> String {
@@ -549,12 +556,19 @@ class T3RoomPresenter: ObservableObject {
     }
     func sendMsgNotification() {
         if(recordTItem != nil){
+            if(recordTItem!.idRoom == nil || recordTItem!.tmId == nil || recordTItem!.fcmKl == nil || recordTItem!.serverKey == nil){
+                LoggingTree.INSTANCE.e("T3RoomPresenter/sendMsgNotification \(recordTItem!.idRoom == nil) \(recordTItem!.tmId == nil)  \(recordTItem!.fcmKl == nil) \(recordTItem!.serverKey == nil)")
+                return
+            }
+            
             let idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
             let idTm = String(Int.init(truncating: recordTItem!.tmId!))
             
             let notiObj = self.creteJSONObjectNotification(recordTItem!.fcmKl!, idRoom, idTm)
             let servK = recordTItem!.serverKey
             self.sendMsgNotification2(notiObj, servK!, Constants.SENDER_ID_FCM_PATIENT, true, String.init(Int.init(truncating: recordTItem!.tmId!)))
+        }else{
+            LoggingTree.INSTANCE.e("T3RoomPresenter/sendMsgNotification \(recordTItem == nil)")
         }
     }
     func creteJSONObjectNotification(_ fcmKey: String, _ idRoom: String, _ idTm: String) -> String {

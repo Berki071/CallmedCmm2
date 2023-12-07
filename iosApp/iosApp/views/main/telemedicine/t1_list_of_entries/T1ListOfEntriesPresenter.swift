@@ -74,7 +74,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
             self.getData((self.whatDataShow == Constants.WhatDataShow.ACTIVE()) ? "new" : "old")
         }
         
-        if(AppState.shared.pageToNavigationTo != nil){
+        if(AppState.shared.pageToNavigationTo != nil && AppState.shared.pageToNavigationTo!.idRoom != nil && AppState.shared.pageToNavigationTo!.idTm != nil && AppState.shared.pageToNavigationTo!.typeMsg != nil){
             isShowRoomView2 = AppState.shared.pageToNavigationTo
             AppState.shared.pageToNavigationTo = nil
             return

@@ -38,7 +38,8 @@ class T1ListOfEntriesFragment : BaseFragment() {
         val rootView = inflater.inflate(R.layout.fragment_chat_with_doctor, container, false)
         binding = FragmentChatWithDoctorBinding.bind(rootView)
 
-        presenter = T1ListOfEntriesPresenter(this)
+        presenter = T1ListOfEntriesPresenter()
+        presenter.onAttachView(this)
         setHasOptionsMenu(true)
 
         val intent = (context as MainPageActivity).intent
@@ -69,6 +70,7 @@ class T1ListOfEntriesFragment : BaseFragment() {
 
     override fun onDestroy() {
         PadForMyFirebaseMessagingService.listener = null
+        presenter.onDetachView()
         super.onDestroy()
     }
 

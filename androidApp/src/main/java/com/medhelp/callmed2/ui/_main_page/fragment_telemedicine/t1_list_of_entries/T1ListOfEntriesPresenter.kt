@@ -23,28 +23,45 @@ import timber.log.Timber
 import java.util.ArrayList
 import java.util.Locale
 
-class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
-    var prefManager: PreferencesManager = PreferencesManager(mainView.requireContext())
+class T1ListOfEntriesPresenter{
+    var mainView: T1ListOfEntriesFragment? = null
+    var prefManager: PreferencesManager? = null
     val networkManagerKMM: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
 
     var mainList: MutableList<AllRecordsTelemedicineItem>? = null
     //var searchList: MutableList<T1ListOfEntriesDataModel>? = null
     var query = ""
 
+    fun onAttachView(mainView: T1ListOfEntriesFragment){
+        this.mainView = mainView
+        prefManager = PreferencesManager(mainView.requireContext())
+    }
+    fun onDetachView(){
+        mainView = null
+        prefManager = null
+    }
+
+
     fun getData(type: String) {  //type = "old" or any string
-        Different.showLoadingDialog(mainView.requireContext())
-        val idDoc = prefManager.currentUserId.toString()
-        val dbName = prefManager.centerInfo!!.db_name
-        val token = prefManager.accessToken!!
+        if(mainView == null || prefManager == null)
+            return
+
+        Different.showLoadingDialog(mainView?.requireContext())
+        val idDoc = prefManager!!.currentUserId.toString()
+        val dbName = prefManager!!.centerInfo!!.db_name
+        val token = prefManager!!.accessToken!!
 
 
-        mainView.viewLifecycleOwner.lifecycleScope.launch {
+        mainView?.viewLifecycleOwner?.lifecycleScope?.launch {
             kotlin.runCatching {
                 networkManagerKMM.getAllRecordsTelemedicine(type, token, dbName, idDoc)
             }
                 .onSuccess {
+                    if(mainView == null)
+                        return@onSuccess
+
                     if(it.response.size>1 || it.response[0].idRoom != null) {
-                        if (mainView.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString()) {
+                        if (mainView!!.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString()) {
                            // it.response[0].status = Constants.TelemedicineStatusRecord.wait.toString()
                             //it.response[0].dataServer = "26.04.2023 02:30:26"
                            //it.response[0].tmTimeForTm = 2
@@ -53,33 +70,37 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
                             mainList = removeWaitItemWhichNoPay(it.response)
                             val tmpList = processingDataRecordsForRecy(mainList!!)
 
-                            mainView.updateRecyActive(tmpList)
+                            mainView?.updateRecyActive(tmpList)
 
                         } else {
                             mainList = it.response!!.toMutableList()
                             val tmp = filtrationList()
-                            mainView.updateRecyArchive(tmp)
+                            mainView?.updateRecyArchive(tmp)
                         }
                     }else{
-                        if(mainView.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString())
-                            mainView.updateRecyActive(mutableListOf())
-                        else
-                            mainView.updateRecyArchive(mutableListOf())
+                        mainView?.let { itMV ->
+                            if(itMV.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString())
+                                itMV.updateRecyActive(mutableListOf())
+                            else
+                                itMV.updateRecyArchive(mutableListOf())
+                        }
                     }
 
-                    mainView.binding.swipeProfile.isRefreshing = false
+                    mainView?.binding?.swipeProfile?.isRefreshing = false
                     Different.hideLoadingDialog()
                 }.onFailure {
                     Timber.tag("my").w(LoggingTree.getMessageForError(it, "T1ListOfEntriesPresenter.getData"))
                     if (mainView == null) {
                         return@onFailure
                     }
-                    if(mainView.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString())
-                        mainView.updateRecyActive(mutableListOf())
-                    else
-                        mainView.updateRecyArchive(mutableListOf())
+                    mainView?.let { itMV ->
+                        if (itMV.whatDataShow == T1ListOfEntriesFragment.WhatDataShow.ACTIVE.toString())
+                            itMV.updateRecyActive(mutableListOf())
+                        else
+                            itMV.updateRecyArchive(mutableListOf())
+                    }
 
-                    mainView.binding.swipeProfile.isRefreshing = false
+                    mainView?.binding?.swipeProfile?.isRefreshing = false
                     Different.hideLoadingDialog()
                 }
         }
@@ -91,7 +112,7 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
         this.query = query
 
         val tmpL = filtrationList()
-        mainView.updateRecyArchive(tmpL)
+        mainView?.updateRecyArchive(tmpL)
     }
     private fun filtrationList() : MutableList<AllRecordsTelemedicineItem> {
         if(mainList == null)
@@ -173,17 +194,25 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
 
     val isCheckLoginAndPassword: Boolean
         get() {
-            val idUser = prefManager.currentUserId
-            val pass = prefManager.currentPassword
-            return if (idUser == 0 || pass == "") false else true
+            prefManager?.let{
+                val idUser = it.currentUserId
+                val pass = it.currentPassword
+                return if (idUser == 0 || pass == "") false else true
+            }
+            return false
         }
 
     fun closeRecordTelemedicine(item: AllRecordsTelemedicineItem){
-        Different.showLoadingDialog(mainView.requireContext())
-        mainView.lifecycleScope.launch {
+        if(mainView == null || prefManager == null)
+            return
+
+
+        Different.showLoadingDialog(mainView?.requireContext())
+
+        mainView?.lifecycleScope?.launch {
             kotlin.runCatching {
                 networkManagerKMM.closeRecordTelemedicine(item.idRoom!!.toString(), item.tmId!!.toString()
-                    ,prefManager.accessToken!!, prefManager.centerInfo!!.db_name!!, prefManager.currentUserId.toString())
+                    ,prefManager!!.accessToken!!, prefManager!!.centerInfo!!.db_name!!, prefManager!!.currentUserId.toString())
             }
                 .onSuccess {
                     Timber.tag("my").d("Закрыт по истечению времени tmId ${item.tmId}")
@@ -202,19 +231,25 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
     fun areThereAnyNewTelemedicineMsg(){
         //крутится в процессе жизненного цикла
 
-        val lifecycle = mainView.viewLifecycleOwner
+        if(mainView == null || prefManager == null)
+            return
 
-        lifecycle.lifecycleScope.launch {
+        val lifecycle = mainView?.viewLifecycleOwner
+
+        lifecycle?.lifecycleScope?.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 while (true) {
                     kotlin.runCatching {
-                        networkManagerKMM.areThereAnyNewTelemedicineMsg(prefManager.accessToken!!, prefManager.centerInfo!!.db_name!!, prefManager.currentUserId.toString())
+                        networkManagerKMM.areThereAnyNewTelemedicineMsg(prefManager!!.accessToken!!, prefManager!!.centerInfo!!.db_name!!, prefManager!!.currentUserId.toString())
                     }
                         .onSuccess {
+                            if(mainView == null)
+                                return@onSuccess
+
                             if(it.response.size>1 || it.response[0].idRoom != null)
-                                mainView.adapterActive?.processingHasNewMsg(it.response)
+                                mainView?.adapterActive?.processingHasNewMsg(it.response)
                             else
-                                mainView.adapterActive?.processingHasNewMsg(listOf())
+                                mainView?.adapterActive?.processingHasNewMsg(listOf())
 
 
 //                                var itmTest = HasPacChatsItem()
@@ -240,19 +275,24 @@ class T1ListOfEntriesPresenter(val mainView: T1ListOfEntriesFragment) {
 
     //region notification time reminder
     fun sendMsgNotificationTimeReminder(item: AllRecordsTelemedicineItemAndroid, msg: String) {
-        val simpleNotificationForFCM = SimpleNotificationForFCM(mainView.requireContext(), mainView.requireContext().getSystemService(
-            FirebaseMessagingService.NOTIFICATION_SERVICE)
-                as NotificationManager
-        )
-        //TelemedicineNotificationType все что не равны сообщению переводят на всеКомнаты
-        simpleNotificationForFCM.showDataTelemedicine("Внимание!", msg, item.idRoom.toString(), item.tmId.toString(), Constants.TelemedicineNotificationType.START_APPOINTMENT.fullName)
+        mainView?.let{
+            val simpleNotificationForFCM = SimpleNotificationForFCM(it.requireContext(), it.requireContext().getSystemService(
+                FirebaseMessagingService.NOTIFICATION_SERVICE)
+                    as NotificationManager
+            )
+            //TelemedicineNotificationType все что не равны сообщению переводят на всеКомнаты
+            simpleNotificationForFCM.showDataTelemedicine("Внимание!", msg, item.idRoom.toString(), item.tmId.toString(), Constants.TelemedicineNotificationType.START_APPOINTMENT.fullName)
+        }
     }
 
     fun updateTelemedicineReminderDocAboutRecord(item: AllRecordsTelemedicineItemAndroid, type: String){
-        mainView.lifecycleScope.launch {
+        if(mainView == null || prefManager == null)
+            return
+
+        mainView?.lifecycleScope?.launch {
             kotlin.runCatching {
                 networkManagerKMM.updateTelemedicineReminderDocAboutRecord(type, item.tmId!!.toString()
-                    ,prefManager.accessToken!!, prefManager.centerInfo!!.db_name!!, prefManager.currentUserId.toString())
+                    , prefManager!!.accessToken!!, prefManager!!.centerInfo!!.db_name!!, prefManager!!.currentUserId.toString())
             }
                 .onSuccess {
                 }.onFailure {

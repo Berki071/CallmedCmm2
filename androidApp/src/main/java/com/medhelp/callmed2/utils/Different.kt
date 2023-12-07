@@ -241,7 +241,7 @@ object Different {
         btnYesName: String? = activity!!.getString(R.string.understandably)
     ) {
         if (activity == null) return
-        if (alertInfo != null) {
+        if (alertInfo != null && !activity.isDestroyed) {
             alertInfo!!.dismiss()
             alertInfo = null
         }

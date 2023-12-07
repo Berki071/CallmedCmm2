@@ -310,6 +310,9 @@ class T3RoomPresenter(val mainView: T3RoomActivity) {
         }
     }
     private fun creteJSONObjectNotificationForStatus(status: String, item: AllRecordsTelemedicineItem, type: String): String? {
+        if(item.idRoom == null || item.tmId == null || item.idKl == null || item.idFilial === null || item.fcmKl == null)
+            return null
+
         try {
             val noti = JSONObject()
             noti.put("title", "Медицинский помощник.Пациент")

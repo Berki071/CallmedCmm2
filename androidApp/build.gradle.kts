@@ -53,12 +53,12 @@ dependencies {
     implementation(project(":shared"))
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
 
-    compileOnly("io.realm.kotlin:library-base:1.11.0")
+    compileOnly("io.realm.kotlin:library-base:1.13.0")
    // implementation("io.realm.kotlin:library-base:1.11.0")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.media:media:1.6.0")
+    implementation("androidx.media:media:1.7.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.test:monitor:1.6.1")
 
@@ -87,7 +87,7 @@ dependencies {
 
     //    Crash Reporting
     // Add the Firebase Crashlytics SDK.
-    implementation (platform("com.google.firebase:firebase-bom:32.2.3"))
+    implementation (platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation ("com.google.firebase:firebase-crashlytics-ktx")
     implementation ("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
@@ -103,7 +103,7 @@ dependencies {
     implementation("io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.1.3")
 
     //запуск фоновых процессов
-    implementation("androidx.work:work-runtime:2.8.1")
+    implementation("androidx.work:work-runtime:2.9.0")
 
     implementation("ru.egslava:MaskedEditText:1.0.5")
 

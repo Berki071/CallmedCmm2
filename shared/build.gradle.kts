@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
-    id("io.realm.kotlin") version "1.11.0"
+    id("io.realm.kotlin") version "1.13.0"
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -28,7 +28,7 @@ kotlin {
     }
 
     sourceSets {
-        val ktorVersion = "2.3.3"
+        val ktorVersion = "2.3.6"
         val coroutinesVersion = "1.7.3"
 
         val commonMain by getting {
@@ -43,7 +43,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-                implementation("io.realm.kotlin:library-base:1.11.0")
+                implementation("io.realm.kotlin:library-base:1.13.0")
             }
         }
         val commonTest by getting {

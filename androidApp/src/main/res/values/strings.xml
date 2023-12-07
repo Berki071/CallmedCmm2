@@ -106,4 +106,7 @@
     <string name="resultFrom">"Результаты анализов от: "</string>
     <string name="empty_error_message">Не удалось загрузить даные</string>
 
+    <string name="hintBtnRecAudio">Звук - удерживайте.  Видео - нажмите</string>
+    <string name="hintBtnRecVideo">Видео - удерживайте.  Звук - нажмите</string>
+
 </resources>

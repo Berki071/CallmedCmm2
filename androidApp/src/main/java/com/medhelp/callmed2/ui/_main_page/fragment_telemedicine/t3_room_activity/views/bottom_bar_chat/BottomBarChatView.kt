@@ -15,6 +15,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
@@ -211,6 +212,60 @@ class BottomBarChatView : RelativeLayout {
                 return true
             }
         })
+
+    }
+
+    fun showRecordBtnAnim(){
+
+        btnAction.animate()
+            .scaleX(0.8F)
+            .scaleY(0.8F)
+            .setDuration(500).setInterpolator(AccelerateDecelerateInterpolator())
+            .withEndAction( Runnable() {
+                btnAction.animate()
+                    .scaleX(1.2F)
+                    .scaleY(1.2F)
+                    .setDuration(500).setInterpolator(AccelerateDecelerateInterpolator())
+                    .withEndAction(Runnable() {
+
+                        btnAction.animate()
+                            .scaleX(0.8F)
+                            .scaleY(0.8F)
+                            .setDuration(500).setInterpolator(AccelerateDecelerateInterpolator())
+                            .withEndAction(Runnable() {
+
+                                btnAction.clickChangeToNextState()
+
+                                btnAction.animate()
+                                    .scaleX(1.2F)
+                                    .scaleY(1.2F)
+                                    .setDuration(500)
+                                    .setInterpolator(AccelerateDecelerateInterpolator())
+                                    .withEndAction(Runnable() {
+
+                                        btnAction.animate()
+                                            .scaleX(0.8F)
+                                            .scaleY(0.8F)
+                                            .setDuration(500)
+                                            .setInterpolator(AccelerateDecelerateInterpolator())
+                                            .withEndAction(Runnable() {
+
+                                                btnAction.clickChangeToNextState()
+
+                                                btnAction.animate()
+                                                    .scaleX(1F)
+                                                    .scaleY(1F)
+                                                    .setDuration(500).setInterpolator(
+                                                        AccelerateDecelerateInterpolator()
+                                                    )
+                                                    .withEndAction(Runnable() {
+                                                        btnAction.isShowHint = true
+                                                    })
+                                            })
+                                    })
+                            })
+                    })
+            })
     }
 
     fun startRecord(){

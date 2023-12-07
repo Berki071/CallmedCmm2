@@ -3,8 +3,10 @@ package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activit
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.AttributeSet
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
 import com.medhelp.callmed2.R
+import it.sephiroth.android.library.xtooltip.Tooltip
 
 class BtnActionForChatView: AppCompatImageButton {
     //region constructors
@@ -24,6 +26,7 @@ class BtnActionForChatView: AppCompatImageButton {
     var isAllowStateAudioRecord = true  // флаг для разрешения аудио записи
     var isAllowStateVideoRecord = true
 
+    var isShowHint = false
     
     var stateBtn: BtnActionForChatState = BtnActionForChatState.TEXT
 
@@ -64,11 +67,20 @@ class BtnActionForChatView: AppCompatImageButton {
         if(isForRecordState()){
             if(stateBtn == BtnActionForChatState.AUDIO){
                 setState(BtnActionForChatState.VIDEO)
+
+                if(isShowHint)
+                    TooltipRecordBtn().showTooltip(context,context.getString(R.string.hintBtnRecVideo), this)
+
             }else{
                 setState(BtnActionForChatState.AUDIO)
+
+                if(isShowHint)
+                    TooltipRecordBtn().showTooltip(context,context.getString(R.string.hintBtnRecAudio), this)
             }
         }
     }
+
+
 
     fun isForRecordState() : Boolean{
         return stateBtn == BtnActionForChatState.AUDIO || stateBtn == BtnActionForChatState.VIDEO

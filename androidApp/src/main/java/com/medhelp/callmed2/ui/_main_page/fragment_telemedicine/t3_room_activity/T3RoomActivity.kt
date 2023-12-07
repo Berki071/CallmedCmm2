@@ -107,7 +107,6 @@ class T3RoomActivity: AppCompatActivity(){
             if(str!=null) {
                 recordItem = gson.fromJson(str, AllRecordsTelemedicineItem::class.java)
                 presenter.getOneRecordInfo(recordItem!!.idRoom.toString(), recordItem!!.tmId.toString())
-                //setUp()
             }else{
                 val idRoom = intent.getStringExtra("idRoom")
                 val idTm = intent.getStringExtra("idTm")
@@ -295,6 +294,8 @@ class T3RoomActivity: AppCompatActivity(){
         clearChatNotification()
 
         checkTimer()
+
+        binding.bottomBarChat.showRecordBtnAnim()
     }
 
     fun initRecy(listMsg: MutableList<MessageRoomItem>){

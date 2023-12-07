@@ -776,7 +776,6 @@ class T3RoomPresenter: ObservableObject {
         msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
         
         self.videoToJsonObjWithBase64(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
-        //self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
     }
     func videoToJsonObjWithBase64(_ idUser: String, _ item: MessageRoomResponse.MessageRoomItem, _ idBranch: String){
         self.processingAndAddListItemsInRecy([item])

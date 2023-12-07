@@ -44,9 +44,9 @@ class RecordVideoPad{
         
         if(currentAction == CurrentAction.Stopped){
             Task {
-                let fExist = FileManager.default.fileExists(atPath: url.path)
-                let size = self.fileSize(forURL: url)
-                print(">>>>>>> fileWithViedeoCreated fExist=\(fExist) size=\(size)")
+//                let fExist = FileManager.default.fileExists(atPath: url.path)
+//                let size = self.fileSize(forURL: url)
+//                print(">>>>>>> fileWithViedeoCreated fExist=\(fExist) size=\(size)")
                 
                 let asset = AVURLAsset(url: url, options: nil)
                 // Returns a CMTime value.
@@ -54,7 +54,7 @@ class RecordVideoPad{
                 let t1 =  duration.seconds
                 let allSec = Int.init(t1)
                 
-                print(">>>>>>> fileWithViedeoCreated allSec=\(t1)")
+                //print(">>>>>>> fileWithViedeoCreated allSec=\(t1)")
                 
                 DispatchQueue.main.async {
                     if(allSec < 1){

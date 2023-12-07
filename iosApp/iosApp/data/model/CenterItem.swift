@@ -26,4 +26,5 @@ struct CenterItem: Decodable,Encodable{
     var vers_kl : String?
     var vers_sotr : String?
     var db_name : String?
+    var ip_download: String?
 }

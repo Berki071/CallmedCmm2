@@ -12,10 +12,12 @@ import AVFoundation
 
 class BottombarTelemedicinePresenter: ObservableObject {
     let MAX_LENGTH_SIMPLE_CLICK = 0.15
-    
+    static let MAX_DURATION_OF_ONE_AUDIO_MSG = 180 //
+    static let MAX_DURATION_OF_ONE_VIDEO_MSG = 30
     
     var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>? = nil
     var listener: BottombarTelemedicineListener? = nil
+   
     
     @Published var textFild: String = ""{
         willSet {
@@ -53,15 +55,23 @@ class BottombarTelemedicinePresenter: ObservableObject {
             }
         }
     }
-    @Published var selectedShow: TVShow?
+    
     let workWithFiles = WorkWithFiles()
     
     var pathToFileRecord : URL? = nil
+    var recordVideoPad: RecordVideoPad
     
     
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
         self.itemRecord = item
         self.listener = listener
+        self.recordVideoPad = recordVideoPad
+    
+        self.recordVideoPad.bottomBarListener = BottomBarListener(sendVideoMsg: {(i: String) -> Void in
+            self.listener?.sendVideoMsg(i)
+        }, errorMsg: {(i: String, j: String) -> Void in
+            self.listener?.showAlertMsg(i,j)
+        })
     }
     
     func selectFileFromPhotoLibrary(){
@@ -140,14 +150,15 @@ class BottombarTelemedicinePresenter: ObservableObject {
             }
             
             AudioRecorHandler.shared.clickRecord(failMsg: {(i: String) -> Void in
-                self.selectedShow = TVShow(name: i)
+               // self.selectedShow = TVShow(name: i)
+                self.listener?.showAlertMsg("",i)
             }, filePath: self.pathToFileRecord!)
         }
     }
     func stopRecordAudio(){
-        if(self.pointTimerStarted == nil){
-            return
-        }
+//        if(self.pointTimerStarted == nil){
+//            return
+//        }
         
         AudioRecorHandler.shared.finishRecording()
         
@@ -187,7 +198,8 @@ class BottombarTelemedicinePresenter: ObservableObject {
             self.workWithFiles.deleteFileFromDocumentsByURL(pathToFileRecord!)
             self.pathToFileRecord = nil
         }
-        self.selectedShow = TVShow(name: "Отменено")
+        //self.selectedShow = TVShow(name: "Отменено")
+        self.listener?.showAlertMsg("", "Отменено" )
     }
     
     
@@ -201,24 +213,21 @@ class BottombarTelemedicinePresenter: ObservableObject {
             let nameFile = self.workWithFiles.getNewNameForNewFile(idRoom, "mp4")
             if(nameFile != nil){
                 self.pathToFileRecord = self.workWithFiles.getDocumentsDirectory()?.appendingPathComponent(nameFile!)
+                
+                if(self.pathToFileRecord == nil){
+                    return
+                }
+                
+                self.recordVideoPad.startRecord(pathToFileRecord: self.pathToFileRecord!)
             }
             
-            if(self.pathToFileRecord == nil){
-                return
-            }
-            
-//            AudioRecorHandler.shared.clickRecord(failMsg: {(i: String) -> Void in
-//                self.selectedShow = TVShow(name: i)
-//            }, filePath: self.pathToFileRecord!)
         }
 
     }
     func stopRecordVideo(){
-        if(self.pointTimerStarted == nil){
-            return
-        }
-        
-        //AudioRecorHandler.shared.finishRecording()
+//        if(self.pointTimerStarted == nil){
+//            return
+//        }
         
         self.stopRepeatShowTimer()
         
@@ -226,44 +235,28 @@ class BottombarTelemedicinePresenter: ObservableObject {
             self.isButtonRecordPressed = false
         }
         
-        
-//        if(pathToFileRecord != nil){
-//            Task {
-//                let asset = AVURLAsset(url: pathToFileRecord!, options: nil)
-//                // Returns a CMTime value.
-//                let duration = try await asset.load(.duration)
-//                let t1 =  duration.seconds
-//                
-//                let allSec = Int.init(t1)
-//               
-//                DispatchQueue.main.async {
-//                    if(allSec < 1){
-//                        self.workWithFiles.deleteFileFromDocumentsByURL(self.pathToFileRecord!)
-//                        self.pathToFileRecord = nil
-//                    }else{
-//                        let tmp = self.pathToFileRecord!.lastPathComponent
-//                        self.listener?.sendRecordMsg(self.pathToFileRecord!.lastPathComponent)
-//                        self.pathToFileRecord = nil
-//                    }
-//                }
-//
-//            }
-//        }
+        self.recordVideoPad.stopRecord()
+        self.pathToFileRecord = nil
     }
+
+    
     func cancelRecordVideo(){
-        //AudioRecorHandler.shared.finishRecording()
-        if(pathToFileRecord != nil){
-            self.workWithFiles.deleteFileFromDocumentsByURL(pathToFileRecord!)
-            self.pathToFileRecord = nil
-        }
-        self.selectedShow = TVShow(name: "Отменено")
+        self.recordVideoPad.cancel()
+        
+        self.pathToFileRecord = nil
+        self.listener?.showAlertMsg("","Отменено")
     }
     
     
     var pointTimerStarted: Date? = nil
     func startRepeatShowTimer(){
         if(pointTimerStarted == nil){
-            self.stopRecordAudio()
+            
+            if(typeRecordBtn == Constants.MsgRoomType.REC_AUD){
+                self.stopRecordAudio()
+            }else{
+                self.stopRecordVideo()
+            }
             return
         }
         
@@ -276,9 +269,10 @@ class BottombarTelemedicinePresenter: ObservableObject {
             timeHasPassedSec = Int(timeHasPassedSecTI)
         }
         
-        if(timeHasPassedSec >= Constants.MAX_DURATION_OF_ONE_AUDIO_MSG){
+        if((typeRecordBtn == Constants.MsgRoomType.REC_AUD && timeHasPassedSec >= BottombarTelemedicinePresenter.MAX_DURATION_OF_ONE_AUDIO_MSG) ||
+           (typeRecordBtn == Constants.MsgRoomType.VIDEO && timeHasPassedSec >= BottombarTelemedicinePresenter.MAX_DURATION_OF_ONE_VIDEO_MSG)){
             pointTimerStarted = nil
-            return
+           
         }
         
         let min = String(timeHasPassedSec / 60)

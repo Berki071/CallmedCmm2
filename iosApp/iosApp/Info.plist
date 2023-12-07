@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Для записи звуковых сообщений необходим доступ к микрофону</string>
-	<key>CFBundleDisplayName</key>
-	<string>Медицинский помощник.Сотрудник</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Медицинский помощник.Сотрудник</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -30,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Для использования камеры в приложении и отправки сделанных фотографий необходимо Ваше разрешение не ее использование</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Для записи аудио и видео сообщений </string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

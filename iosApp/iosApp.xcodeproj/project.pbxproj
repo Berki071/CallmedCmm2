@@ -10,6 +10,7 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
+		5600D9002B2001C700C796FF /* RecordVideoPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5600D8FF2B2001C700C796FF /* RecordVideoPad.swift */; };
 		56049C932A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */; };
 		56049C952A8F4A6200826899 /* AudioPlayerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */; };
 		562604192AFC7D19006FF22C /* T3ItemFilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */; };
@@ -145,6 +146,7 @@
 		56F25A952A56D14D002A016F /* LoggingTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F25A902A56D14D002A016F /* LoggingTree.swift */; };
 		56F25A962A56D14D002A016F /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F25A912A56D14D002A016F /* UIDevice.swift */; };
 		56F25A972A56D14D002A016F /* MDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F25A922A56D14D002A016F /* MDate.swift */; };
+		56FE4EB42B1DC9670066ABA0 /* MyPreviewVideoRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE4EB32B1DC9670066ABA0 /* MyPreviewVideoRecording.swift */; };
 		C16659D72BFCF0F0198CF241 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8567528570AD63708D571991 /* Pods_iosApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -165,6 +167,7 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		5600D8FF2B2001C700C796FF /* RecordVideoPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordVideoPad.swift; sourceTree = "<group>"; };
 		56049C922A8E1E4200826899 /* T3ItemRecordAudioPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudioPresenter.swift; sourceTree = "<group>"; };
 		56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerHandler.swift; sourceTree = "<group>"; };
 		562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemFilePresenter.swift; sourceTree = "<group>"; };
@@ -298,6 +301,7 @@
 		56F25A912A56D14D002A016F /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		56F25A922A56D14D002A016F /* MDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDate.swift; sourceTree = "<group>"; };
 		56F25A992A591457002A016F /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
+		56FE4EB32B1DC9670066ABA0 /* MyPreviewVideoRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPreviewVideoRecording.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8567528570AD63708D571991 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -572,6 +576,7 @@
 		56F259C52A56CDB0002A016F /* views */ = {
 			isa = PBXGroup;
 			children = (
+				56FE4EB02B1DC9190066ABA0 /* video_record */,
 				56EFDA972AA96DD200E75833 /* AnalizesView */,
 				56EFDA982AA96DEC00E75833 /* ConclusionsView */,
 				56F259C62A56CDB0002A016F /* toolbar */,
@@ -797,6 +802,15 @@
 				56F259E52A56CDB0002A016F /* T1ListOfEntriesItemPresenter.swift */,
 			);
 			path = recy;
+			sourceTree = "<group>";
+		};
+		56FE4EB02B1DC9190066ABA0 /* video_record */ = {
+			isa = PBXGroup;
+			children = (
+				56FE4EB32B1DC9670066ABA0 /* MyPreviewVideoRecording.swift */,
+				5600D8FF2B2001C700C796FF /* RecordVideoPad.swift */,
+			);
+			path = video_record;
 			sourceTree = "<group>";
 		};
 		7555FF72242A565900829871 = {
@@ -1057,6 +1071,7 @@
 				56F25A8C2A56D139002A016F /* RealmDb.swift in Sources */,
 				56F25A802A56D139002A016F /* SettingsAllBranchHospitalItem.swift in Sources */,
 				56F25A1B2A56CDB1002A016F /* ShowImagesItemImg.swift in Sources */,
+				56FE4EB42B1DC9670066ABA0 /* MyPreviewVideoRecording.swift in Sources */,
 				56F25A092A56CDB1002A016F /* T3ItemTariff.swift in Sources */,
 				56F25A812A56D139002A016F /* AllRecordsTelemedicineItem.swift in Sources */,
 				56F25A182A56CDB1002A016F /* ShowImagesItemDate.swift in Sources */,
@@ -1116,6 +1131,7 @@
 				56F25A062A56CDB1002A016F /* StatisticsMcbPresenter.swift in Sources */,
 				56F25A702A56D139002A016F /* AllRaspSotrItem.swift in Sources */,
 				56EFDA9F2AA96EB900E75833 /* AnaliseResultItem.swift in Sources */,
+				5600D9002B2001C700C796FF /* RecordVideoPad.swift in Sources */,
 				56F25A762A56D139002A016F /* AllRaspSotrResponse.swift in Sources */,
 				56CEF7382B15C05F003E644F /* T3ItemVideo.swift in Sources */,
 				56F25A112A56CDB1002A016F /* ToolbarTelemedicineRoom.swift in Sources */,

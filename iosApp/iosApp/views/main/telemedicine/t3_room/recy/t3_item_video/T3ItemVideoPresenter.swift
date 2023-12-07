@@ -10,7 +10,7 @@ import Foundation
 import shared
 import AVFoundation
 
-class T3ItemVideoPresenter  : ObservableObject{
+class T3ItemVideoPresenter: ObservableObject{
     var item: MessageRoomResponse.MessageRoomItem
     var idRoom: String
     var showAlert: ((String, String) -> Void)
@@ -48,7 +48,7 @@ class T3ItemVideoPresenter  : ObservableObject{
             isShowLoad = false
         }
         
-        print(">>>>>>> T3ItemVideoPresenter.init \(item.idMessage)")
+        //print(">>>>>>> T3ItemVideoPresenter.init \(item.idMessage)")
         
         if(item.text != nil && !item.text!.isEmpty &&  !item.text!.contains(s: "http")){
             self.getFile()

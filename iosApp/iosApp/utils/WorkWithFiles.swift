@@ -217,6 +217,8 @@ class WorkWithFiles {
             return "png"
         }else if(ext.hasSuffix("wav")){
             return "wav"
+        }else if(ext.hasSuffix("mp4")){
+            return "mp4"
         }else {
             return nil
         }

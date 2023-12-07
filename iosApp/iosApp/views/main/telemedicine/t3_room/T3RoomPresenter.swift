@@ -34,22 +34,33 @@ class T3RoomPresenter: ObservableObject {
     var isStoppedT3View = true  //для остановки цикличныз запросов
     var proxy: ScrollViewProxy? = nil //для скролла
     
+    var recordVideoPad: RecordVideoPad
+    @Published var recorVideoURL: URL?
+    
     
     init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
-        //print(">>>>>>> T3RoomPresenter.init \(item.idRoom)")
+        recordVideoPad = RecordVideoPad()
         
         self.isStoppedT3View = false
     
         let tmIdC = item.tmId == nil ? "null" : String(Int.init(truncating: item.tmId!))
         self.getOneRecordInfo(String(Int.init(truncating: item.idRoom!)), tmIdC)
         
+        
+        self.recordVideoPad.roomViewListener = RoomViewListener(setUrl: {(i: URL?) -> Void in
+            self.recorVideoURL = i
+        })
     }
     init(idRoom: String, idTm: String){
-       // print(">>>>>>> T3RoomPresenter.init \(idRoom)")
+        recordVideoPad = RecordVideoPad()
         
         self.isStoppedT3View = false
     
         self.getOneRecordInfo(idRoom, idTm)
+        
+        self.recordVideoPad.roomViewListener = RoomViewListener(setUrl: {(i: URL?) -> Void in
+            self.recorVideoURL = i
+        })
     }
     
     
@@ -88,68 +99,66 @@ class T3RoomPresenter: ObservableObject {
     func getNewMessagesInLoopFromServer(idRoom: String) {
         // за счет повторения запроса в цикле должна вызываться только раз и крутится внутри while
         
-        self.showLoading(false)
-//
-//        if(self.isStoppedT3View == true){
-//            return
-//        }
-//
-//        if(self.recordTItem == nil){
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                self.getNewMessagesInLoopFromServer(idRoom: idRoom)
-//            }
-//            return
-//        }
-//
-//        checkLastIdMessage()
-//
-//        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
-//        let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
-//        let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
-//
-//
+        if(self.isStoppedT3View == true){
+            return
+        }
 
-//        sdk.getMessagesRoom(idRoom: idRoom, idLastMsg: String(lastIdMessage),
-//                            h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, completionHandler: { response, error in
-//            if let res : MessageRoomResponse = response {
-//
-//                if(self.isStoppedT3View == true){
-//                    return
-//                }
-//
-//                if (res.response.count > 1 || res.response[0].idMessage != nil) {
-//
-//                    //self.processingOnImageOrFile(res.response)
-//                    let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
-//
-//                    if(!listNewMFromRealm.isEmpty){
-//                        self.processingAndAddListItemsInRecy(listNewMFromRealm)
-//                        self.checkLastIdMessage()
-//                    }else{
-//                        self.checkLastIdMessage()
-//                    }
-//
-//                }
-//                self.showLoading(false)
-//
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
-//                }
-//            } else {
-//                if let t=error{
-//                    LoggingTree.INSTANCE.e("T3RoomPresenter/getNewMessagesInLoopFromServer \(t)")
-//                }
-//                self.showLoading(false)
-//
-//                if(self.isStoppedT3View == true){
-//                    return
-//                }
-//
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
-//                }
-//            }
-//        })
+        if(self.recordTItem == nil){
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.getNewMessagesInLoopFromServer(idRoom: idRoom)
+            }
+            return
+        }
+
+        checkLastIdMessage()
+
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
+        let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
+
+
+
+        sdk.getMessagesRoom(idRoom: idRoom, idLastMsg: String(lastIdMessage),
+                            h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, completionHandler: { response, error in
+            if let res : MessageRoomResponse = response {
+
+                if(self.isStoppedT3View == true){
+                    return
+                }
+
+                if (res.response.count > 1 || res.response[0].idMessage != nil) {
+
+                    //self.processingOnImageOrFile(res.response)
+                    let listNewMFromRealm = self.addMessagesToRealm(res.response, true)
+
+                    if(!listNewMFromRealm.isEmpty){
+                        self.processingAndAddListItemsInRecy(listNewMFromRealm)
+                        self.checkLastIdMessage()
+                    }else{
+                        self.checkLastIdMessage()
+                    }
+
+                }
+                self.showLoading(false)
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
+                }
+            } else {
+                if let t=error{
+                    LoggingTree.INSTANCE.e("T3RoomPresenter/getNewMessagesInLoopFromServer \(t)")
+                }
+                self.showLoading(false)
+
+                if(self.isStoppedT3View == true){
+                    return
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.getNewMessagesInLoopFromServer(idRoom: idRoom)
+                }
+            }
+        })
     }
     
     func addMessagesToRealm(_ list: [MessageRoomResponse.MessageRoomItem], _ isNeedProcessing: Bool = false) -> [MessageRoomResponse.MessageRoomItem]{
@@ -447,10 +456,12 @@ class T3RoomPresenter: ObservableObject {
     }
     
     func sendMessageToServer(_ idUser: String, _ item: MessageRoomResponse.MessageRoomItem, _ idBranch: String){
-
-        self.processingAndAddListItemsInRecy([item])
+        if(item.type != Constants.MsgRoomType.VIDEO()){
+            self.processingAndAddListItemsInRecy([item])
+        }
+        
         let valueText: String
-        if(item.type == Constants.MsgRoomType.TEXT())
+        if(item.type == Constants.MsgRoomType.TEXT() || item.type == Constants.MsgRoomType.VIDEO())
         {
             valueText = item.text!
         }else{
@@ -751,6 +762,59 @@ class T3RoomPresenter: ObservableObject {
         
         self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
     }
+    func createVideoMsg(_ fileName: String){
+        let msgItem = MessageRoomResponse.MessageRoomItem()
+        msgItem.idRoom = String(Int.init(truncating: recordTItem!.idRoom!))
+        msgItem.data = MDate.getCurrentDate(MDate.DATE_FORMAT_yyyyMMdd_HHmmss)
+        msgItem.type = Constants.MsgRoomType.VIDEO()
+        msgItem.text = fileName
+        msgItem.otpravitel = "sotr"
+        msgItem.idTm = recordTItem!.tmId!
+        msgItem.nameTm = recordTItem!.tmName
+        msgItem.viewKl = "false"
+        msgItem.viewSotr = "true"
+        msgItem.idMessage = KotlinInt(integerLiteral: Int.random(in: -1000000..<0))
+        
+        self.videoToJsonObjWithBase64(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
+        //self.sendMessageToServer(String(Int.init(truncating: recordTItem!.idKl!)), msgItem, String(Int.init(truncating: recordTItem!.idFilial!)))
+    }
+    func videoToJsonObjWithBase64(_ idUser: String, _ item: MessageRoomResponse.MessageRoomItem, _ idBranch: String){
+        self.processingAndAddListItemsInRecy([item])
+        
+        let base64: String = workWithFiles.fileToBase64ByName(item.text!)
+        let name2: String? = item.text
+        
+        if(name2 != nil){
+            let name2WithoutMp4 = name2!.replacingOccurrences(of: ".mp4", with: "")
+            let jsonObj = self.createGsonWithVideo(base64: base64, name: name2WithoutMp4)
+            self.sendViedeo(idUser, item, idBranch, jsonObj)
+        }else{
+            self.showAlet("Ошибка","Что-то пошло не так.")
+            self.deleteItemFromChatList(item)
+        }
+    }
+    func sendViedeo(_ idUser: String, _ item: MessageRoomResponse.MessageRoomItem, _ idBranch: String, _ jsonObj: String){
+        let ip: String? = sharePreferenses.currentCenterInfo?.ip_download
+        if(ip == nil){
+            return
+        }
+        
+        sdk.uploadVideoFile(ipDownload: ip!, json: jsonObj,
+                                  completionHandler: { response, error in
+            if let res : KotlinBoolean = response {
+                DispatchQueue.main.async {
+                    self.sendMessageToServer(idUser, item, idBranch)
+                }
+            } else {
+                if let t=error{
+                    LoggingTree.INSTANCE.e("T3RoomPresenter/sendViedeo \(t)")
+                }
+                self.showAlet("Ошибка","Что-то пошло не так.")
+                self.deleteItemFromChatList(item)
+            }
+        })
+    }
+    
     
     func saveImageByUrl(_ url: URL){
         let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
@@ -849,6 +913,16 @@ class T3RoomPresenter: ObservableObject {
                     
     }
     
+    
+    
+    private func createGsonWithVideo(base64: String, name: String) -> String {
+        let jsonObject: [String: Any] = [
+            "FileName": name,
+            "FileFormat": "mp4",
+            "Base64Data": base64
+        ]
+        return self.workWithFiles.jsonToString(jsonObject)
+    }
 
     func getIdRoom() -> String {
         return String(Int.init(truncating: recordTItem!.idRoom!))

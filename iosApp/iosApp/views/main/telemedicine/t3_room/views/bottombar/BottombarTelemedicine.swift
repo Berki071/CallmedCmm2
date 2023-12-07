@@ -12,6 +12,8 @@ import shared
 struct BottombarTelemedicineListener {
     var sendMsg: (String) -> Void
     var sendRecordMsg: (String) -> Void
+    var sendVideoMsg: (String) -> Void
+    
     var showAlertMsg: (String, String) -> Void
     
     var makePhoto: () -> Void
@@ -30,8 +32,10 @@ struct BottombarTelemedicine: View {
     @ObservedObject var mainPresenter2: BottombarTelemedicinePresenter2
     
 
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener){
-        _mainPresenter = StateObject(wrappedValue: BottombarTelemedicinePresenter(item: item, listener: listener))
+
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
+       // self.outsideMsg = msgToBottombar
+        _mainPresenter = StateObject(wrappedValue: BottombarTelemedicinePresenter(item: item, listener: listener, recordVideoPad: recordVideoPad))
         mainPresenter2 = BottombarTelemedicinePresenter2(item: item)
         
     }
@@ -190,17 +194,21 @@ struct BottombarTelemedicine: View {
             }
             
         }
-        .alert(item: self.$mainPresenter.selectedShow) { show in
-              Alert(title: Text(""), message: Text(show.name), dismissButton: .default(Text("Ok")))
-          }
+//        .alert(item: self.$mainPresenter.selectedShow) { show in
+//              Alert(title: Text(""), message: Text(show.name), dismissButton: .default(Text("Ok")))
+//          }
+
     }
 }
 
 struct BottombarTelemedicine_Previews: PreviewProvider {
     @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
-    static let list = BottombarTelemedicineListener(sendMsg: {(String) -> Void in }, sendRecordMsg: {(String) -> Void in }, showAlertMsg: {(i: String, j: String) -> Void in}, makePhoto: {()->Void in }, selectFileFromPhotoLibrary: {()->Void in }, selectFileFromOtherPlace: {()->Void in })
+    static let list = BottombarTelemedicineListener(sendMsg: {(String) -> Void in }, sendRecordMsg: {(String) -> Void in }, sendVideoMsg: {(String) -> Void in }, showAlertMsg: {(i: String, j: String) -> Void in}, makePhoto: {()->Void in }, selectFileFromPhotoLibrary: {()->Void in }, selectFileFromOtherPlace: {()->Void in })
+    
+    @State static var rurl: URL? = URL.init(string: "yourURLString")
+    //@State static var selectedShow: TVShow? = nil
     
     static var previews: some View {
-        BottombarTelemedicine(item: $item, listener: list)
+        BottombarTelemedicine(item: $item, listener: list, recordVideoPad: RecordVideoPad())
     }
 }

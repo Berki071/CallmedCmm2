@@ -181,21 +181,21 @@ struct T3RoomView: View {
                         self.mainPresenter.sendMessage(msg)
                     }, sendRecordMsg: {(fileName: String) -> Void in
                         self.mainPresenter.createRecordMsg(fileName)
+                    }, sendVideoMsg:{(fileName: String) -> Void in
+                        self.mainPresenter.createVideoMsg(fileName)
                     }, showAlertMsg: {(i: String, j: String) -> Void in
                         self.mainPresenter.showAlet(i,j)
                     }, makePhoto: {() -> Void in
                         self.mainPresenter.isStartCamera = true
                         self.showSheet = true
-                        
                     }, selectFileFromPhotoLibrary: {() -> Void in
                         self.mainPresenter.isStartCamera = false
                         self.showSheet = true
                     }, selectFileFromOtherPlace: {() -> Void in
                         self.openFile.toggle()
-                    }))
+                    }), recordVideoPad: self.mainPresenter.recordVideoPad)
                 }
                 .padding(.top, 48.0)
-            
                 
                 //48.0
                 ToolbarTelemedicineRoom(item: self.$mainPresenter.recordTItem, listener: ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in
@@ -217,6 +217,11 @@ struct T3RoomView: View {
                 }, showConclusions: {() -> Void in
                     self.mainPresenter.isShowConclusionsView = true
                 }))
+                
+                
+                if(self.mainPresenter.recorVideoURL != nil){
+                    MyPreviewVideoRecording(recordVideoPad: self.mainPresenter.recordVideoPad)
+                }
                 
                 if(self.mainPresenter.isShowAlertStandart != nil){
                     StandartAlert(dataOb: mainPresenter.isShowAlertStandart!)
@@ -273,17 +278,15 @@ struct T3RoomView: View {
                         LoggingTree.INSTANCE.e("T3RoomView/fileImporter неизвестное расширение :\(fileName) \(fileUrl == nil)" )
                     }
                     
-                }
-                
-                
-                
-                catch{
+                }catch{
                     LoggingTree.INSTANCE.e("T3RoomView/fileImporter error reading file \(error.localizedDescription)" )
                     //print("error reading file \(error.localizedDescription)")
                 }
                 
             })
-
+//            .alert(item: self.$mainPresenter.msgToBottombar) { show in
+//                  Alert(title: Text(""), message: Text(show.name), dismissButton: .default(Text("Ok")))
+//            }
         }
     }
     

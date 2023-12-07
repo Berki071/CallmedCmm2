@@ -16,7 +16,7 @@ class Constants{
     
     static let PREFIX_NAME_FILE = "telemedicine"
     static let SENDER_ID_FCM_PATIENT = "933088839978"
-    static let MAX_DURATION_OF_ONE_AUDIO_MSG = 180 // в секундах
+    
     
     enum WhatDataShow: String {
         case ARCHIVE, ACTIVE

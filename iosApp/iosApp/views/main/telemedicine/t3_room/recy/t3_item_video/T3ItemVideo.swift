@@ -133,7 +133,7 @@ struct T3ItemVideo: View {
         }
         .onLongPressGesture(minimumDuration: 0.2) {
             if(self.mainPresenter.item.text != nil && !self.mainPresenter.item.text!.isEmpty){
-               // self.clickRemuveItem(self.mainPresenter.item)
+                self.clickRemuveItem(self.mainPresenter.item)
             }
         }
     }

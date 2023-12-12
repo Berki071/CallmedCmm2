@@ -87,7 +87,7 @@ dependencies {
 
     //    Crash Reporting
     // Add the Firebase Crashlytics SDK.
-    implementation (platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation (platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation ("com.google.firebase:firebase-crashlytics-ktx")
     implementation ("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
@@ -124,7 +124,7 @@ dependencies {
 
     implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
 
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     val camerax_version = "1.4.0-alpha02"
     implementation ("androidx.camera:camera-core:${camerax_version}")

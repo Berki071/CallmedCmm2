@@ -12,8 +12,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardForConstraint"
-        android:layout_width="296dp"
-        android:layout_height="296dp"
+        android:layout_width="288dp"
+        android:layout_height="288dp"
         app:cardCornerRadius="148dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

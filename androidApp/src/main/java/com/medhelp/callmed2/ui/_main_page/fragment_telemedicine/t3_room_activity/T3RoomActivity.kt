@@ -191,6 +191,10 @@ class T3RoomActivity: AppCompatActivity(){
             override fun getListenerStateProximity(): RoomAdapter.ListenerStateProximity? {
                 return listenerStateProximity
             }
+
+            override fun firstHideLoading() {
+                binding.bottomBarChat.showRecordBtnAnim()
+            }
         })
     }
     fun initProximitySensor(){
@@ -295,7 +299,7 @@ class T3RoomActivity: AppCompatActivity(){
 
         checkTimer()
 
-        binding.bottomBarChat.showRecordBtnAnim()
+        //binding.bottomBarChat.showRecordBtnAnim()
     }
 
     fun initRecy(listMsg: MutableList<MessageRoomItem>){

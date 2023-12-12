@@ -10,7 +10,7 @@ import SwiftUI
 import shared
 
 class ToolbarTelemedicineRoomPresenter: ObservableObject {
-    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
+    var itemRecord: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
     var listener: ToolbarTelemedicineRoomListener
     
     @Published var iuImageLogo : UIImage =  UIImage(named: "sh_doc")!
@@ -21,16 +21,8 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
     
     var sharePreferenses : SharedPreferenses = SharedPreferenses()
 
-  
     
-//    init(){
-//      
-//        self.listener = ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in }, closeTm: {() -> Void in }, clickBack: {() -> Void in }, clickStartReception:  {() -> Void in },
-//                                                          clickCompleteReception: {() -> Void in })
-//
-//    }
-    
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: ToolbarTelemedicineRoomListener){
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, listener: ToolbarTelemedicineRoomListener){
         self.itemRecord = item
         self.listener = listener
         
@@ -56,19 +48,19 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
     
     var timeLeftInSecForActive : Double? = nil
     func checkTimer(){
-        if(itemRecord.wrappedValue == nil){
+        if(itemRecord == nil){
             isShowTimer = false
             return
         }
         
-        let tmp1 = itemRecord.wrappedValue!.dataStart
-        let tmp2 = itemRecord.wrappedValue!.status
+        let tmp1 = itemRecord!.dataStart
+        let tmp2 = itemRecord!.status
         
-        if(itemRecord.wrappedValue!.dataStart != nil && itemRecord.wrappedValue!.status! == Constants.TelemedicineStatusRecord.active()){
-            let currentTimeServerLong = MDate.stringToDate(itemRecord.wrappedValue!.dataServer!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
+        if(itemRecord!.dataStart != nil && itemRecord!.status! == Constants.TelemedicineStatusRecord.active()){
+            let currentTimeServerLong = MDate.stringToDate(itemRecord!.dataServer!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
             
-            let dateStartLong = MDate.stringToDate(itemRecord.wrappedValue!.dataStart!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
-            let dateEndLong = MDate.datePlasTimeInterval(dateStartLong, Int.init(truncating: itemRecord.wrappedValue!.tmTimeForTm!))
+            let dateStartLong = MDate.stringToDate(itemRecord!.dataStart!, MDate.DATE_FORMAT_ddMMyyyy_HHmmss)
+            let dateEndLong = MDate.datePlasTimeInterval(dateStartLong, Int.init(truncating: itemRecord!.tmTimeForTm!))
             
             if(dateEndLong <= currentTimeServerLong){
                 self.isShowTimer = false
@@ -80,7 +72,7 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
                     self.timeLeftInSecForActive = tmp
                     self.startTimerActive()
                 }else{
-                    LoggingTree.INSTANCE.d("T3 ToolbarTelemedicineRoomPresenter2 timeLeftInSecForActive closeTm dataServer:\(itemRecord.wrappedValue!.dataServer!), dataStart:\(itemRecord.wrappedValue!.dataStart!), tmTimeForTm:\(itemRecord.wrappedValue!.tmTimeForTm!), tmId:\(itemRecord.wrappedValue!.tmId)")
+                    LoggingTree.INSTANCE.d("T3 ToolbarTelemedicineRoomPresenter2 timeLeftInSecForActive closeTm dataServer:\(itemRecord!.dataServer!), dataStart:\(itemRecord!.dataStart!), tmTimeForTm:\(itemRecord!.tmTimeForTm!), tmId:\(itemRecord!.tmId)")
                     
                     self.isShowTimer = false
                     self.listener.closeTm()
@@ -125,7 +117,7 @@ class ToolbarTelemedicineRoomPresenter: ObservableObject {
     }
     func startTimerActive(){
         if(self.timeLeftInSecForActive == nil || self.timeLeftInSecForActive! <= 0){
-            LoggingTree.INSTANCE.d("T3 ToolbarTelemedicineRoomPresenter1 startTimerActive closeTm dataServer:\(itemRecord.wrappedValue!.dataServer!), dataStart:\(itemRecord.wrappedValue!.dataStart!), tmTimeForTm:\(itemRecord.wrappedValue!.tmTimeForTm!), tmId:\(itemRecord.wrappedValue!.tmId)")
+            LoggingTree.INSTANCE.d("T3 ToolbarTelemedicineRoomPresenter1 startTimerActive closeTm dataServer:\(itemRecord!.dataServer!), dataStart:\(itemRecord!.dataStart!), tmTimeForTm:\(itemRecord!.tmTimeForTm!), tmId:\(itemRecord!.tmId)")
             
             self.isShowTimer = false
             self.listener.closeTm()

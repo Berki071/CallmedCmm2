@@ -61,17 +61,15 @@ struct T3RoomView: View {
     
     var body: some View {
         
-        //let _ = Self._printChanges()
-        
         if(self.mainPresenter.isShowMediaView == true){
-            ShowMediaTelemedicineView(itemRecord: self.$mainPresenter.recordTItem, clickBack: {() -> Void in
+            ShowMediaTelemedicineView(itemRecord: self.mainPresenter.recordTItem, clickBack: {() -> Void in
                 self.mainPresenter.isShowMediaView = false
             })
             
         }else if(self.mainPresenter.isShowBigImageOrFile != nil){
             ShowImagePage(itemForShowBigImage5: self.$mainPresenter.isShowBigImageOrFile)
             
-        }else if(self.mainPresenter.isShowAnalizesView == true && self.mainPresenter.recordTItem != nil){
+        }else if(self.mainPresenter.isShowAnalizesView != nil && self.mainPresenter.isShowAnalizesView == true && self.mainPresenter.recordTItem != nil){
             AnaliseResultPage(clickBack: {() -> Void in
                 self.mainPresenter.isShowAnalizesView = false
             }, recordTItem: self.mainPresenter.recordTItem!)
@@ -81,7 +79,7 @@ struct T3RoomView: View {
             }, recordTItem: self.mainPresenter.recordTItem!)
         }else{
             ZStack{
-                VStack{
+                VStack(spacing: 0){
                     ScrollViewReader { proxy in
                         VStack{
                             if(self.mainPresenter.recyList.count > 0){
@@ -176,30 +174,32 @@ struct T3RoomView: View {
                         .frame(maxWidth: .infinity)
                         .background(.white)
                     }
-                    
-                    BottombarTelemedicine(item: self.$mainPresenter.recordTItem, listener: BottombarTelemedicineListener(sendMsg: {(msg: String) -> Void in
-                        self.mainPresenter.sendMessage(msg)
-                    }, sendRecordMsg: {(fileName: String) -> Void in
-                        self.mainPresenter.createRecordMsg(fileName)
-                    }, sendVideoMsg:{(fileName: String) -> Void in
-                        self.mainPresenter.createVideoMsg(fileName)
-                    }, showAlertMsg: {(i: String, j: String) -> Void in
-                        self.mainPresenter.showAlet(i,j)
-                    }, makePhoto: {() -> Void in
-                        self.mainPresenter.isStartCamera = true
-                        self.showSheet = true
-                    }, selectFileFromPhotoLibrary: {() -> Void in
-                        self.mainPresenter.isStartCamera = false
-                        self.showSheet = true
-                    }, selectFileFromOtherPlace: {() -> Void in
-                        self.openFile.toggle()
-                    }), recordVideoPad: self.mainPresenter.recordVideoPad)
+                        
                 }
                 .padding(.top, 48.0)
+                .padding(.bottom, 55.0)
+                
+                
+                BottombarTelemedicine(item: self.mainPresenter.recordTItem, listener: BottombarTelemedicineListener(sendMsg: {(msg: String) -> Void in
+                    self.mainPresenter.sendMessage(msg)
+                }, sendRecordMsg: {(fileName: String) -> Void in
+                    self.mainPresenter.createRecordMsg(fileName)
+                }, sendVideoMsg:{(fileName: String) -> Void in
+                    self.mainPresenter.createVideoMsg(fileName)
+                }, showAlertMsg: {(i: String, j: String) -> Void in
+                    self.mainPresenter.showAlet(i,j)
+                }, makePhoto: {() -> Void in
+                    self.mainPresenter.isStartCamera = true
+                    self.showSheet = true
+                }, selectFileFromPhotoLibrary: {() -> Void in
+                    self.mainPresenter.isStartCamera = false
+                    self.showSheet = true
+                }, selectFileFromOtherPlace: {() -> Void in
+                    self.openFile.toggle()
+                }), recordVideoPad: self.mainPresenter.recordVideoPad,showBtnActionSendAnimation: self.mainPresenter.showBtnActionSendAnimation)
                 
                 //48.0
-                ToolbarTelemedicineRoom(item: self.$mainPresenter.recordTItem, listener: ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in
-                //ToolbarTelemedicineRoom(item: self.$itemTmp, listener: ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in
+                ToolbarTelemedicineRoom(item: self.mainPresenter.recordTItem, listener: ToolbarTelemedicineRoomListener(goToMedia: {() -> Void in
                     self.mainPresenter.isShowMediaView = true
                 }, closeTm: {() -> Void in
                     self.mainPresenter.closeRecordTelemedicine(self.mainPresenter.recordTItem!)
@@ -218,6 +218,11 @@ struct T3RoomView: View {
                     self.mainPresenter.isShowConclusionsView = true
                 }))
                 
+
+//                HintForBtnAction(hintForActionBtnSend: self.mainPresenter.hintForActionBtnSend)
+//                    .padding(.bottom, 54.0)
+             
+                
                 
                 if(self.mainPresenter.recorVideoURL != nil){
                     MyPreviewVideoRecording(recordVideoPad: self.mainPresenter.recordVideoPad)
@@ -227,25 +232,25 @@ struct T3RoomView: View {
                     StandartAlert(dataOb: mainPresenter.isShowAlertStandart!)
                 }
                 
-                ZStack{
-                    if(self.mainPresenter.showDialogLoading == true){
-                        LoadingView()
-                        //.opacity(self.mainPresenter.showDialogLoading == true ? 1 : 0)
-                    }
+                
+                if(self.mainPresenter.showDialogLoading == true){
+                    LoadingView()
+                    //.opacity(self.mainPresenter.showDialogLoading == true ? 1 : 0)
                 }
+                
 
                 
             }
             .sheet(isPresented: $showSheet) {
                 //sheet новая вьюха поверх имеющихся со скрытием свайпом вниз
-                if(self.mainPresenter.isStartCamera){
-                    ImagePicker(sourceType: .camera, item: self.$mainPresenter.recordTItem, listener: ImagePickerListener(error: {() -> Void in
+                if(self.mainPresenter.isStartCamera != nil && self.mainPresenter.isStartCamera!){
+                    ImagePicker(sourceType: .camera, item: self.mainPresenter.recordTItem, listener: ImagePickerListener(error: {() -> Void in
                         self.mainPresenter.showAlet("","Что-то пошло не так.")
                     }, imageCreated: {(i: String) -> Void in
                         self.mainPresenter.createImageMsg(i)
                     }) )
                 }else{
-                    ImagePicker(sourceType: .photoLibrary, item: self.$mainPresenter.recordTItem, listener: ImagePickerListener(error: {() -> Void in
+                    ImagePicker(sourceType: .photoLibrary, item: self.mainPresenter.recordTItem, listener: ImagePickerListener(error: {() -> Void in
                         self.mainPresenter.showAlet("","Что-то пошло не так.")
                     }, imageCreated: {(i: String) -> Void in
                         self.mainPresenter.createImageMsg(i)
@@ -284,9 +289,6 @@ struct T3RoomView: View {
                 }
                 
             })
-//            .alert(item: self.$mainPresenter.msgToBottombar) { show in
-//                  Alert(title: Text(""), message: Text(show.name), dismissButton: .default(Text("Ok")))
-//            }
         }
     }
     

@@ -77,7 +77,10 @@ class RecordVideoPad{
     
     func startRecord(pathToFileRecord : URL){
         self.currentAction = CurrentAction.Recording
-        self.recorVideoURL2 = pathToFileRecord
+        
+        if(self.recorVideoURL2 != pathToFileRecord){
+            self.recorVideoURL2 = pathToFileRecord
+        }
     
         //print(">>>>>> sendUrl sendUrl startRecord tmp \(recorVideoURL2)  pathToFileRecord \(pathToFileRecord)")
         
@@ -89,12 +92,16 @@ class RecordVideoPad{
         
         //print(">>>>>>> RecordVideoPad stopRecord")
         self.currentAction = CurrentAction.Stopped
-        self.recorVideoURL2 = nil
+        if(self.recorVideoURL2 != nil){
+            self.recorVideoURL2 = nil
+        }
     }
     func cancel(){
        // print(">>>>>>> RecordVideoPad cancel")
         self.currentAction = CurrentAction.Canceled
-        self.recorVideoURL2 = nil
+        if(self.recorVideoURL2 != nil){
+            self.recorVideoURL2 = nil
+        }
     }
     
     func fileSize(forURL url: Any) -> Double {

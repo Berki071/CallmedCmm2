@@ -43,12 +43,28 @@ struct T3ItemVideo: View {
                 ZStack{
                     ZStack(alignment: .bottom){
                         if(self.mainPresenter.player == nil){
-                            Image("videocam")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .padding(46)
-                                .frame(width: 280,  height: 280, alignment: .center)
-                                .foregroundColor(Color("semi_gray"))
+                            if(self.mainPresenter.iuImageLogo != nil ){
+                                GeometryReader { proxy in
+                                    ZStack(alignment: .bottom){
+                                        Image(uiImage: self.mainPresenter.iuImageLogo!)
+                                            .resizable()
+                                            .cornerRadius( 6)
+                                            .scaledToFit()
+                                            .frame(width: self.mainPresenter.widthVideoPlayer, height: self.mainPresenter.heightVideoPlayer)
+                                    }
+                                    .frame(width: 280, height: 280, alignment: .center)
+                                }
+                                .frame(width: 280, height: 280, alignment: .center)
+                                .cornerRadius(140)
+                                
+                            }else{
+                                Image("videocam")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(46)
+                                    .frame(width: 280,  height: 280, alignment: .center)
+                                    
+                            }
                         }else{
                             GeometryReader { proxy in
                                 ZStack(alignment: .bottom){
@@ -93,8 +109,8 @@ struct T3ItemVideo: View {
                     
                     
                     Circle()
-                        .strokeBorder(mainPresenter.item.otpravitel != "kl" ? Color("msgRight") : Color("msgLeft"), lineWidth: 8)
-                        .frame(width: 296, height: 296)
+                        .strokeBorder(mainPresenter.item.otpravitel != "kl" ? Color("msgRight") : Color("msgLeft"), lineWidth: 4)
+                        .frame(width: 288, height: 288)
                     
                     if(mainPresenter.isShowLoad){
                         ZStack{
@@ -102,7 +118,7 @@ struct T3ItemVideo: View {
                                 .progressViewStyle(CircularProgressViewStyle(tint: Color.white))
                                 .foregroundColor(Color("color_primary"))
                         }
-                        .frame(width: 296, height: 296)
+                        .frame(width: 288, height: 288)
                         .background(Color("black_bg"))
                         .cornerRadius(148)
                     }
@@ -110,7 +126,7 @@ struct T3ItemVideo: View {
           
                 }
                 .background(Circle().fill(.white))
-                .frame(width: 296, height: 296)
+                .frame(width: 288, height: 288)
                //.cornerRadius(148)
              
                 
@@ -146,3 +162,5 @@ struct T3ItemVideo_Previews: PreviewProvider {
         T3ItemVideo(item: msgItem, clickRemuveItem: {(MessageRoomItem) -> Void in }, idRoom: "1", showAlert: {(i: String, j: String) -> Void in })
     }
 }
+
+

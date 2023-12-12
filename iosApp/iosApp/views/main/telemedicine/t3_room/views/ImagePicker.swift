@@ -17,7 +17,7 @@ struct ImagePickerListener{
 struct ImagePicker: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    var item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
+    var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
     var listener : ImagePickerListener
     
     var sharePreferenses : SharedPreferenses = SharedPreferenses()
@@ -44,7 +44,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     func saveUIImage(_ imgIn: UIImage){
         let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
-        let idRoom: String = String(Int.init(item.wrappedValue!.idRoom!))
+        let idRoom: String = String(Int.init(item!.idRoom!))
         let curentTimeMils = String(MDate.getCurrentDate1970())
         
         let path = getDocumentsDirectory()

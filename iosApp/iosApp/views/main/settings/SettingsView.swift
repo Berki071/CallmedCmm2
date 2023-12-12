@@ -36,7 +36,11 @@ struct SettingsView: View {
                        
                 )
                 
-                Spacer()
+               Spacer()
+                
+//                EmptyView()
+//                    .background(.red)
+                    
             }
             .padding(.top, 44.0)
             .padding(.horizontal, 4.0)

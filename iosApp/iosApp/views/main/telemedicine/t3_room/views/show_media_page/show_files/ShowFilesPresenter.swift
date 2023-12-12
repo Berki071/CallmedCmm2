@@ -10,17 +10,17 @@ import SwiftUI
 import shared
 
 class ShowFilesPresenter: ObservableObject {
-    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
+    var itemRecord: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
     
     @Published var arrayFilesUrl: [ShowImagesFilesItemData] = []
     @Published var isShowAlertStandart: StandartAlertData? = nil
     
     var sharePreferenses : SharedPreferenses = SharedPreferenses()
     
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>){
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?){
         self.itemRecord = item
    
-        if(itemRecord.wrappedValue != nil){
+        if(itemRecord != nil){
             self.getData()
         }
     }
@@ -35,7 +35,7 @@ class ShowFilesPresenter: ObservableObject {
             if(allFilesPngURL.count > 0){
                 let prefix = Constants.PREFIX_NAME_FILE
                 let idCenter: String = String( self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
-                let idRoom: String = String(Int.init(itemRecord.wrappedValue!.idRoom!))
+                let idRoom: String = String(Int.init(itemRecord!.idRoom!))
                 
                 let searchStr = prefix + "_" + idCenter + "_" + idRoom
                 

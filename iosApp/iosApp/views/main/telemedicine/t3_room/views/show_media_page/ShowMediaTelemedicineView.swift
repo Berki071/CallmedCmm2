@@ -9,7 +9,7 @@ import SwiftUI
 import shared
 
 struct ShowMediaTelemedicineView: View {
-    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
+    var itemRecord: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
     var clickBack: () -> Void
     
     @State var isShowBigImageOrFile: ShowImagesFilesItemData? = nil
@@ -59,6 +59,6 @@ struct ShowMediaTelemedicineView_Previews: PreviewProvider {
     @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
     
     static var previews: some View {
-        ShowMediaTelemedicineView(itemRecord: $item, clickBack: {() -> Void in })
+        ShowMediaTelemedicineView(itemRecord: item, clickBack: {() -> Void in })
     }
 }

@@ -12,17 +12,17 @@ import AVFoundation
 
 class BottombarTelemedicinePresenter: ObservableObject {
     let MAX_LENGTH_SIMPLE_CLICK = 0.15
-    static let MAX_DURATION_OF_ONE_AUDIO_MSG = 180 //
-    static let MAX_DURATION_OF_ONE_VIDEO_MSG = 30
+    let MAX_DURATION_OF_ONE_AUDIO_MSG = 180
+    let MAX_DURATION_OF_ONE_VIDEO_MSG = 30
     
-    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>? = nil
+    var itemRecord: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = nil
     var listener: BottombarTelemedicineListener? = nil
    
     
     @Published var textFild: String = ""{
         willSet {
             if(newValue.length > 0){
-                if(isButtonRecordPressed){
+                if(isButtonRecordPressed || pointTimerStarted != nil){
                     isShowRecordBtn = true
                 }else{
                     isShowRecordBtn = false
@@ -61,11 +61,21 @@ class BottombarTelemedicinePresenter: ObservableObject {
     var pathToFileRecord : URL? = nil
     var recordVideoPad: RecordVideoPad
     
+    @Published var hintForActionBtnSendTmp: String?
     
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
+    //var hintForActionBtnSend: ((String) -> Void)?
+    @Published var scaleBtnAction = 1.0
+    var showHintBtnAction = false
+    
+   
+    
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
+        
         self.itemRecord = item
         self.listener = listener
         self.recordVideoPad = recordVideoPad
+        //self.hintForActionBtnSend = hintForActionBtnSend
+    
     
         self.recordVideoPad.bottomBarListener = BottomBarListener(sendVideoMsg: {(i: String) -> Void in
             self.listener?.sendVideoMsg(i)
@@ -93,39 +103,50 @@ class BottombarTelemedicinePresenter: ObservableObject {
     var lastClickRecord: Date? = nil
     var isPresCurrent: Bool = false
     func setIsButtonPressed(_ isPres: Bool){
+        self.stopAnimation = true
+        
         if(self.isPresCurrent != isPres){
-            //print(">>>>>-2 setIsButtonPressed \(isPres)")
+            //print(">>>> setIsButtonPressed isPres \(isPres)")
+          
             if(isPres){
-                self.lastClickRecord = MDate.getCurrentDate()
-                self.asincProcessingStateRecordBtn()
+                let tmpDate = MDate.getCurrentDate()
+                self.lastClickRecord = tmpDate
+                self.asincProcessingStateRecordBtn(cDateClick: tmpDate)
             }else{
-                let currDateTpm = MDate.getCurrentDate()
-                if(self.lastClickRecord != nil && (currDateTpm.timeIntervalSince1970 - self.lastClickRecord!.timeIntervalSince1970 ) >  MAX_LENGTH_SIMPLE_CLICK){
-                    self.isButtonRecordPressed = isPres
-                }
+                //let currDateTpm = MDate.getCurrentDate()
+               //if(self.lastClickRecord != nil && (currDateTpm.timeIntervalSince1970 - self.lastClickRecord!.timeIntervalSince1970 ) >  MAX_LENGTH_SIMPLE_CLICK){
+                //}
+                
                 self.lastClickRecord = nil
+                self.isButtonRecordPressed = isPres
+               
             }
             self.isPresCurrent = isPres
         }
     }
-    func asincProcessingStateRecordBtn(){
+    func asincProcessingStateRecordBtn(cDateClick: Date){
         DispatchQueue.main.asyncAfter(deadline: .now() + MAX_LENGTH_SIMPLE_CLICK) {
-            //print(">>>>>0 lastClickRecord == nil \(self.lastClickRecord == nil)")
+   
             if(self.lastClickRecord != nil){
                 if(self.isPresCurrent == true){
-                    //print(">>>>>1 lastClickRecord != nil")
-                    self.isButtonRecordPressed = self.isPresCurrent
+                    //print("asincProcessingStateRecordBtn isButtonRecordPressed cDateClick \(cDateClick) lastClickRecord \(self.lastClickRecord!)")
+                    if(cDateClick == self.lastClickRecord!){
+                       // print(">>>> asincProcessingStateRecordBtn isButtonRecordPressed true")
+                        self.isButtonRecordPressed = self.isPresCurrent
+                    }
                 }
             }else{
                 if(self.isPresCurrent == false){
                     self.nextRecordType()
-                    //print(">>>>>2 nextRecordType \(self.typeRecordBtn.rawValue)")
+             
                 }
             }
         }
     }
     
     func cancelRecord(){
+        self.stopRepeatShowTimer()
+        
         if(typeRecordBtn == Constants.MsgRoomType.REC_AUD){
             cancelRecordAudio()
         }else{
@@ -139,7 +160,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
             self.pointTimerStarted = MDate.getCurrentDate()
             self.startRepeatShowTimer()
             
-            let idRoom: String = String(Int(self.itemRecord!.wrappedValue!.idRoom!))
+            let idRoom: String = String(Int(self.itemRecord!.idRoom!))
             let nameFile = self.workWithFiles.getNewNameForNewFile(idRoom, "wav")
             if(nameFile != nil){
                 self.pathToFileRecord = self.workWithFiles.getDocumentsDirectory()?.appendingPathComponent(nameFile!)
@@ -160,10 +181,11 @@ class BottombarTelemedicinePresenter: ObservableObject {
 //            return
 //        }
         
-        AudioRecorHandler.shared.finishRecording()
-        
         self.stopRepeatShowTimer()
         
+        AudioRecorHandler.shared.finishRecording()
+        
+    
         if(self.isButtonRecordPressed == true){
             self.isButtonRecordPressed = false
         }
@@ -179,6 +201,10 @@ class BottombarTelemedicinePresenter: ObservableObject {
                 let allSec = Int.init(t1)
                
                 DispatchQueue.main.async {
+                    if self.pathToFileRecord == nil{
+                        return
+                    }
+                    
                     if(allSec < 1){
                         self.workWithFiles.deleteFileFromDocumentsByURL(self.pathToFileRecord!)
                         self.pathToFileRecord = nil
@@ -209,7 +235,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
             self.pointTimerStarted = MDate.getCurrentDate()
             self.startRepeatShowTimer()
             
-            let idRoom: String = String(Int(self.itemRecord!.wrappedValue!.idRoom!))
+            let idRoom: String = String(Int(self.itemRecord!.idRoom!))
             let nameFile = self.workWithFiles.getNewNameForNewFile(idRoom, "mp4")
             if(nameFile != nil){
                 self.pathToFileRecord = self.workWithFiles.getDocumentsDirectory()?.appendingPathComponent(nameFile!)
@@ -251,7 +277,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
     var pointTimerStarted: Date? = nil
     func startRepeatShowTimer(){
         if(pointTimerStarted == nil){
-            
+            //print(">>>> stopRepeatShowTimer")
             if(typeRecordBtn == Constants.MsgRoomType.REC_AUD){
                 self.stopRecordAudio()
             }else{
@@ -259,6 +285,8 @@ class BottombarTelemedicinePresenter: ObservableObject {
             }
             return
         }
+        
+       // print(">>>> startRepeatShowTimer")
         
         let curTime = MDate.getCurrentDate()
         let timeHasPassedSecTI = curTime.timeIntervalSince1970 - pointTimerStarted!.timeIntervalSince1970
@@ -269,8 +297,8 @@ class BottombarTelemedicinePresenter: ObservableObject {
             timeHasPassedSec = Int(timeHasPassedSecTI)
         }
         
-        if((typeRecordBtn == Constants.MsgRoomType.REC_AUD && timeHasPassedSec >= BottombarTelemedicinePresenter.MAX_DURATION_OF_ONE_AUDIO_MSG) ||
-           (typeRecordBtn == Constants.MsgRoomType.VIDEO && timeHasPassedSec >= BottombarTelemedicinePresenter.MAX_DURATION_OF_ONE_VIDEO_MSG)){
+        if((typeRecordBtn == Constants.MsgRoomType.REC_AUD && timeHasPassedSec >= MAX_DURATION_OF_ONE_AUDIO_MSG) ||
+           (typeRecordBtn == Constants.MsgRoomType.VIDEO && timeHasPassedSec >= MAX_DURATION_OF_ONE_VIDEO_MSG)){
             pointTimerStarted = nil
            
         }
@@ -297,8 +325,72 @@ class BottombarTelemedicinePresenter: ObservableObject {
     func nextRecordType(){
         if(self.typeRecordBtn == Constants.MsgRoomType.REC_AUD){
             self.typeRecordBtn = Constants.MsgRoomType.VIDEO
+            if(self.showHintBtnAction){
+               // self.hintForActionBtnSend?("Видео - удерживайте.  Звук - нажмите")
+                self.hintForActionBtnSendTmp = "Видео - удерживайте.  Звук - нажмите"
+                //self.hintForActionBtnSend.wrappedValue = "Видео - удерживайте.  Звук - нажмите"
+            }
         }else{
             self.typeRecordBtn = Constants.MsgRoomType.REC_AUD
+            if(self.showHintBtnAction){
+                //self.hintForActionBtnSend?("Звук - удерживайте.  Видео - нажмите")
+                self.hintForActionBtnSendTmp = ("Звук - удерживайте.  Видео - нажмите")
+                //self.hintForActionBtnSend.wrappedValue = "Звук - удерживайте.  Видео - нажмите"
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+           // if(self.hintForActionBtnSend.wrappedValue != nil && !self.hintForActionBtnSend.wrappedValue!.isEmpty){
+                //self.hintForActionBtnSend?("")
+                self.hintForActionBtnSendTmp = ("")
+                //self.hintForActionBtnSend.wrappedValue = ""
+           // }
         }
     }
+    
+    var stopAnimation = false
+    func startAnimation(repiat: DarwinBoolean = true){
+        if(self.stopAnimation){
+            self.showHintBtnAction = true
+            return
+        }
+        
+        let timeStep = 0.4
+        
+        self.scaleBtnAction = 0.8
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+            self.scaleBtnAction = 1.1
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+                self.scaleBtnAction = 0.8
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+                    if(!self.stopAnimation){
+                        self.nextRecordType()
+                    }
+                    
+                    self.scaleBtnAction = 1.1
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+                        self.scaleBtnAction = 1.0
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+                            if(!self.stopAnimation){
+                                self.nextRecordType()
+                            }
+                            
+                            if(repiat == true){
+                                self.startAnimation(repiat: false)
+                            }else{
+                                self.showHintBtnAction = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
 }

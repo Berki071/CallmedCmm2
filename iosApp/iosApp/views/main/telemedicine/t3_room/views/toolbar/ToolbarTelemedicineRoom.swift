@@ -22,10 +22,8 @@ struct ToolbarTelemedicineRoomListener{
 struct ToolbarTelemedicineRoom: View {
     @ObservedObject var mainPresenter: ToolbarTelemedicineRoomPresenter
     
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: ToolbarTelemedicineRoomListener){
-
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, listener: ToolbarTelemedicineRoomListener){
         mainPresenter = ToolbarTelemedicineRoomPresenter(item: item, listener: listener)
-       
     }
 
     var body: some View {
@@ -52,7 +50,7 @@ struct ToolbarTelemedicineRoom: View {
 //                        .frame(width: 45.0, height: 50.0)
                     
                     VStack(alignment: .center){
-                        Text(self.mainPresenter.stringToInitials(str: self.mainPresenter.itemRecord.wrappedValue?.fullNameKl ?? ""))
+                        Text(self.mainPresenter.stringToInitials(str: self.mainPresenter.itemRecord?.fullNameKl ?? ""))
                             .font(.system(size: 18))
                             .foregroundColor(Color.white)
                     }
@@ -62,7 +60,7 @@ struct ToolbarTelemedicineRoom: View {
                     .padding(8)
                     
 
-                    Text(self.mainPresenter.itemRecord.wrappedValue?.fullNameKl ?? "")
+                    Text(self.mainPresenter.itemRecord?.fullNameKl ?? "")
                         .font(.system(size: 16))
                         .foregroundColor(Color.white)
 
@@ -81,11 +79,11 @@ struct ToolbarTelemedicineRoom: View {
                     }
 
 
-                    if(self.mainPresenter.itemRecord.wrappedValue != nil){
+                    if(self.mainPresenter.itemRecord != nil){
                         Menu {
                             Button("Медиа", action: self.mainPresenter.goToMedia)
 
-                            if(self.mainPresenter.itemRecord.wrappedValue!.status != Constants.TelemedicineStatusRecord.active()){
+                            if(self.mainPresenter.itemRecord!.status != Constants.TelemedicineStatusRecord.active()){
                                 Button("Начать прием", action: self.mainPresenter.clickStartReception)
                             }else{
                                 Button("Завершить прием", action: self.mainPresenter.clickCompleteReception)
@@ -122,6 +120,6 @@ struct ToolbarTelemedicineRoom_Previews: PreviewProvider {
                                                       clickCompleteReception: {() -> Void in }, showAnalizes: {() -> Void in }, showConclusions: {() -> Void in })
 
     static var previews: some View {
-        ToolbarTelemedicineRoom(item: $item, listener: list)
+        ToolbarTelemedicineRoom(item: item, listener: list)
     }
 }

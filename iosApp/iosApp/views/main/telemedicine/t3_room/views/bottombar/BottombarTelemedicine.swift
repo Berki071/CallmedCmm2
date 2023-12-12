@@ -31,18 +31,32 @@ struct BottombarTelemedicine: View {
     @StateObject var mainPresenter: BottombarTelemedicinePresenter
     @ObservedObject var mainPresenter2: BottombarTelemedicinePresenter2
     
+//    @State var showBtnActionSendAnimation: DarwinBoolean
+//    {
+//        didSet{
+//            print(">>>>> BottombarTelemedicine didSet \(showBtnActionSendAnimation)")
+//        }
+//    }
+    
 
-
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
-       // self.outsideMsg = msgToBottombar
-        _mainPresenter = StateObject(wrappedValue: BottombarTelemedicinePresenter(item: item, listener: listener, recordVideoPad: recordVideoPad))
-        mainPresenter2 = BottombarTelemedicinePresenter2(item: item)
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad, showBtnActionSendAnimation: DarwinBoolean?){
         
+
+        _mainPresenter = StateObject(wrappedValue: BottombarTelemedicinePresenter(item: item, listener: listener, recordVideoPad: recordVideoPad))
+        mainPresenter2 = BottombarTelemedicinePresenter2(item: item, showBtnActionSendAnimation: showBtnActionSendAnimation ?? false)
     }
     
     var body: some View {
         ZStack{
+        
+            let _ = self.checkShowAnimationActionBtn()
+            
             VStack(spacing: 0){
+                Spacer()
+                
+                HintForBtnAction(hintForActionBtnSend: self.mainPresenter.hintForActionBtnSendTmp)
+                    .padding(.bottom, 4.0)
+                
                 Divider()
                     .frame(height: 2.0)
                     .overlay(Color("lightGray"))
@@ -146,9 +160,8 @@ struct BottombarTelemedicine: View {
                                         //print(">>>>> onTapGesture onEnded")
                                     })
                             )
-//                            .onTapGesture {
-//                                self.mainPresenter.nextRecordType()
-//                            }
+                            .scaleEffect(self.mainPresenter.scaleBtnAction)
+                            .animation(.linear(duration: 0.4), value: self.mainPresenter.scaleBtnAction)
                     }else{
                         
                         Image("send")
@@ -174,7 +187,8 @@ struct BottombarTelemedicine: View {
                 .frame(minHeight: 52.0)
                 //.background(Color.green)
             }
-            .background(Color.white)
+            //.background(Color.white)
+            //.background(Color.green)
             
             if(self.mainPresenter2.isDisableChat){
                 HStack{
@@ -194,10 +208,18 @@ struct BottombarTelemedicine: View {
             }
             
         }
-//        .alert(item: self.$mainPresenter.selectedShow) { show in
-//              Alert(title: Text(""), message: Text(show.name), dismissButton: .default(Text("Ok")))
-//          }
 
+
+
+    }
+    
+    func checkShowAnimationActionBtn(){
+        if(self.mainPresenter2.showBtnActionSendAnimation != nil){
+            if(self.mainPresenter2.showBtnActionSendAnimation == true){
+                self.mainPresenter2.showBtnActionSendAnimation = false
+                self.mainPresenter.startAnimation()
+            }
+        }
     }
 }
 
@@ -205,10 +227,11 @@ struct BottombarTelemedicine_Previews: PreviewProvider {
     @State static var item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem()
     static let list = BottombarTelemedicineListener(sendMsg: {(String) -> Void in }, sendRecordMsg: {(String) -> Void in }, sendVideoMsg: {(String) -> Void in }, showAlertMsg: {(i: String, j: String) -> Void in}, makePhoto: {()->Void in }, selectFileFromPhotoLibrary: {()->Void in }, selectFileFromOtherPlace: {()->Void in })
     
-    @State static var rurl: URL? = URL.init(string: "yourURLString")
-    //@State static var selectedShow: TVShow? = nil
+    //@State static var hintForActionBtnSend: String? = ""
+    static var showBtnActionSendAnimation: DarwinBoolean?
     
     static var previews: some View {
-        BottombarTelemedicine(item: $item, listener: list, recordVideoPad: RecordVideoPad())
+        BottombarTelemedicine(item: item, listener: list, recordVideoPad: RecordVideoPad(),
+                              showBtnActionSendAnimation: showBtnActionSendAnimation)
     }
 }

@@ -127,6 +127,8 @@ class BottomBarChatView : RelativeLayout {
 
         cardBox.setOnTouchListener(object : OnTouchListener{
             override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+                stopAnimation = true
+
                 val eX : Int? = p1?.x?.toInt()
                 val eY: Int? = p1?.y?.toInt()
 
@@ -215,52 +217,58 @@ class BottomBarChatView : RelativeLayout {
 
     }
 
-    fun showRecordBtnAnim(){
+    var stopAnimation = false
+    fun showRecordBtnAnim(repeate: Boolean = true){
+        if(stopAnimation){
+            btnAction.isShowHint = true
+            return
+        }
+
+        val stepDuration: Long = 400
 
         btnAction.animate()
             .scaleX(0.8F)
             .scaleY(0.8F)
-            .setDuration(500).setInterpolator(AccelerateDecelerateInterpolator())
+            .setDuration(stepDuration).setInterpolator(AccelerateDecelerateInterpolator())
             .withEndAction( Runnable() {
                 btnAction.animate()
                     .scaleX(1.2F)
                     .scaleY(1.2F)
-                    .setDuration(500).setInterpolator(AccelerateDecelerateInterpolator())
+                    .setDuration(stepDuration).setInterpolator(AccelerateDecelerateInterpolator())
                     .withEndAction(Runnable() {
 
                         btnAction.animate()
                             .scaleX(0.8F)
                             .scaleY(0.8F)
-                            .setDuration(500).setInterpolator(AccelerateDecelerateInterpolator())
+                            .setDuration(stepDuration).setInterpolator(AccelerateDecelerateInterpolator())
                             .withEndAction(Runnable() {
 
-                                btnAction.clickChangeToNextState()
+                                if(!stopAnimation){
+                                    btnAction.clickChangeToNextState()
+                                }
 
                                 btnAction.animate()
                                     .scaleX(1.2F)
                                     .scaleY(1.2F)
-                                    .setDuration(500)
+                                    .setDuration(stepDuration)
                                     .setInterpolator(AccelerateDecelerateInterpolator())
                                     .withEndAction(Runnable() {
 
                                         btnAction.animate()
-                                            .scaleX(0.8F)
-                                            .scaleY(0.8F)
-                                            .setDuration(500)
+                                            .scaleX(1F)
+                                            .scaleY(1F)
+                                            .setDuration(stepDuration)
                                             .setInterpolator(AccelerateDecelerateInterpolator())
                                             .withEndAction(Runnable() {
+                                                if(!stopAnimation){
+                                                    btnAction.clickChangeToNextState()
+                                                }
 
-                                                btnAction.clickChangeToNextState()
-
-                                                btnAction.animate()
-                                                    .scaleX(1F)
-                                                    .scaleY(1F)
-                                                    .setDuration(500).setInterpolator(
-                                                        AccelerateDecelerateInterpolator()
-                                                    )
-                                                    .withEndAction(Runnable() {
-                                                        btnAction.isShowHint = true
-                                                    })
+                                                if(repeate){
+                                                    showRecordBtnAnim(repeate = false)
+                                                }else{
+                                                    btnAction.isShowHint = true
+                                                }
                                             })
                                     })
                             })

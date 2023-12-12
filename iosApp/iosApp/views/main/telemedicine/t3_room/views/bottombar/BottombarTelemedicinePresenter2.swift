@@ -12,13 +12,16 @@ import shared
 class BottombarTelemedicinePresenter2: ObservableObject {
     
     @Published var isDisableChat: Bool = false
+    var showBtnActionSendAnimation: DarwinBoolean
     
-    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>){
+    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, showBtnActionSendAnimation: DarwinBoolean){
+        self.showBtnActionSendAnimation = showBtnActionSendAnimation
         
-        if(item.wrappedValue == nil){
+        
+        if(item == nil){
             self.isDisableChat = false
         }else{
-            if(item.wrappedValue!.status! == Constants.TelemedicineStatusRecord.active()){
+            if(item!.status! == Constants.TelemedicineStatusRecord.active()){
                 self.isDisableChat = false
             }else{
                 self.isDisableChat = true

@@ -9,6 +9,7 @@
 import Foundation
 import shared
 import AVFoundation
+import SwiftUI
 
 class T3ItemVideoPresenter: ObservableObject{
     var item: MessageRoomResponse.MessageRoomItem
@@ -25,19 +26,18 @@ class T3ItemVideoPresenter: ObservableObject{
     @Published var player: AVPlayer? = nil
     
     let BASE_WIDHT_AND_HIGTH_VIDEO_VIEW: CGFloat = 280
-    @Published var heightVideoPlayer: CGFloat = 280
+    
+    @Published var heightVideoPlayer: CGFloat = 320
     @Published var widthVideoPlayer: CGFloat = 280
+    
     
     @Published var isShowTimer = false
     @Published var tiemerTime = "00:00"
+    
+    @Published var iuImageLogo : UIImage? = nil
 
     
     init(item: MessageRoomResponse.MessageRoomItem, idRoom: String, showAlert: @escaping  (String, String) -> Void){
-//        if(self.item != nil && self.item.idMessage == item.idMessage){
-//            return
-//        }
-       
-        
         self.item = item
         self.idRoom = idRoom
         self.showAlert = showAlert
@@ -48,10 +48,8 @@ class T3ItemVideoPresenter: ObservableObject{
             isShowLoad = false
         }
         
-        //print(">>>>>>> T3ItemVideoPresenter.init \(item.idMessage)")
-        
         if(item.text != nil && !item.text!.isEmpty &&  !item.text!.contains(s: "http")){
-            self.getFile()
+            self.getImgFromVideo()
         }else{
             self.isShowLoad = true
             self.loadFile(item)
@@ -96,13 +94,14 @@ class T3ItemVideoPresenter: ObservableObject{
         return "\(min):\(strSec)"
     }
     
-    func getFile(){
+    func getImgFromVideo(){
         let fileName = item.text!
         let path = getDocumentsDirectory()
         
+        
         do {
             let directoryContents = try FileManager.default.contentsOfDirectory(at: path!, includingPropertiesForKeys: nil)
-            let allFilesPngURL = directoryContents.filter{ $0.pathExtension == "mp4" }  // во внутренню папку все сохраняютсяв пнг
+            let allFilesPngURL = directoryContents.filter{ $0.pathExtension == "mp4" }
             
             for i in allFilesPngURL {
                 if i.absoluteString.contains(fileName){
@@ -111,23 +110,80 @@ class T3ItemVideoPresenter: ObservableObject{
             }
             
             if(self.urlVideo != nil){
-                
-                let aspectRatioOfVideo = self.initAspectRatioOfVideo(with: self.urlVideo!)
-                self.calculateViewVideoSize(aspectRatioOfVideo)
-                
-                DispatchQueue.main.async {
-                    self.player = AVPlayer(url: self.urlVideo!)
-                }
+                if let thumbnailImage = getThumbnailImage(forUrl: self.urlVideo!) {
+                    
+                    let aspectRatioOfVideo = self.initAspectRatioOfVideo(with: self.urlVideo!)
+                    self.calculateViewVideoSize(aspectRatioOfVideo)
+                    
+                    if let cachedImage = ImageCache.shared.get(forKey: fileName) {
+                        self.iuImageLogo = cachedImage
+                        //print(">>>>>>>! Img from Cash")
+                    }else{
+                        let imageView = UIImageView()
+                        imageView.image = thumbnailImage
+                        let uiImTmp = imageView.image?.rotate(radians: .pi/2)  // .pi/2=90
+                        
+                        if(uiImTmp != nil){
+                            ImageCache.shared.set(uiImTmp!, forKey: fileName)
+                        }
+                        
+                        self.iuImageLogo = uiImTmp
+                        //print(">>>>>>>! Img from Video")
+                        
+                    }
+                 }
             }
             
         } catch {
             LoggingTree.INSTANCE.e("T3ItemVideoPresenter/getImage", error)
         }
     }
+    func getThumbnailImage(forUrl url: URL) -> UIImage? {
+        let asset: AVAsset = AVAsset(url: url)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+
+        do {
+            let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
+            return UIImage(cgImage: thumbnailImage)
+        } catch let error {
+            print(error)
+        }
+
+        return nil
+    }
+    
+//    func getFile(){
+//        let fileName = item.text!
+//        let path = getDocumentsDirectory()
+//        
+//        do {
+//            let directoryContents = try FileManager.default.contentsOfDirectory(at: path!, includingPropertiesForKeys: nil)
+//            let allFilesPngURL = directoryContents.filter{ $0.pathExtension == "mp4" }
+//            
+//            for i in allFilesPngURL {
+//                if i.absoluteString.contains(fileName){
+//                    self.urlVideo = i
+//                }
+//            }
+//            
+//            if(self.urlVideo != nil){
+//                
+//                let aspectRatioOfVideo = self.initAspectRatioOfVideo(with: self.urlVideo!)
+//                self.calculateViewVideoSize(aspectRatioOfVideo)
+//                
+//                DispatchQueue.main.async {
+//                    self.player = AVPlayer(url: self.urlVideo!)
+//                }
+//            }
+//            
+//        } catch {
+//            LoggingTree.INSTANCE.e("T3ItemVideoPresenter/getImage", error)
+//        }
+//    }
     func loadFile(_ item: MessageRoomResponse.MessageRoomItem){
         loaderFileForChat.loadVideo(item: item, processingFileComplete: {(i: MessageRoomResponse.MessageRoomItem) -> Void in
             RealmDb.shared.updateItemMessageText(item: item)
-            self.getFile()
+            self.getImgFromVideo()
             DispatchQueue.main.async {
                 self.isShowLoad = false
             }
@@ -152,7 +208,6 @@ class T3ItemVideoPresenter: ObservableObject{
         return CGSize(width: abs(size.width), height: abs(size.height))
     }
     private func calculateViewVideoSize(_ aspectRatioOfVideo: Double){
-        
         if(aspectRatioOfVideo > 1){
            // height biger
             let newHeight = BASE_WIDHT_AND_HIGTH_VIDEO_VIEW * aspectRatioOfVideo
@@ -179,39 +234,80 @@ class T3ItemVideoPresenter: ObservableObject{
     }
     
     func cklickVideo(){
+
         if(isShowTimer){
             finishShowTimePlayback()
         }else{
+            if(self.urlVideo == nil){
+                return
+            }
+            
             startShowTimePlayback()
         }
     }
     func finishShowTimePlayback(){
         self.player?.pause()
-        self.player?.seek(to: .zero)
+        //self.player?.seek(to: .zero)
+        self.player = nil
         self.isShowTimer = false
     }
     func startShowTimePlayback(){
+        self.player = AVPlayer(url: self.urlVideo!)
         self.player?.play()
-        self.tiemerTime = "0:00"
-        self.isShowTimer = true
-        repeatPartShowTimePlayback()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.tiemerTime = "0:00"
+            self.isShowTimer = true
+            self.repeatPartShowTimePlayback()
+        }
     }
     func repeatPartShowTimePlayback() {
         if(!self.isShowTimer){
             return
         }
         
-        let currentTime = self.player?.currentTime().seconds ?? 0
-        let durationTime = self.player?.currentItem?.duration.seconds ?? 0
-        let timeLost = Int.init(durationTime - currentTime)
-        //print(" >>>>>>>>>> time \(durationTime - currentTime)")
-        let timeLostStr = (timeLost<10) ? "00:0\(String.init(timeLost))" : "00:\(String.init(timeLost))"
-        
-        self.tiemerTime = timeLostStr
+        if(self.player != nil){
+            let currentTime: Double = self.player!.currentTime().seconds ?? 0
+            let durationTime: Double  = self.player!.currentItem?.duration.seconds ?? 0
+            
+            if(durationTime > 0){
+                let timeLost = Int.init(durationTime - currentTime)
+                //print(" >>>>>>>>>> time \(durationTime - currentTime)")
+                let timeLostStr = (timeLost<10) ? "00:0\(String.init(timeLost))" : "00:\(String.init(timeLost))"
+                
+                self.tiemerTime = timeLostStr
+            }
+        }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             self.repeatPartShowTimePlayback()
         }
     }
     
+}
+
+extension UIImage {
+    func rotate(radians: Float) -> UIImage? {
+        //radians: .pi/2=90
+        
+        var newSize = CGRect(origin: CGPoint.zero, size: self.size).applying(CGAffineTransform(rotationAngle: CGFloat(radians))).size
+        // Trim off the extremely small float value to prevent core graphics from rounding it up
+        newSize.width = floor(newSize.width)
+        newSize.height = floor(newSize.height)
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        
+        // Move origin to middle
+        context.translateBy(x: newSize.width/2, y: newSize.height/2)
+        // Rotate around middle
+        context.rotate(by: CGFloat(radians))
+        // Draw the image at its center
+        self.draw(in: CGRect(x: -self.size.width/2, y: -self.size.height/2, width: self.size.width, height: self.size.height))
+    
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
 }

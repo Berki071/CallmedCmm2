@@ -15,6 +15,8 @@
 		56049C952A8F4A6200826899 /* AudioPlayerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */; };
 		562604192AFC7D19006FF22C /* T3ItemFilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */; };
 		5635C6F42A961A2A00DA2C65 /* AudioRecorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */; };
+		56517DA02B23095A00A1F1F8 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56517D9F2B23095A00A1F1F8 /* ImageCache.swift */; };
+		56517DA42B26F13E00A1F1F8 /* HintForBtnAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56517DA32B26F13E00A1F1F8 /* HintForBtnAction.swift */; };
 		5683AB232AFB7A17005C5704 /* LoaderFileForChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */; };
 		56AD72E32A8DDB24005D3708 /* T3ItemRecordAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */; };
 		56CEF7382B15C05F003E644F /* T3ItemVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56CEF7372B15C05F003E644F /* T3ItemVideo.swift */; };
@@ -172,6 +174,8 @@
 		56049C942A8F4A6200826899 /* AudioPlayerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerHandler.swift; sourceTree = "<group>"; };
 		562604182AFC7D19006FF22C /* T3ItemFilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemFilePresenter.swift; sourceTree = "<group>"; };
 		5635C6F32A961A2A00DA2C65 /* AudioRecorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorHandler.swift; sourceTree = "<group>"; };
+		56517D9F2B23095A00A1F1F8 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		56517DA32B26F13E00A1F1F8 /* HintForBtnAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HintForBtnAction.swift; sourceTree = "<group>"; };
 		5683AB222AFB7A17005C5704 /* LoaderFileForChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderFileForChat.swift; sourceTree = "<group>"; };
 		56AD72E22A8DDB24005D3708 /* T3ItemRecordAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemRecordAudio.swift; sourceTree = "<group>"; };
 		56CEF7372B15C05F003E644F /* T3ItemVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = T3ItemVideo.swift; sourceTree = "<group>"; };
@@ -584,6 +588,7 @@
 				56F259CB2A56CDB0002A016F /* show_media_page */,
 				56F259DA2A56CDB0002A016F /* show_image */,
 				56F259DF2A56CDB0002A016F /* bottombar */,
+				56517DA32B26F13E00A1F1F8 /* HintForBtnAction.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -789,6 +794,7 @@
 				56F25A902A56D14D002A016F /* LoggingTree.swift */,
 				56F25A912A56D14D002A016F /* UIDevice.swift */,
 				56F25A922A56D14D002A016F /* MDate.swift */,
+				56517D9F2B23095A00A1F1F8 /* ImageCache.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -1044,6 +1050,7 @@
 				56F25A0C2A56CDB1002A016F /* T3ItemImg.swift in Sources */,
 				56F259832A56C9D7002A016F /* AppState.swift in Sources */,
 				56F25A6A2A56D139002A016F /* DownloadManager.swift in Sources */,
+				56517DA42B26F13E00A1F1F8 /* HintForBtnAction.swift in Sources */,
 				56F259F22A56CDB0002A016F /* BranchListView.swift in Sources */,
 				56F25A792A56D139002A016F /* FCMResult.swift in Sources */,
 				56F25A162A56CDB1002A016F /* ShowFilesPresenter.swift in Sources */,
@@ -1127,6 +1134,7 @@
 				56F25A972A56D14D002A016F /* MDate.swift in Sources */,
 				562604192AFC7D19006FF22C /* T3ItemFilePresenter.swift in Sources */,
 				56F259F72A56CDB1002A016F /* DropdownCategory.swift in Sources */,
+				56517DA02B23095A00A1F1F8 /* ImageCache.swift in Sources */,
 				56F25A2C2A56CDB2002A016F /* MyToolBarT1Telemedicine.swift in Sources */,
 				56F25A062A56CDB1002A016F /* StatisticsMcbPresenter.swift in Sources */,
 				56F25A702A56D139002A016F /* AllRaspSotrItem.swift in Sources */,
@@ -1270,7 +1278,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HZ3W95LN3H;
 				ENABLE_PREVIEWS = YES;
@@ -1285,7 +1293,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 37;
+				MARKETING_VERSION = 40;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1308,7 +1316,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = HZ3W95LN3H;
 				ENABLE_PREVIEWS = YES;
@@ -1323,7 +1331,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 37;
+				MARKETING_VERSION = 40;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",

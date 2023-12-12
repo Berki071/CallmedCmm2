@@ -62,6 +62,7 @@ struct MainView: View {
                             }, textBtnOk: "Да", textBtnCancel: "Нет"))
                         }
                     }
+                    .background(Color.white)
                     .gesture(drag)
                 }
             }

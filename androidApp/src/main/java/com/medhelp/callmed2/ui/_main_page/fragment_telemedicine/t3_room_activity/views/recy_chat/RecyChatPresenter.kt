@@ -89,6 +89,8 @@ class RecyChatPresenter {
                                 }
                             }
                             Different.hideLoadingDialog()
+                            mainView?.checkFirstHideLoading()
+
                         }.onFailure {
                             if(it.message==null || (it.message!=null  && !it.message!!.contains("connect_timeout=unknown ms")))
                                 Timber.tag("my").w(LoggingTree.getMessageForError(it, "T3RoomPresenter(LoadAllMessagesPAC/)"))

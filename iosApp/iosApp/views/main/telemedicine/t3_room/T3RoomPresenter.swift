@@ -12,33 +12,99 @@ import shared
 class T3RoomPresenter: ObservableObject {
     
     @Published var recordTItem: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter recordTItem update")
+//        }
+//    }
 
     
-    @Published var isShowMediaView: Bool = false
-    @Published var isShowAlertStandart: StandartAlertData? = nil
-    @Published var showDialogLoading: Bool = false
-    @Published var isShowAnalizesView: Bool = false
-    @Published var isShowConclusionsView: Bool = false
+    @Published var isShowMediaView: Bool?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter isShowMediaView update")
+//        }
+//    }
+    @Published var isShowAlertStandart: StandartAlertData?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter isShowAlertStandart update")
+//        }
+//    }
+    @Published var showDialogLoading: Bool?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter showDialogLoading update \(showDialogLoading) ")
+//        }
+//    }
+    @Published var isShowAnalizesView: Bool?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter isShowAnalizesView update")
+//        }
+//    }
+    @Published var isShowConclusionsView: Bool?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter isShowConclusionsView update")
+//        }
+//    }
     
-    @Published var isStartCamera = true //ImagePicker показать камеру или галерею.. костыль. тут так как шит не видит изменений в переменной когда она лежит  во вью
-    
-    let sdk: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
-    var sharePreferenses = SharedPreferenses()
-    let workWithFiles = WorkWithFiles()
+    @Published var isStartCamera: Bool? //ImagePicker показать камеру или галерею.. костыль. тут так как шит не видит изменений в переменной когда она лежит  во вью
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter isStartCamera update")
+//        }
+//    }
     
     // начало чата
     @Published var recyList: [MessageRoomResponse.MessageRoomItem] = []  //последний итем скрол
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter recyList update")
+//        }
+//    }
+    
     var lastIdMessage = 0
-    @Published var isShowBigImageOrFile: URL? = nil
+    @Published var isShowBigImageOrFile: URL?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter isShowBigImageOrFile update")
+//        }
+//    }
     
     var isStoppedT3View = true  //для остановки цикличныз запросов
     var proxy: ScrollViewProxy? = nil //для скролла
     
     var recordVideoPad: RecordVideoPad
     @Published var recorVideoURL: URL?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter recorVideoURL update")
+//        }
+//    }
+    
+    @Published var hintForActionBtnSend: String?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter hintForActionBtnSend update \(hintForActionBtnSend)")
+//        }
+//    }
+    @Published var showBtnActionSendAnimation: DarwinBoolean?
+//    {
+//        didSet{
+//            print(">>>>> T3RoomPresenter showBtnActionSendAnimation update \(showBtnActionSendAnimation)")
+//        }
+//    }
+    
+    let sdk: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
+    var sharePreferenses = SharedPreferenses()
+    let workWithFiles = WorkWithFiles()
     
     
     init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
+        //print(">>>>> T3RoomPresenter init")
+        
         recordVideoPad = RecordVideoPad()
         
         self.isStoppedT3View = false
@@ -52,6 +118,8 @@ class T3RoomPresenter: ObservableObject {
         })
     }
     init(idRoom: String, idTm: String){
+        //print(">>>>> T3RoomPresenter init")
+        
         recordVideoPad = RecordVideoPad()
         
         self.isStoppedT3View = false
@@ -80,6 +148,7 @@ class T3RoomPresenter: ObservableObject {
             PadForMyFirebaseMessagingService.shared.listenerT3 = { () -> Void in
                 self.getOneRecordInfo(String(Int.init(truncating: self.recordTItem!.idRoom!)), tmIdC)
             }
+            
         }
     }
     
@@ -927,6 +996,7 @@ class T3RoomPresenter: ObservableObject {
         return String(Int.init(truncating: recordTItem!.idRoom!))
     }
     
+    var isFirstHideDialogLoading = true
     func showLoading(_ isShow : Bool){
         if(self.showDialogLoading == isShow){
             return
@@ -937,7 +1007,12 @@ class T3RoomPresenter: ObservableObject {
                 self.showDialogLoading = true
             }else{
                 self.showDialogLoading = false
+                if(self.isFirstHideDialogLoading){
+                    self.showBtnActionSendAnimation = true
+                    self.isFirstHideDialogLoading = false
+                }
             }
+            
         }
     }
     func showAlet(_ title: String, _ text: String) {

@@ -149,6 +149,14 @@ class RecyChatView : RecyclerView {
         scrollToPosition(0)
     }
 
+    var isFirstHide = true
+    fun checkFirstHideLoading(){
+        if(isFirstHide){
+            isFirstHide = false
+            listener?.firstHideLoading()
+        }
+    }
+
     interface RecyChatViewListener{
         fun clickedShowBigImage(item: MessageRoomItem, list : MutableList<MessageRoomItem>)
         fun clickedShowFile(item: MessageRoomItem)
@@ -156,5 +164,6 @@ class RecyChatView : RecyclerView {
         fun getStateProximity(): T3RoomActivity.ProximitySensorState
         fun setListenerStateProximity(item: RoomAdapter.ListenerStateProximity?)
         fun getListenerStateProximity(): RoomAdapter.ListenerStateProximity?
+        fun firstHideLoading()
     }
 }

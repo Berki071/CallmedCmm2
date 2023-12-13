@@ -1,6 +1,7 @@
 package com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t3_room_activity.views.recy_chat
 
 import android.net.Uri
+import android.os.Handler
 import android.util.Base64
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
@@ -43,6 +44,7 @@ class RecyItemPresenter() {
         networkManagerOld = null
     }
 
+    var tryLoadCounter = 0
     fun loadFile(item: MessageRoomItem, listener: RoomHolderProcessingFileListener){
         if(item.type == T3RoomActivity.MsgRoomType.VIDEO.toString()){
             if(networkManagerOld == null)
@@ -84,15 +86,29 @@ class RecyItemPresenter() {
                     )
                 }
                     .onSuccess {
+                        if(it.response[0].data_file == null){
+                            val handler = Handler()
+                            handler.postDelayed({
+                                if (tryLoadCounter < 10) {
+                                    loadFile(item, listener)
+                                    tryLoadCounter = tryLoadCounter + 1
+                                } else {
+                                    Timber.tag("my").w("LoaderFileForChat/load количество попыток загрузки исчерпано")
+                                    listener.error(
+                                        item,
+                                        "Ошибка!",
+                                        "Не удалось создать файл для сохранения"
+                                    )
+                                }
+                            },2000L)
+                            return@onSuccess
+                        }
+                        tryLoadCounter = 0
+
                         item.text = it.response[0].data_file
                         processingOnImageOrFile(item, listener)
                     }.onFailure {
-                        Timber.tag("my").w(
-                            LoggingTree.getMessageForError(
-                                it,
-                                "RecyItemPresenter/loadFile(LoadAllMessagesSOTR_v2_fulldata/)"
-                            )
-                        )
+                        Timber.tag("my").w(LoggingTree.getMessageForError(it, "RecyItemPresenter/loadFile(LoadAllMessagesSOTR_v2_fulldata/)"))
                         listener.error(item, "Ошибка!", "Не удалось загрузить файл")
                     }
             }

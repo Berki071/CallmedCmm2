@@ -180,7 +180,7 @@ struct T3RoomView: View {
                 .padding(.bottom, 55.0)
                 
                 
-                BottombarTelemedicine(item: self.mainPresenter.recordTItem, listener: BottombarTelemedicineListener(sendMsg: {(msg: String) -> Void in
+                BottombarTelemedicine(item: self.$mainPresenter.recordTItem, listener: BottombarTelemedicineListener(sendMsg: {(msg: String) -> Void in
                     self.mainPresenter.sendMessage(msg)
                 }, sendRecordMsg: {(fileName: String) -> Void in
                     self.mainPresenter.createRecordMsg(fileName)

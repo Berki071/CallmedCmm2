@@ -11,6 +11,7 @@ import shared
 
 class LoaderFileForChat{
     
+    var tryLoadCounter = 0
     func load(item: MessageRoomResponse.MessageRoomItem, processingFileComplete: @escaping ((MessageRoomResponse.MessageRoomItem) -> Void), errorBack: @escaping ((MessageRoomResponse.MessageRoomItem, String, String) -> Void), idRoom: String){
         let sdk: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
         var sharePreferenses = SharedPreferenses()
@@ -24,6 +25,20 @@ class LoaderFileForChat{
         sdk.getFileForMessageRoom(idMessage: idMsg,
                                     h_Auth: apiKey, h_dbName: h_dbName, h_idDoc: idDoc, completionHandler: { response, error in
             if let res : FileForMsgResponse = response {
+                if(res.response[0].data_file == nil){
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        if(self.tryLoadCounter < 10){
+                            self.load(item: item, processingFileComplete: processingFileComplete, errorBack: errorBack, idRoom: idRoom)
+                            self.tryLoadCounter = self.tryLoadCounter + 1
+                        }else{
+                            LoggingTree.INSTANCE.e("LoaderFileForChat/load количество попыток загрузки исчерпано")
+                            errorBack(item, "Ошибка!", "Не удалось создать файл для сохранения")
+                        }
+                    }
+                    return
+                }
+                self.tryLoadCounter = 0
+                
                 item.text = res.response[0].data_file
                 self.processingOnImageOrFile(item, processingFileComplete, errorBack, idRoom)
             } else {

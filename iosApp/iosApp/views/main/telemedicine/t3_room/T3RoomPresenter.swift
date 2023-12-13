@@ -499,6 +499,9 @@ class T3RoomPresenter: ObservableObject {
                 if(text != nil){
                     recyList[i].text=text
                 }
+                DispatchQueue.main.async {
+                    self.objectWillChange.send()
+                }
                 break
             }
         }

@@ -15,7 +15,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
     let MAX_DURATION_OF_ONE_AUDIO_MSG = 180
     let MAX_DURATION_OF_ONE_VIDEO_MSG = 30
     
-    var itemRecord: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem? = nil
+    var itemRecord: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>
     var listener: BottombarTelemedicineListener? = nil
    
     
@@ -69,7 +69,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
     
    
     
-    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad){
         
         self.itemRecord = item
         self.listener = listener
@@ -160,7 +160,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
             self.pointTimerStarted = MDate.getCurrentDate()
             self.startRepeatShowTimer()
             
-            let idRoom: String = String(Int(self.itemRecord!.idRoom!))
+            let idRoom: String = String(Int(self.itemRecord.wrappedValue!.idRoom!))
             let nameFile = self.workWithFiles.getNewNameForNewFile(idRoom, "wav")
             if(nameFile != nil){
                 self.pathToFileRecord = self.workWithFiles.getDocumentsDirectory()?.appendingPathComponent(nameFile!)
@@ -235,7 +235,7 @@ class BottombarTelemedicinePresenter: ObservableObject {
             self.pointTimerStarted = MDate.getCurrentDate()
             self.startRepeatShowTimer()
             
-            let idRoom: String = String(Int(self.itemRecord!.idRoom!))
+            let idRoom: String = String(Int(self.itemRecord.wrappedValue!.idRoom!))
             let nameFile = self.workWithFiles.getNewNameForNewFile(idRoom, "mp4")
             if(nameFile != nil){
                 self.pathToFileRecord = self.workWithFiles.getDocumentsDirectory()?.appendingPathComponent(nameFile!)

@@ -39,23 +39,24 @@ struct BottombarTelemedicine: View {
 //    }
     
 
-    init(item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad, showBtnActionSendAnimation: DarwinBoolean?){
-        
-
+    init(item: Binding<AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem?>, listener: BottombarTelemedicineListener, recordVideoPad: RecordVideoPad, showBtnActionSendAnimation: DarwinBoolean?){
         _mainPresenter = StateObject(wrappedValue: BottombarTelemedicinePresenter(item: item, listener: listener, recordVideoPad: recordVideoPad))
-        mainPresenter2 = BottombarTelemedicinePresenter2(item: item, showBtnActionSendAnimation: showBtnActionSendAnimation ?? false)
+        mainPresenter2 = BottombarTelemedicinePresenter2(item: item.wrappedValue, showBtnActionSendAnimation: showBtnActionSendAnimation ?? false)
+        
+        
     }
     
     var body: some View {
         ZStack{
         
-            let _ = self.checkShowAnimationActionBtn()
+          let _ = self.checkShowAnimationActionBtn()
             
             VStack(spacing: 0){
                 Spacer()
-                
-                HintForBtnAction(hintForActionBtnSend: self.mainPresenter.hintForActionBtnSendTmp)
-                    .padding(.bottom, 4.0)
+                if(!self.mainPresenter2.isDisableChat){
+                    HintForBtnAction(hintForActionBtnSend: self.mainPresenter.hintForActionBtnSendTmp)
+                        .padding(.bottom, 4.0)
+                }
                 
                 Divider()
                     .frame(height: 2.0)
@@ -191,19 +192,23 @@ struct BottombarTelemedicine: View {
             //.background(Color.green)
             
             if(self.mainPresenter2.isDisableChat){
-                HStack{
+                VStack{
                     Spacer()
-                    Text("Чат неактивен")
-                        .foregroundColor(Color.white)
-                        .fontWeight(.bold)
-                        .font(.system(size: 20))
-                        .onTapGesture{
-                            self.mainPresenter.listener?.showAlertMsg("Внимание!","Чат неактивен, отправка сообщений заблокирована")
-                        }
-                    Spacer()
+                    
+                    HStack{
+                        Spacer()
+                        Text("Чат неактивен")
+                            .foregroundColor(Color.white)
+                            .fontWeight(.bold)
+                            .font(.system(size: 20))
+                            .onTapGesture{
+                                self.mainPresenter.listener?.showAlertMsg("Внимание!","Чат неактивен, отправка сообщений заблокирована")
+                            }
+                        Spacer()
+                    }
+                    .frame(height: 54.0)
+                    .background(Color("black_bg65"))
                 }
-                .frame(height: 54.0)
-                .background(Color("black_bg65"))
   
             }
             
@@ -231,7 +236,7 @@ struct BottombarTelemedicine_Previews: PreviewProvider {
     static var showBtnActionSendAnimation: DarwinBoolean?
     
     static var previews: some View {
-        BottombarTelemedicine(item: item, listener: list, recordVideoPad: RecordVideoPad(),
+        BottombarTelemedicine(item: $item, listener: list, recordVideoPad: RecordVideoPad(),
                               showBtnActionSendAnimation: showBtnActionSendAnimation)
     }
 }

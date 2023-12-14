@@ -231,7 +231,7 @@ class WorkWithFiles {
         }
         
         let sharePreferenses = SharedPreferenses()
-        let idCenter: String = String(sharePreferenses.currentUserInfo!.id_center!)
+        let idCenter: String = String(Int(truncating: sharePreferenses.currentUserInfo!.idCenter!))
         
         var nameNewFile: String? = nil
         let curentTimeMils = String(MDate.getCurrentDate1970())

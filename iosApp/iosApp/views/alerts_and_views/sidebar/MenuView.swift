@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 
 struct MenuView: View {
@@ -85,7 +86,7 @@ struct MenuView_Previews: PreviewProvider {
     @State static private var na = 1
     @State static private var no = false
     @State static private var ni = 0
-    @State static private var trr : UserResponse = UserResponse()
+    @State static private var trr : UserResponse.UserItem = UserResponse.UserItem()
     //selectMenuAlert нажатие на элемент где реакция показ алерта
     
     static var previews: some View {

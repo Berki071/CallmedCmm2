@@ -15,6 +15,11 @@ class MainPresenter: ObservableObject{
     @Published var titleTop : String = ""
     
     @Published var showMenu = false
+//    {
+//        didSet{
+//            print("")
+//        }
+//    }
     @Published var selectMenuPage = 0
     @Published var selectMenuAlert = 0  //1 алер выхода
     

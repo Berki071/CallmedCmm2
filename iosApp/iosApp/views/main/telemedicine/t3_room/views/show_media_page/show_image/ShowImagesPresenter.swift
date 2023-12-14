@@ -36,7 +36,7 @@ class ShowImagesPresenter: ObservableObject {
            
             if(allFilesPngURL.count > 0){
                 let prefix = Constants.PREFIX_NAME_FILE
-                let idCenter: String = String(self.sharePreferenses.currentUserInfo!.id_center ?? -1)
+                let idCenter: String = String(Int(truncating: self.sharePreferenses.currentUserInfo!.idCenter ?? -1))
                 let idRoom: String = String(Int.init(itemRecord!.idRoom!))
                 
                 let searchStr = prefix + "_" + idCenter + "_" + idRoom

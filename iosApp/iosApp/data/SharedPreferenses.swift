@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import shared
 
 class SharedPreferenses{
     let CURRENT_LOGIN_KEY="CURRENT_LOGIN_KEY"
@@ -64,34 +65,32 @@ class SharedPreferenses{
         }
     }
     
-    var currentUserInfo : UserResponse?{
+    var currentUserInfo : UserResponse.UserItem?{
         get{
-            if let data = defaults.data(forKey: USERS_LOGIN_KEY) {
-                do {
-                    // Create JSON Decoder
-                    let decoder = JSONDecoder()
-                    // Decode Note
-                    let note = try decoder.decode(UserResponse.self, from: data)
-                    return note
-                } catch {
+            let res = defaults.string(forKey: USERS_LOGIN_KEY)
+            
+            if res == nil {
+                return nil
+            }else{
+                do{
+                    let tmp = try MUtils.companion.stringToUserResponse(str: res!) as UserResponse.UserItem
+                    return tmp
+                }catch{
+                    print("Неожиданная ошибка: \(error).")
                     return nil
                 }
-            }else{
-                return nil
             }
+            
         }
         
         set ( nVal){
+            
             if nVal != nil{
-                do {
-                    // Create JSON Encoder
-                    let encoder = JSONEncoder()
-                    // Encode Note
-                    let data = try encoder.encode(nVal)
-                    // Write/Set Data
-                    defaults.set(data, forKey: USERS_LOGIN_KEY)
-                } catch {
-                    print("Unable to Encode Note (\(error))")
+                do{
+                    let str : String? = try MUtils.companion.userResponseToString(cl: nVal!)
+                    defaults.set(str, forKey: USERS_LOGIN_KEY)
+                }catch{
+                    print("Неожиданная ошибка: \(error).")
                 }
             }else{
                 defaults.set(nil, forKey: USERS_LOGIN_KEY)

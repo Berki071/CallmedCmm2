@@ -77,11 +77,11 @@ class LoggingTree{
   
         
         if(sharePreferenses.currentUserInfo != nil){
-            if let t = sharePreferenses.currentUserInfo!.id_doc_center {
+            if let t = sharePreferenses.currentUserInfo!.idUser {
                 idUSer=String( Int.init(t))
             }
   
-            if let t = sharePreferenses.currentUserInfo!.id_center {
+            if let t = sharePreferenses.currentUserInfo!.idCenter {
                 idCenter = String(Int.init(t))
             }
         }

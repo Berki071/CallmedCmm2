@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import SwiftUI
+import shared
 
 
 struct TopBar: View {
@@ -15,7 +15,7 @@ struct TopBar: View {
     
     @State var curentCenterInfo : CenterItem
     @State var currenDocInfo: DoctorItem
-    @State var currentUserInfo: UserResponse
+    @State var currentUserInfo: UserResponse.UserItem
     
     @State var iuImageLogo : UIImage =  UIImage(named: "sh_center1")!
 
@@ -23,12 +23,12 @@ struct TopBar: View {
         sharePreferenses = SharedPreferenses()
         curentCenterInfo = sharePreferenses.currentCenterInfo ?? CenterItem()
         currenDocInfo = sharePreferenses.currentDocInfo ?? DoctorItem()
-        currentUserInfo = sharePreferenses.currentUserInfo ?? UserResponse()
+        currentUserInfo = sharePreferenses.currentUserInfo ?? UserResponse.UserItem()
     }
     
     func loadImg(){
         if(curentCenterInfo != nil && curentCenterInfo.logo != nil){
-            let imagePathString = curentCenterInfo.logo! + "&token=" + currentUserInfo.token!
+            let imagePathString = curentCenterInfo.logo! + "&token=" + currentUserInfo.apiKey!
             
             DownloadManager(imagePathString,  resultUiImage: {(tmp : UIImage) -> Void in
                 iuImageLogo = tmp

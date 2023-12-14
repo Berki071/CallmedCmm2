@@ -18,7 +18,6 @@ import com.medhelp.callmed2.data.model.SimpleResponseString
 import com.medhelp.callmed2.data.model.SimpleString
 import com.medhelp.callmed2.data.model.SpecialtyList
 import com.medhelp.callmed2.data.model.UserForRecordResponse
-import com.medhelp.callmed2.data.model.UserList
 import com.medhelp.callmed2.data.model.timetable.AllRaspSotrResponse
 import com.medhelp.callmed2.data.model.timetable.DoctorList
 import com.medhelp.callmed2.data.model.timetable.SettingsAllBaranchHospitalList
@@ -42,18 +41,16 @@ import javax.inject.Inject
 
 class NetworkManager @Inject constructor(private val prefManager: PreferencesManager) {
 
-    fun doLoginApiCall(username: String, password: String, context: Context): Observable<UserList> {
-        val pd = ProtectionData()
-        return Rx2AndroidNetworking.post(LocalEndPoint.LOGIN)
-            .addHeaders("host", "oneclick.tmweb.ru")
-            .addHeaders(AUTH, AppConstants.API_KEY)
-            .addBodyParameter(USERNAME, username)
-            .addBodyParameter(PASSWORD, password)
-            //.addBodyParameter(HASH, pd.getSignature(context))
-            .build()
-            .getObjectObservable(UserList::class.java)
-    }
-
+//    fun doLoginApiCall(username: String, password: String): Observable<UserList> {
+//        //val pd = ProtectionData()
+//        return Rx2AndroidNetworking.post(LocalEndPoint.LOGIN)
+//            .addHeaders("host", "oneclick.tmweb.ru")
+//            .addHeaders(AUTH, AppConstants.API_KEY)
+//            .addBodyParameter(USERNAME, username)
+//            .addBodyParameter(PASSWORD, password)
+//            .build()
+//            .getObjectObservable(UserList::class.java)
+//    }
 //    val currentDateApiCall: Observable<DateList>
 //        get() = Rx2AndroidNetworking.get(LocalEndPoint.CURRENT_DATE)
 //            .addHeaders("host", "oneclick.tmweb.ru")

@@ -87,7 +87,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
             return false
         }
         
-        let idUser = sharePreferenses.currentUserInfo!.id_doc_center
+        let idUser = sharePreferenses.currentUserInfo!.idUser
         let pass = sharePreferenses.currentPassword
         if (idUser == 0 || pass == "") {
             return false
@@ -104,7 +104,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
         
         showLoading(true)
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
@@ -260,7 +260,7 @@ class T1ListOfEntriesPresenter: ObservableObject {
     func closeRecordTelemedicine(_ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem) {
         self.showLoading(true)
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser=String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
@@ -287,12 +287,12 @@ class T1ListOfEntriesPresenter: ObservableObject {
     }
     
     func areThereAnyNewTelemedicineMsg(){
-        if(self.sharePreferenses.currentUserInfo == nil || self.sharePreferenses.currentUserInfo!.token == nil ||  self.sharePreferenses.currentCenterInfo == nil ||
+        if(self.sharePreferenses.currentUserInfo == nil || self.sharePreferenses.currentUserInfo!.apiKey == nil ||  self.sharePreferenses.currentCenterInfo == nil ||
            self.sharePreferenses.currentCenterInfo!.db_name == nil){
             return
         }
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser=String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         

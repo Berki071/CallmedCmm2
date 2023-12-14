@@ -5,10 +5,10 @@
 //  Created by Mihail on 05.12.2022.
 //
 
-import Foundation
+//import Foundation
 
-struct UserList: Decodable,Encodable{
-    var error : Bool?
-    var message : String?
-    var response : [UserResponse]?
-}
+//struct UserList: Decodable,Encodable{
+//    var error : Bool?
+//    var message : String?
+//    var response : [UserResponse]?
+//}

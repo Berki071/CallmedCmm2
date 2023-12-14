@@ -53,7 +53,7 @@ struct MenuItemSidebar: View {
                     }
                 }
                 
-                if(sharePreferenses.currentUserInfo!.chat == "true"){
+                if(sharePreferenses.currentUserInfo!.showPartMessenger == "true"){
                     ZStack(alignment: .leading){
                         if(selectitem.wrappedValue == 3){
                             Color("textSideMenu10")

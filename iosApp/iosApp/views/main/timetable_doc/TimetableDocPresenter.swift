@@ -72,7 +72,7 @@ class TimetableDocPresenter: ObservableObject{
         
         let idDoc = String(sharePreferenses.currentDocInfo?.id_doctor ?? 0)
         let dbName = sharePreferenses.currentCenterInfo?.db_name ?? ""
-        let accessToc = sharePreferenses.currentUserInfo?.token ?? ""
+        let accessToc = sharePreferenses.currentUserInfo?.apiKey ?? ""
         
         sdk.findAllRaspSotr(date: strDate, idDoc: idDoc, dbName: dbName,accessToken:accessToc, responseF: {(r: [AllRaspSotrItem]) -> Void in
             DispatchQueue.main.async {
@@ -163,7 +163,7 @@ class TimetableDocPresenter: ObservableObject{
         
         let idDoc = String(sharePreferenses.currentDocInfo?.id_doctor ?? 0)
         let dbName = sharePreferenses.currentCenterInfo?.db_name ?? ""
-        let accessToc = sharePreferenses.currentUserInfo?.token ?? ""
+        let accessToc = sharePreferenses.currentUserInfo?.apiKey ?? ""
         
         sdk.getAllHospitalBranchForDoc(idDoc: idDoc, dbName: dbName,accessToken:accessToc, responseF: {(r: [SettingsAllBranchHospitalItem]) -> Void in
             DispatchQueue.main.async {
@@ -253,7 +253,7 @@ class TimetableDocPresenter: ObservableObject{
         
         let idDoc = String(sharePreferenses.currentDocInfo?.id_doctor ?? 0)
         let dbName = sharePreferenses.currentCenterInfo?.db_name ?? ""
-        let accessToken = sharePreferenses.currentUserInfo?.token ?? ""
+        let accessToken = sharePreferenses.currentUserInfo?.apiKey ?? ""
         
         sdkKMM.getAllReceptionApiCall(branch: brString, dateMonday: date,
                                       h_Auth: accessToken, h_dbName: dbName,  h_idDoc: idDoc,  completionHandler: { response, error in

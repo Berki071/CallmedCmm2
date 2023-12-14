@@ -56,7 +56,7 @@ class SettingsPresenter: ObservableObject{
     
     func sendFcmToken(token : String){
      
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser=String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         //let idBranch=String(Int.init(self.sharePreferenses.currentUserInfo!.idBranch!))

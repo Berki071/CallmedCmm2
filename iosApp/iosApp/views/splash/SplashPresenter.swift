@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import FirebaseMessaging
+import shared
 
 class SplashPresenter : ObservableObject{
     @Published var nextPage : String = "" //переход на след страницу
@@ -16,7 +17,7 @@ class SplashPresenter : ObservableObject{
     
     let sdk: NetworkManagerIos
     var sharePreferenses : SharedPreferenses
-    //let netConnection = NetMonitor.shared
+    let sdkKMM: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
     
     
     init(){
@@ -48,24 +49,50 @@ class SplashPresenter : ObservableObject{
     }
     
     func verifyUser (_ login:String?,_ pass:String? ){
-        sdk.doLoginApiCall(login!, pass!, responseF: {(r: [UserResponse]) -> Void in
-            DispatchQueue.main.async {
-                if(r[0].username != nil ){
-                    self.sharePreferenses.currentUserInfo = r[0]
-                    self.updateHeaderInfo()
-                    
-                }else{
-                    self.sharePreferenses.currentPassword = nil
-                    self.sharePreferenses.currentUserInfo = nil
-                    self.showNextpage("Login")
+//        sdk.doLoginApiCall(login!, pass!, responseF: {(r: [UserResponse]) -> Void in
+//            DispatchQueue.main.async {
+//                if(r[0].username != nil ){
+//                    self.sharePreferenses.currentUserInfo = r[0]
+//                    self.updateHeaderInfo()
+//
+//                }else{
+//                    self.sharePreferenses.currentPassword = nil
+//                    self.sharePreferenses.currentUserInfo = nil
+//                    self.showNextpage("Login")
+//                }
+//            }
+//        }, errorM: {(e: String) -> Void in
+//            DispatchQueue.main.async {
+//                //self.sharePreferenses.currentPassword = nil
+//                //self.sharePreferenses.currentUserInfo = nil
+//
+//                LoggingTree.INSTANCE.e("SplashPresenter/verifyUser \(e)")
+//                self.showNextpage("Login")
+//            }
+//        })
+        
+        
+        
+        sdkKMM.doLoginApiCall(username: login!, password:pass!, completionHandler: { response, error in
+            if let res : UserResponse = response {
+                DispatchQueue.main.async {
+                    if(res.response[0].username != nil ){
+                        
+                        self.sharePreferenses.currentUserInfo = res.response[0]
+                        self.updateHeaderInfo()
+                        
+                    }else{
+                        self.sharePreferenses.currentPassword = nil
+                        self.sharePreferenses.currentUserInfo = nil
+                        self.showNextpage("Login")
+                    }
                 }
-            }
-        }, errorM: {(e: String) -> Void in
-            DispatchQueue.main.async {
-                //self.sharePreferenses.currentPassword = nil
-                //self.sharePreferenses.currentUserInfo = nil
+            } else {
                 
-                LoggingTree.INSTANCE.e("SplashPresenter/verifyUser \(e)")
+                if let t=error{
+                    LoggingTree.INSTANCE.e("SplashPresenter/verifyUser", t)
+                }
+                
                 self.showNextpage("Login")
             }
         })
@@ -73,7 +100,7 @@ class SplashPresenter : ObservableObject{
     
     
     func updateHeaderInfo(){
-        sdk.getCenterApiCall(idCenter: String(self.sharePreferenses.currentUserInfo!.id_center!), responseF: {(l: [CenterItem]) -> Void in
+        sdk.getCenterApiCall(idCenter: String(Int(truncating: self.sharePreferenses.currentUserInfo!.idCenter!)), responseF: {(l: [CenterItem]) -> Void in
             DispatchQueue.main.async {
                 self.sharePreferenses.currentCenterInfo = l[0]
                 self.getCurrentDocInfo()
@@ -88,8 +115,8 @@ class SplashPresenter : ObservableObject{
     
     func getCurrentDocInfo(){
         let dbN = sharePreferenses.currentCenterInfo!.db_name!
-        let accessesT = sharePreferenses.currentUserInfo!.token!
-        let idD = String(sharePreferenses.currentUserInfo!.id_doc_center!)
+        let accessesT = sharePreferenses.currentUserInfo!.apiKey!
+        let idD = String(Int(truncating: sharePreferenses.currentUserInfo!.idUser!))
         
         sdk.getDoctorById(dbName: dbN, accessToken: accessesT, docId: idD, responseF: {(l: DoctorItem) -> Void in
             DispatchQueue.main.async {
@@ -122,7 +149,7 @@ class SplashPresenter : ObservableObject{
     
     func sendFcmToken(token : String){
      
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser=String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         //let idBranch=String(Int.init(self.sharePreferenses.currentUserInfo!.idBranch!))        

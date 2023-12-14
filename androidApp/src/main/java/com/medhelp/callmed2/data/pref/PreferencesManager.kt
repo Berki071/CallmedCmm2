@@ -71,10 +71,10 @@ class PreferencesManager @Inject constructor(context: Context) {
         set(boo) {
             preferences.edit().putBoolean(PREF_KEY_LOCK_SCREEN_CALL_CENTER, boo).apply()
         }
-    var currentUserId: Int
+    var currentUserId: Int?
         get() = preferences.getInt(PREF_KEY_CURRENT_USER_ID, 0)
         set(userId) {
-            preferences.edit().putInt(PREF_KEY_CURRENT_USER_ID, userId).apply()
+            preferences.edit().putInt(PREF_KEY_CURRENT_USER_ID, userId ?: 0).apply()
         }
     var currentUserName: String?
         get() = preferences.getString(PREF_KEY_CURRENT_USER_NAME, null)
@@ -106,10 +106,10 @@ class PreferencesManager @Inject constructor(context: Context) {
         set(mode) {
             preferences.edit().putBoolean(PREF_KEY_START_MODE, mode).apply()
         }
-    var currentCenterId: Int
+    var currentCenterId: Int?
         get() = preferences.getInt(PREF_KEY_CURRENT_CENTER_ID, 0)
         set(id_center) {
-            preferences.edit().putInt(PREF_KEY_CURRENT_CENTER_ID, id_center).apply()
+            preferences.edit().putInt(PREF_KEY_CURRENT_CENTER_ID, id_center ?: 0).apply()
         }
     var accessToken: String?
         get() = preferences.getString(PREF_KEY_CURRENT_TOKEN, "")

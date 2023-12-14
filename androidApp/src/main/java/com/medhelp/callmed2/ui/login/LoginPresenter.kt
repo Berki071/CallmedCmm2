@@ -14,6 +14,7 @@ import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.utils.IpUtils
 import com.medhelp.callmed2.utils.main.NetworkUtils
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
+import com.medhelp.callmedcmm2.model.UserResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -66,77 +67,135 @@ class LoginPresenter (private val mainView: LoginActivity) {
 
     private fun verifyUser(username: String, password: String) {
         mainView!!.showLoading()
-        val cd = CompositeDisposable()
-        cd.add(networkManager
-            .doLoginApiCall(username, password, mainView.context)
-            .subscribeOn(Schedulers.io())
-            .map { response: UserList ->
-                val userResponse: UserResponse
-                val ar: List<*> = response.response
-                userResponse = ar[0] as UserResponse
-                userResponse
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response: UserResponse ->
-                if (response.username != null) {
-                    saveUserPref(response)
-                    Timber.v("Вход в приложение VERSION_SDK " + Build.VERSION.SDK_INT)
-                    savePrivateData(username, password)
 
-//                        if (mainView.isNeedSave()) {
-//                            savePrivateData(username, password);
-//                        } else {
-//                            cleanPassword();
-//                        }
-                    centerInfo
-                } else {
-                    mainView.showError(R.string.err_authorize)
-                }
-                mainView.hideLoading()
-                cd.dispose()
-            }) { throwable: Throwable ->
-                var str: String? = null
-                if (throwable is ANError) {
-                    str = throwable.errorBody
-                    if (str != null && str.contains("vasdvasdasdvя")) {
-                        val pd = ProtectionData()
-                        Timber.e(
-                            LoggingTree.getMessageForError(
-                                Throwable(
-                                    "Несовпадение hashkey " + pd.getSignature(
-                                        mainView.context
-                                    )
-                                ), "LoginPresenter\$verifyUser1"
+
+//        val cd = CompositeDisposable()
+//        cd.add(networkManager
+//            .doLoginApiCall(username, password)
+//            .subscribeOn(Schedulers.io())
+//            .map { response: UserList ->
+//                val userResponse: UserResponse
+//                val ar: List<*> = response.response
+//                userResponse = ar[0] as UserResponse
+//                userResponse
+//            }
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({ response: UserResponse ->
+//                if (response.username != null) {
+//                    saveUserPref(response)
+//                    Timber.v("Вход в приложение VERSION_SDK " + Build.VERSION.SDK_INT)
+//                    savePrivateData(username, password)
+//
+//                    centerInfo
+//                } else {
+//                    mainView.showError(R.string.err_authorize)
+//                }
+//                mainView.hideLoading()
+//                cd.dispose()
+//            }) { throwable: Throwable ->
+//                var str: String? = null
+//                if (throwable is ANError) {
+//                    str = throwable.errorBody
+//                    if (str != null && str.contains("vasdvasdasdvя")) {
+//                        val pd = ProtectionData()
+//                        Timber.e(
+//                            LoggingTree.getMessageForError(
+//                                Throwable(
+//                                    "Несовпадение hashkey " + pd.getSignature(
+//                                        mainView.context
+//                                    )
+//                                ), "LoginPresenter\$verifyUser1"
+//                            )
+//                        )
+//                    } else if (str != null) {
+//                        Timber.e(
+//                            LoggingTree.getMessageForError(
+//                                throwable,
+//                                "LoginPresenter\$verifyUser "
+//                            )
+//                        )
+//                    }
+//                }
+//                val str11 = throwable.message
+//                if (str == null && str11 != null) {
+//                    Timber.e(
+//                        LoggingTree.getMessageForError(
+//                            null,
+//                            "LoginPresenter\$verifyUser2 $str11; Response: null"
+//                        )
+//                    )
+//                }
+//                if (str11 != null && str != null && str.contains("Failed to connect to")) {
+//                    mainView.showError("Failed to connect")
+//                } else {
+//                    mainView.showError(R.string.api_default_error)
+//                }
+//                if (mainView == null) {
+//                    return@subscribe
+//                }
+//                mainView.hideLoading()
+//            })
+
+
+        mainView.lifecycleScope.launch {
+            kotlin.runCatching {
+                networkManager2.doLoginApiCall(username, password)
+            }
+                .onSuccess {
+                    if (it.response[0].username != null) {
+                        saveUserPref(it.response[0])
+                        Timber.v("Вход в приложение VERSION_SDK " + Build.VERSION.SDK_INT)
+                        savePrivateData(username, password)
+
+                        centerInfo
+                    } else {
+                        mainView.showError(R.string.err_authorize)
+                    }
+                    mainView.hideLoading()
+                }.onFailure {
+                    var str: String? = null
+                    if (it is ANError) {
+                        str = it.errorBody
+                        if (str != null && str.contains("vasdvasdasdvя")) {
+                            val pd = ProtectionData()
+                            Timber.e(
+                                LoggingTree.getMessageForError(
+                                    Throwable(
+                                        "Несовпадение hashkey " + pd.getSignature(
+                                            mainView.context
+                                        )
+                                    ), "LoginPresenter\$verifyUser1"
+                                )
                             )
-                        )
-                    } else if (str != null) {
+                        } else if (str != null) {
+                            Timber.e(
+                                LoggingTree.getMessageForError(
+                                    it,
+                                    "LoginPresenter\$verifyUser "
+                                )
+                            )
+                        }
+                    }
+                    val str11 = it.message
+                    if (str == null && str11 != null) {
                         Timber.e(
                             LoggingTree.getMessageForError(
-                                throwable,
-                                "LoginPresenter\$verifyUser "
+                                null,
+                                "LoginPresenter\$verifyUser2 $str11; Response: null"
                             )
                         )
                     }
+                    if (str11 != null && str != null && str.contains("Failed to connect to")) {
+                        mainView.showError("Failed to connect")
+                    } else {
+                        mainView.showError(R.string.api_default_error)
+                    }
+                    if (mainView == null) {
+                        return@onFailure
+                    }
+                    mainView.hideLoading()
                 }
-                val str11 = throwable.message
-                if (str == null && str11 != null) {
-                    Timber.e(
-                        LoggingTree.getMessageForError(
-                            null,
-                            "LoginPresenter\$verifyUser2 $str11; Response: null"
-                        )
-                    )
-                }
-                if (str11 != null && str != null && str.contains("Failed to connect to")) {
-                    mainView.showError("Failed to connect")
-                } else {
-                    mainView.showError(R.string.api_default_error)
-                }
-                if (mainView == null) {
-                    return@subscribe
-                }
-                mainView.hideLoading()
-            })
+        }
     }
 
     private fun cleanPassword() {
@@ -166,14 +225,14 @@ class LoginPresenter (private val mainView: LoginActivity) {
         }
     }
 
-    private fun saveUserPref(response: UserResponse) {
+    private fun saveUserPref(response: UserResponse.UserItem) {
         try {
-            preferencesManager.isShowPartCallCenter = response.isShowPartCallCenter
-            preferencesManager.isShowPartMessenger = response.isShowPartMessenger
-            preferencesManager.isShowPartTimetable = response.isTimetable
-            preferencesManager.isShowPartScanDoc = response.isSync
-            preferencesManager.isShowPassportRecognize = response.isButtonRecognize
-            preferencesManager.isShowPartRaspDoc = response.isVrach
+            preferencesManager.isShowPartCallCenter = response.showPartCallCenter.toBoolean()
+            preferencesManager.isShowPartMessenger = response.showPartMessenger.toBoolean()
+            preferencesManager.isShowPartTimetable = response.timetable.toBoolean()
+            preferencesManager.isShowPartScanDoc = response.sync.toBoolean()
+            preferencesManager.isShowPassportRecognize = response.buttonRecognize.toBoolean()
+            preferencesManager.isShowPartRaspDoc = response.vrach.toBoolean()
             preferencesManager.currentUserId = response.idUser
             preferencesManager.currentUserName = response.username
             preferencesManager.currentCenterId = response.idCenter

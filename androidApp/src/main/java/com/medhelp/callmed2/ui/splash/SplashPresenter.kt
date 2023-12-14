@@ -2,6 +2,7 @@ package com.medhelp.callmed2.ui.splash
 
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import com.androidnetworking.error.ANError
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.medhelp.callmed2.data.model.*
@@ -43,52 +44,36 @@ class SplashPresenter(private val mainView: SplashActivity) {
     }
 
     private fun verifyUser(username: String, password: String) {
-        Log.wtf("mLog", "start verifyUser")
-        val cd = CompositeDisposable()
-        cd.add(networkManager
-            .doLoginApiCall(username, password, mainView!!.context)
-            .subscribeOn(Schedulers.io())
-            .map { response: UserList ->
-                val userResponse: UserResponse
-                val ar: List<*> = response.response
-                userResponse = ar[0] as UserResponse
-                userResponse
+        mainView.lifecycleScope.launch {
+            kotlin.runCatching {
+                networkManager2.doLoginApiCall(username, password)
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response: UserResponse ->
-                //Log.wtf("mLog", "true verifyUser");
-                if (response.username != null) {
-                    Timber.v("Вход в приложение")
-                    preferencesManager.isShowPartCallCenter = response.isShowPartCallCenter
-                    preferencesManager.isShowPartMessenger = response.isShowPartMessenger
-                    preferencesManager.isShowPartTimetable = response.isTimetable
-                    preferencesManager.isShowPartScanDoc = response.isSync
-                    preferencesManager.isShowPassportRecognize = response.isButtonRecognize
-                    preferencesManager.isShowPartRaspDoc = response.isVrach
-                    preferencesManager.accessToken = response.apiKey
-                    updateHeaderInfo()
-                } else {
-                    preferencesManager.currentPassword = ""
-                    preferencesManager.currentUserId = 0
-                    preferencesManager.currentCenterId = 0
-                    mainView.openLoginActivity()
-                    Timber.e("SplashPresenter/verifyUser response.getUsername()!=null")
-                }
-                cd.dispose()
-            }) { throwable: Throwable? ->
-                Timber.e(
-                    LoggingTree.getMessageForError(
-                        throwable,
-                        "SplashPresenter/verifyUser "
-                    )
-                )
+                .onSuccess {
+                    if (it.response[0].username != null) {
+                        Timber.v("Вход в приложение")
+                        preferencesManager.isShowPartCallCenter = it.response[0].showPartCallCenter.toBoolean()
+                        preferencesManager.isShowPartMessenger = it.response[0].showPartMessenger.toBoolean()
+                        preferencesManager.isShowPartTimetable = it.response[0].timetable.toBoolean()
+                        preferencesManager.isShowPartScanDoc = it.response[0].sync.toBoolean()
+                        preferencesManager.isShowPassportRecognize = it.response[0].buttonRecognize.toBoolean()
+                        preferencesManager.isShowPartRaspDoc = it.response[0].vrach.toBoolean()
+                        preferencesManager.accessToken = it.response[0].apiKey
+                        updateHeaderInfo()
+                    } else {
+                        preferencesManager.currentPassword = ""
+                        preferencesManager.currentUserId = 0
+                        preferencesManager.currentCenterId = 0
+                        mainView.openLoginActivity()
+                        Timber.e("SplashPresenter/verifyUser response.getUsername()!=null")
+                    }
+                }.onFailure {
+                    Timber.e(LoggingTree.getMessageForError(it, "SplashPresenter/verifyUser "))
 
-                // preferencesManager.setCurrentPassword("");
-                //preferencesManager.setCurrentUserId(0);
-                //preferencesManager.setCurrentCenterId(0);
-                if (mainView != null) mainView.openLoginActivity()
-                cd.dispose()
-            })
+                    if (mainView != null)
+                        mainView.openLoginActivity()
+                }
+        }
+
     }
 
     private fun updateHeaderInfo() {

@@ -50,7 +50,7 @@ class StatisticsMcbPresenter: ObservableObject {
      
         self.showLoading = true
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser=String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
 

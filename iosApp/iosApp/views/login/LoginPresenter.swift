@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseMessaging
 import UIKit
+import shared
 
 class LoginPresenter: ObservableObject{
     @Published var nextPage : String = "" //переход на след страницу
@@ -16,7 +17,7 @@ class LoginPresenter: ObservableObject{
     
     let sdk: NetworkManagerIos
     var sharePreferenses : SharedPreferenses
-   // let netConnection = NetMonitor.shared
+    let sdkKMM: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
     
     @Published var username: String = ""
     @Published var password: String = ""
@@ -72,42 +73,82 @@ class LoginPresenter: ObservableObject{
     
     func verifyUser (_ login:String?,_ pass:String? ){
         self.showLoading = true
-        sdk.doLoginApiCall(login!, pass!, responseF: {(r: [UserResponse]) -> Void in
-            DispatchQueue.main.async {
-                print(" doLoginApiCall comlete >>>>>> /n/n")
-                if(r[0].username != nil ){
-                    
-                    //let tmp1 = r[0].vrach
-                    self.sharePreferenses.currentUserInfo = r[0]
-                    if(self.togleState){
-                        self.sharePreferenses.currentLogin = login
-                        self.sharePreferenses.currentPassword = pass
+        //
+        //        sdk.doLoginApiCall(login!, pass!, responseF: {(r: [UserResponse]) -> Void in
+        //            DispatchQueue.main.async {
+        //                print(" doLoginApiCall comlete >>>>>> /n/n")
+        //                if(r[0].username != nil ){
+        //
+        //                    //let tmp1 = r[0].vrach
+        //                    self.sharePreferenses.currentUserInfo = r[0]
+        //                    if(self.togleState){
+        //                        self.sharePreferenses.currentLogin = login
+        //                        self.sharePreferenses.currentPassword = pass
+        //                    }else{
+        //                        self.sharePreferenses.currentPassword = nil
+        //                    }
+        //
+        //                    self.getCenterInfo()
+        //
+        //                }else{
+        //                    self.showLoading = false
+        //                    self.showStandartAlert("Внимание!", "Неверное имя пользователя или пароль")
+        //                }
+        //            }
+        //        }, errorM: {(e: String) -> Void in
+        //            DispatchQueue.main.async {
+        //                self.sharePreferenses.currentPassword = nil
+        //                self.sharePreferenses.currentUserInfo = nil
+        //                print(" doLoginApiCall errrrrror >>>>>> " + e + "/n/n")
+        //                self.sharePreferenses.loginError = "LoginPresenter/verifyUser SL \(e)"
+        //                LoggingTree.INSTANCE.e("LoginPresenter/verifyUser \(e)")
+        //                self.showLoading = false
+        //                self.showStandartAlert("", "Что-то пошло не так.")
+        //            }
+        //        })
+        
+        sdkKMM.doLoginApiCall(username: login!, password:pass!, completionHandler: { response, error in
+            if let res : UserResponse = response {
+                DispatchQueue.main.async {
+                    print(" doLoginApiCall comlete >>>>>> /n/n")
+                    if(res.response[0].username != nil ){
+                        
+                        //let tmp1 = r[0].vrach
+                        self.sharePreferenses.currentUserInfo = res.response[0]
+                        if(self.togleState){
+                            self.sharePreferenses.currentLogin = login
+                            self.sharePreferenses.currentPassword = pass
+                        }else{
+                            self.sharePreferenses.currentPassword = nil
+                        }
+                        
+                        self.getCenterInfo()
+                        
                     }else{
-                        self.sharePreferenses.currentPassword = nil
+                        self.showLoading = false
+                        self.showStandartAlert("Внимание!", "Неверное имя пользователя или пароль")
                     }
-                    
-                    self.getCenterInfo()
-                    
-                }else{
-                    self.showLoading = false
-                    self.showStandartAlert("Внимание!", "Неверное имя пользователя или пароль")
                 }
-            }
-        }, errorM: {(e: String) -> Void in
-            DispatchQueue.main.async {
-                self.sharePreferenses.currentPassword = nil
-                self.sharePreferenses.currentUserInfo = nil
-                print(" doLoginApiCall errrrrror >>>>>> " + e + "/n/n")
-                self.sharePreferenses.loginError = "LoginPresenter/verifyUser SL \(e)"
-                LoggingTree.INSTANCE.e("LoginPresenter/verifyUser \(e)")
-                self.showLoading = false
-                self.showStandartAlert("", "Что-то пошло не так.")
+            } else {
+                
+                if let t=error{
+                    LoggingTree.INSTANCE.e("LoginPresenter/verifyUser", t)
+                    print(" doLoginApiCall errrrrror >>>>>> " + t.localizedDescription + "/n/n")
+                    self.sharePreferenses.loginError = "LoginPresenter/verifyUser SL \(t.localizedDescription)"
+                }
+                
+                DispatchQueue.main.async {
+                    self.sharePreferenses.currentPassword = nil
+                    self.sharePreferenses.currentUserInfo = nil
+                    self.showLoading = false
+                    self.showStandartAlert("", "Что-то пошло не так.")
+                }
             }
         })
     }
     
     func getCenterInfo(){
-        sdk.getCenterApiCall(idCenter: String(self.sharePreferenses.currentUserInfo!.id_center!), responseF: {(l: [CenterItem]) -> Void in
+        sdk.getCenterApiCall(idCenter: String(Int(truncating: self.sharePreferenses.currentUserInfo!.idCenter!)), responseF: {(l: [CenterItem]) -> Void in
             DispatchQueue.main.async {
                 self.sharePreferenses.currentCenterInfo = l[0]
                 self.getCurrentDocInfo()
@@ -123,8 +164,8 @@ class LoginPresenter: ObservableObject{
     
     func getCurrentDocInfo(){
         let dbN = sharePreferenses.currentCenterInfo!.db_name!
-        let accessesT = sharePreferenses.currentUserInfo!.token!
-        let idD = String(sharePreferenses.currentUserInfo!.id_doc_center!)
+        let accessesT = sharePreferenses.currentUserInfo!.apiKey!
+        let idD = String(Int(truncating: sharePreferenses.currentUserInfo!.idUser!))
         
         sdk.getDoctorById(dbName: dbN, accessToken: accessesT, docId: idD, responseF: {(l: DoctorItem) -> Void in
             DispatchQueue.main.async {
@@ -160,7 +201,7 @@ class LoginPresenter: ObservableObject{
     
     func sendFcmToken(token : String){
      
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idUser=String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         //let idBranch=String(Int.init(self.sharePreferenses.currentUserInfo!.idBranch!))

@@ -181,7 +181,7 @@ class T3RoomPresenter: ObservableObject {
 
         checkLastIdMessage()
 
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
 
@@ -395,7 +395,7 @@ class T3RoomPresenter: ObservableObject {
     func deleteMessageFromServer(_ item: MessageRoomResponse.MessageRoomItem){
         self.showLoading(true) //скроет показ загрузки getAllMessagesInLoop
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
@@ -540,7 +540,7 @@ class T3RoomPresenter: ObservableObject {
             valueText = workWithFiles.fileToBase64ByName(item.text!)
         }
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
 
@@ -695,7 +695,7 @@ class T3RoomPresenter: ObservableObject {
     func getOneRecordInfo(_ idRoom: String, _ idTm: String, _ isRecordItemNull: Bool = true){
         self.showLoading(true)
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
@@ -748,7 +748,7 @@ class T3RoomPresenter: ObservableObject {
     func closeRecordTelemedicine(_ item: AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem, _ isSendNoty: Bool = false, _ isDoc: Bool = false){
         self.showLoading(true)
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         
@@ -952,7 +952,7 @@ class T3RoomPresenter: ObservableObject {
     func toActiveRecordTelemedicine(_ item : AllRecordsTelemedicineResponse.AllRecordsTelemedicineItem){
         self.showLoading(true)
         
-        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(self.sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = self.sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(self.sharePreferenses.currentDocInfo!.id_doctor!))
         

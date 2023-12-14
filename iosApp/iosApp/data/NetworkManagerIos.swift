@@ -12,54 +12,54 @@ let apiKey = "AAAA2UBtySo:APA91bGOxg0DNY9Ojz-BD0d4bUr-GukFBdvCtivWVjqZ8ppEHtl-BI
 
 class NetworkManagerIos{
     
-    func doLoginApiCall(_ login:String?, _ pass:String?, responseF: @escaping (([UserResponse]) -> Void), errorM: @escaping ((String) -> Void) ){
-        // Create the session object
-        let session = URLSession.shared
-        
-        // Create url object
-        guard let url = URL(string: "http://188.225.25.133/medhelp_main/v1/login/doctor") else {return}
-        // Create the URLRequest object using the url object
-        var request = URLRequest(url: url)
-        // Set the request method. Important Do not set any other headers, like Content-Type
-        request.httpMethod = "POST" //set http method as POST
-        
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        components.queryItems = [
-            URLQueryItem(name: "username", value: login!),
-            URLQueryItem(name: "password", value: pass!)
-        ]
-        let query = components.url!.query
-        // Set parameters here. Replace with your own.
-        request.httpBody = Data(query!.utf8)
-        
-        //HTTP Headers
-        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
-        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
-        
-        // Create a task using the session object, to run and return completion handler
-        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
-            guard let data = data, error == nil else {
-                let str = error?.localizedDescription ?? "error login/doctor"
-                errorM(str)
-                return
-            }
-            
-            let prespData = try? JSONDecoder().decode(UserList.self, from: data)
-            
-           // let tttr = String(data: data, encoding: .utf8)
-            
-            if let prespData = prespData {
-                responseF(prespData.response!)
-            }
-            else{
-                let tttr = String(data: data, encoding: .utf8)
-                errorM("pars errpr \(String(describing: tttr))")
-            }
-        })
-        
-        // Run the task
-        webTask.resume()
-    }
+//    func doLoginApiCall(_ login:String?, _ pass:String?, responseF: @escaping (([UserResponse]) -> Void), errorM: @escaping ((String) -> Void) ){
+//        // Create the session object
+//        let session = URLSession.shared
+//
+//        // Create url object
+//        guard let url = URL(string: "http://188.225.25.133/medhelp_main/v1/login/doctor") else {return}
+//        // Create the URLRequest object using the url object
+//        var request = URLRequest(url: url)
+//        // Set the request method. Important Do not set any other headers, like Content-Type
+//        request.httpMethod = "POST" //set http method as POST
+//
+//        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+//        components.queryItems = [
+//            URLQueryItem(name: "username", value: login!),
+//            URLQueryItem(name: "password", value: pass!)
+//        ]
+//        let query = components.url!.query
+//        // Set parameters here. Replace with your own.
+//        request.httpBody = Data(query!.utf8)
+//
+//        //HTTP Headers
+//        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
+//        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+//
+//        // Create a task using the session object, to run and return completion handler
+//        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
+//            guard let data = data, error == nil else {
+//                let str = error?.localizedDescription ?? "error login/doctor"
+//                errorM(str)
+//                return
+//            }
+//
+//            let prespData = try? JSONDecoder().decode(UserList.self, from: data)
+//
+//           // let tttr = String(data: data, encoding: .utf8)
+//
+//            if let prespData = prespData {
+//                responseF(prespData.response!)
+//            }
+//            else{
+//                let tttr = String(data: data, encoding: .utf8)
+//                errorM("pars errpr \(String(describing: tttr))")
+//            }
+//        })
+//
+//        // Run the task
+//        webTask.resume()
+//    }
     
     func sendLogToServer(idUser: String, idCenter: String, idBranch: String, type: String, log: String , versionCode: String,
                          responseF: @escaping ((Bool) -> Void), errorM: @escaping ((String) -> Void)){

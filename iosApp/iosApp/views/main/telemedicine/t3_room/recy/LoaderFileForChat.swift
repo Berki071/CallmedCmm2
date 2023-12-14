@@ -16,7 +16,7 @@ class LoaderFileForChat{
         let sdk: NetworkManagerCompatibleKMM = NetworkManagerCompatibleKMM()
         var sharePreferenses = SharedPreferenses()
         
-        let apiKey = String.init(sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(sharePreferenses.currentUserInfo!.apiKey!)
         let h_dbName = sharePreferenses.currentCenterInfo!.db_name!
         let idDoc = String(Int.init(sharePreferenses.currentDocInfo!.id_doctor!))
         
@@ -95,7 +95,7 @@ class LoaderFileForChat{
         let pathDir = getDocumentsDirectory()
         let newFileName = workWithFiles.getNewNameForNewFile(idRoom, "mp4", String(Int.init(truncating: item.idMessage!)))
         
-        let apiKey = String.init(sharePreferenses.currentUserInfo!.token!)
+        let apiKey = String.init(sharePreferenses.currentUserInfo!.apiKey!)
         
         if(newFileName == nil || item.text == nil){
             item.text = "null"

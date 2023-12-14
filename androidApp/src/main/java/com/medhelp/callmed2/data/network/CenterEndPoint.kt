@@ -39,8 +39,7 @@ object CenterEndPoint {
     const val SEND_NEW_USER =
         (BASE_URL + "CreateNewClient/{" + NetworkManager.ID_BRANCH + "}/{" + NetworkManager.SURNAME + "}/{" + NetworkManager.USERNAME + "}/{" + NetworkManager.PATRONYMIC
                 + "}/{" + NetworkManager.PHONE + "}")
-    const val SCHEDULE_DOC_FOR_VIDEO_CALL =
-        BASE_URL + "scheduleVideoCall/{" + NetworkManager.ID_DOC + "}/{" + NetworkManager.DATE + "}"
+    //const val SCHEDULE_DOC_FOR_VIDEO_CALL = BASE_URL + "scheduleVideoCall/{" + NetworkManager.ID_DOC + "}/{" + NetworkManager.DATE + "}"
     const val FIND_NEW_SYNC = BASE_URL + "find_new_sync_session/{" + NetworkManager.ID_DOC + "}"
     const val SEND_IMG_FOR_SCANNER =
         BASE_URL + "insert_data_in_sync_session/{" + NetworkManager.ID_SYNC + "}"

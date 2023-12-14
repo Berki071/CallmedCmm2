@@ -37,7 +37,7 @@ class BranchListPresenter : ObservableObject{
         
         let idDoc = String(sharePreferenses.currentDocInfo?.id_doctor ?? 0)
         let dbName = sharePreferenses.currentCenterInfo?.db_name ?? ""
-        let accessToc = sharePreferenses.currentUserInfo?.token ?? ""
+        let accessToc = sharePreferenses.currentUserInfo?.apiKey ?? ""
         
         sdk.getAllHospitalBranchForDoc(idDoc: idDoc, dbName: dbName,accessToken:accessToc, responseF: {(r: [SettingsAllBranchHospitalItem]) -> Void in
             

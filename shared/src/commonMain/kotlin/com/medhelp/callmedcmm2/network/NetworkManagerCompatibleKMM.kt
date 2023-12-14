@@ -3,6 +3,7 @@ package com.medhelp.callmedcmm2.network
 import com.medhelp.callmedcmm2.model.DateResponse
 import com.medhelp.callmedcmm2.model.SimpleResponseBoolean2
 import com.medhelp.callmedcmm2.model.SimpleString2
+import com.medhelp.callmedcmm2.model.UserResponse
 import com.medhelp.callmedcmm2.model.VisitResponse
 import com.medhelp.callmedcmm2.model.chat.AllRecordsTelemedicineResponse
 import com.medhelp.callmedcmm2.model.chat.AnaliseResultResponse
@@ -28,12 +29,31 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.http.ContentDisposition.Companion.File
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.utils.io.core.use
 
 
 class NetworkManagerCompatibleKMM {
 
-    @Throws(Exception::class) suspend fun getAllRecordsTelemedicine (type: String,
-                                                                     h_Auth: String, h_dbName: String, h_idDoc: String): AllRecordsTelemedicineResponse {
+    @Throws(Exception::class)
+    suspend fun doLoginApiCall(username: String, password: String) : UserResponse {
+        return httpClient.post(BASE_URL_LOCAL + "login/doctor") {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, API_KEY)
+            }
+
+            val tmp = MultiPartFormDataContent(formData {
+                append(USERNAME, username)
+                append(PASSWORD, password)
+            })
+            setBody(tmp)
+        }
+            .body()
+    }
+
+    @Throws(Exception::class)
+    suspend fun getAllRecordsTelemedicine (type: String,
+                                           h_Auth: String, h_dbName: String, h_idDoc: String): AllRecordsTelemedicineResponse {
         //type= old или хоть что другое
         return httpClient.get( BASE_URL + "showTMbyDoc/"+h_idDoc+"/"+type)  {
             headers {
@@ -46,7 +66,8 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
-    @Throws(Exception::class) suspend fun getSelectRecordsTelemedicine (idRoom: String, idTm: String,
+    @Throws(Exception::class)
+    suspend fun getSelectRecordsTelemedicine (idRoom: String, idTm: String,
                                                                      h_Auth: String, h_dbName: String, h_idDoc: String): AllRecordsTelemedicineResponse {
         return httpClient.get( BASE_URL + "showTMbyIDtm/"+idRoom+"/"+idTm)  {
             headers {
@@ -225,7 +246,8 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
-    @Throws(Exception::class) suspend fun getResultAnalysis(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : AnaliseResultResponse {
+    @Throws(Exception::class)
+    suspend fun getResultAnalysis(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : AnaliseResultResponse {
         return httpClient.get(BASE_URL + "getResultAnaliz/" + h_idKl + "/" + h_idFilial) {
             headers {
                 append("host", "oneclick.tmweb.ru")
@@ -238,7 +260,8 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
-    @Throws(Exception::class) suspend fun getResultZakl(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : ResultZaklResponse {
+    @Throws(Exception::class)
+    suspend fun getResultZakl(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : ResultZaklResponse {
         return httpClient.get(BASE_URL + "getResultZakl/" + h_idKl + "/" + h_idFilial) {
             headers {
                 append("host", "oneclick.tmweb.ru")
@@ -250,7 +273,8 @@ class NetworkManagerCompatibleKMM {
         }
             .body()
     }
-    @Throws(Exception::class) suspend fun getResultZakl2(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : ResultZakl2Response {
+    @Throws(Exception::class)
+    suspend fun getResultZakl2(h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : ResultZakl2Response {
         return httpClient.get(BASE_URL + "GetZaklAmb/" + h_idKl + "/" + h_idFilial) {
             headers {
                 append("host", "oneclick.tmweb.ru")
@@ -263,7 +287,8 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
-    @Throws(Exception::class) suspend fun geDataResultZakl2(item: ResultZakl2Item,
+    @Throws(Exception::class)
+    suspend fun geDataResultZakl2(item: ResultZakl2Item,
                                                             h_Auth : String, h_dbName : String, h_idKl : String, h_idFilial : String) : LoadDataZaklAmbResponse {
         return httpClient.get(BASE_URL + "LoadZaklAmb/" + item.idKl + "/" + item.idFilial + "/" + item.nameSpec + "/" + item.dataPriema) {
             headers {
@@ -282,7 +307,8 @@ class NetworkManagerCompatibleKMM {
 //        return httpClient.post("https://iam.api.cloud.yandex.net/iam/v1/tokens?yandexPassportOauthToken=${oAuthToken}") {}
 //            .body()
 //    }
-    @Throws(Exception::class) suspend fun getIAMTokenFromOurServer() : IAMTokenFormOurServerResponse {
+    @Throws(Exception::class)
+    suspend fun getIAMTokenFromOurServer() : IAMTokenFormOurServerResponse {
         return httpClient.get("http://188.225.25.133/v1/recognize_token" ) {
             headers {
                 append("host", "oneclick.tmweb.ru")
@@ -374,7 +400,6 @@ class NetworkManagerCompatibleKMM {
 
     private val httpClient = HttpClient(){
 
-
         install(ContentNegotiation) {
             //json()
             json(kotlinx.serialization.json.Json {
@@ -444,6 +469,7 @@ class NetworkManagerCompatibleKMM {
 //        const val BASE_URL_CENTER = "https://oneclick.tmweb.ru/medhelp_client/v1/"
 
         const val BASE_URL = "http://188.225.25.133/medhelp_client/v1/"
+        const val BASE_URL_LOCAL = "http://188.225.25.133/medhelp_main/v1/"
         const val API_KEY =
             "AAAA2UBtySo:APA91bGOxg0DNY9Ojz-BD0d4bUr-GukFBdvCtivWVjqZ8ppEHtl-BIwmINKD3R_"
     }

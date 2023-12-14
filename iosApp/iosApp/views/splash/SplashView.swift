@@ -22,6 +22,7 @@ struct SplashView: View {
                 VStack {
                     Image("splash_sotr")
                         .resizable()
+                        .scaledToFill()
                         .ignoresSafeArea()
                     //.aspectRatio(contentMode: .fit)
                 }

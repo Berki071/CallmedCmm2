@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "vector (3) (2).svg",
+      "filename" : "splash_sotr.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "vector (3) (2) 1.svg",
+      "filename" : "splash_sotr 1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "vector (3) (2) 2.svg",
+      "filename" : "splash_sotr 2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

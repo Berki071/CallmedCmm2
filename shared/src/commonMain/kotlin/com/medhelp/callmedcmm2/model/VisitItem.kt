@@ -49,6 +49,13 @@ class VisitResponse {
 
         @SerialName("end")
         var end: String? = null
+
+        @SerialName("stat_priem")
+        var statPriem: String? = null
+
+        @SerialName("id_zap")
+        var id_zap: Int? = null
+
         val fullName: String
             get() = "$fam_kl $name_kl $otch_kl"
 

@@ -397,6 +397,20 @@ class NetworkManagerCompatibleKMM {
             .body()
     }
 
+    @Throws(Exception::class)
+    suspend fun visitsConfirm(idVisit: String, idCentr: String,
+                              h_Auth: String, h_dbName: String, h_idDoc: String): SimpleResponseBoolean2{
+        return httpClient.get(BASE_URL + "visits_confirm/${idVisit}/${idCentr}") {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, h_Auth)
+                append(DB_NAME, h_dbName)
+                append(ID_SOTR, h_idDoc)
+            }
+        }
+            .body()
+    }
+
 
     private val httpClient = HttpClient(){
 

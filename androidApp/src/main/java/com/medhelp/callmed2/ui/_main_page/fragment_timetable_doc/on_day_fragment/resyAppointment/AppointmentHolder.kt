@@ -1,22 +1,29 @@
 package com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.resyAppointment
 
-import android.content.Context
 import android.graphics.Typeface
 import android.view.View
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
+import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
+import androidx.core.content.contentValuesOf
 import androidx.recyclerview.widget.RecyclerView
 import com.medhelp.callmed2.R
+import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.databinding.ItemAppointmentBinding
 import com.medhelp.callmed2.utils.main.MainUtils
-import com.medhelp.callmedcmm2.model.VisitResponse
 import com.medhelp.callmedcmm2.model.VisitResponse.VisitItem
 
-class AppointmentHolder(val bindingItem: ItemAppointmentBinding) : RecyclerView.ViewHolder(bindingItem.root) {
+
+private const val INDIVIDUAL_DB_NAME = "msoli"
+class AppointmentHolder(val bindingItem: ItemAppointmentBinding, val listener: AppointmentHolderListener) : RecyclerView.ViewHolder(bindingItem.root) {
     var data: VisitItem? = null
+    val dbName: String?
+
 
     init {
-        bindingItem.topConstr!!.setOnClickListener {
+        dbName = PreferencesManager(context = itemView.context).centerInfo?.db_name
+
+        bindingItem.topConstr.setOnClickListener {
             if (bindingItem.dropDawnPanel!!.visibility == View.VISIBLE) {
                 bindingItem.dropDawnPanel!!.visibility = View.GONE
                 bindingItem.topConstr!!.layoutParams.height = MainUtils.dpToPx(itemView.context, 40)
@@ -29,7 +36,18 @@ class AppointmentHolder(val bindingItem: ItemAppointmentBinding) : RecyclerView.
             bindingItem.dropDawnPanel!!.visibility = View.GONE
             bindingItem.topConstr!!.layoutParams.height = MainUtils.dpToPx(itemView.context, 40)
         }
+
+        if (dbName == INDIVIDUAL_DB_NAME) {
+            bindingItem.topConstr.setOnLongClickListener {
+                if (data != null && data!!.statPriem != "p") {
+                    showConfirmationMenu()
+                    true
+                } else
+                    false
+            }
+        }
     }
+
 
     fun onBind(data: VisitItem) {
         bindingItem.dropDawnPanel!!.visibility = View.GONE
@@ -41,7 +59,6 @@ class AppointmentHolder(val bindingItem: ItemAppointmentBinding) : RecyclerView.
             bindingItem.name!!.text = "Нет записи"
             bindingItem.topConstr!!.isClickable = false
         } else {
-            bindingItem.name!!.setTextColor(itemView.context.resources.getColor(R.color.greenText2))
             bindingItem.name!!.setTypeface(bindingItem.name!!.typeface, Typeface.BOLD)
             bindingItem.topConstr!!.isClickable = true
             bindingItem.service!!.text = data.naim
@@ -56,6 +73,42 @@ class AppointmentHolder(val bindingItem: ItemAppointmentBinding) : RecyclerView.
                 bindingItem.titleComment!!.visibility = View.VISIBLE
                 bindingItem.comment!!.text = data.komment
             }
+
+            if(dbName == INDIVIDUAL_DB_NAME){
+                if(data.statPriem == "p"){
+                    bindingItem.name!!.setTextColor(itemView.context.resources.getColor(R.color.greenText2))
+                }else{
+                    bindingItem.name!!.setTextColor(itemView.context.resources.getColor(R.color.red))
+                }
+
+            }else{
+                bindingItem.name!!.setTextColor(itemView.context.resources.getColor(R.color.greenText2))
+            }
         }
+    }
+
+
+
+    private fun showConfirmationMenu() {
+        val popupMenu = PopupMenu(itemView.context, itemView)
+        popupMenu.inflate(R.menu.confirmation_menu)
+
+        popupMenu
+            .setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menuСonfirmation -> {
+                        listener.appointmentConfirmed(data!!)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+        popupMenu.show()
+    }
+
+    interface AppointmentHolderListener{
+        fun appointmentConfirmed(item: VisitItem)
     }
 }

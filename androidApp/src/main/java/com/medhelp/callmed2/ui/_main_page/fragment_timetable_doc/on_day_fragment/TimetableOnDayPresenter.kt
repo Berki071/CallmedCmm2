@@ -75,6 +75,7 @@ class TimetableOnDayPresenter() {
                 networkManagerKMM.currentDateApiCall()
             }
                 .onSuccess {
+                    mainView?.currentDateForRequest = it.response!!.today!!
                     getAllReceptionApiCall(branch, it.response!!.today!!, isShowLoading = false)
                 }.onFailure {
                     Timber.e(
@@ -107,10 +108,40 @@ class TimetableOnDayPresenter() {
                 .onSuccess {
                     mainView?.setupCalendar(dateToday, it.response.toMutableList())
                     mainView?.hideLoading()
-
+                    mainView?.binding?.swipeProfile?.isRefreshing = false
                 }.onFailure {
                     Timber.e(LoggingTree.getMessageForError(it, "TimetableOnDayPresenter/getAllReceptionApiCall (/scheduleFull/doctor/)"))
                     mainView?.hideLoading()
+                    mainView?.showErrorScreen()
+                    mainView?.binding?.swipeProfile?.isRefreshing = false
+                }
+        }
+    }
+
+    fun appointmentConfirm(item: VisitResponse.VisitItem, selectedBranch: Int, currentDateForRequest: String?){
+        if(mainView == null || selectedBranch == -1)
+            return
+
+        mainView?.showLoading()
+
+        mainView?.viewLifecycleOwner?.lifecycleScope?.launch {
+
+            val token = prefManager!!.accessToken!!
+            val dbName = prefManager!!.centerInfo!!.db_name
+            val idDoc = prefManager!!.currentUserId.toString()
+
+            kotlin.runCatching {
+                networkManagerKMM.visitsConfirm(item.id_zap.toString(), selectedBranch.toString(), token, dbName, idDoc)
+            }
+                .onSuccess {
+                    item.statPriem = "p"
+                    mainView?. visitItemIsConfirmedNeedUpdateInRecy(item)
+                    mainView?.hideLoading()
+                }.onFailure {
+                    Timber.e(LoggingTree.getMessageForError(it, "TimetableOnDayPresenter/appointmentConfirm (/visits_confirm)"))
+                    mainView?.hideLoading()
+                    if(currentDateForRequest != null)
+                        getAllReceptionApiCall(selectedBranch, currentDateForRequest, isShowLoading = false)
                     mainView?.showErrorScreen()
                 }
         }

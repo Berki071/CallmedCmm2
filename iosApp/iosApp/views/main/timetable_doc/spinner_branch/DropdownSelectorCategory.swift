@@ -46,8 +46,7 @@ struct DropdownSelectorCategory: View {
                        VStack { Divider().frame(height: 1.0).background(Color.black) }
                    }
                }
-               
-               .frame(width: .infinity, height: self.buttonHeight)
+               .frame(height: self.buttonHeight)
                .overlay(
                    RoundedRectangle(cornerRadius: 0)
                        .stroke(Color.white, lineWidth: 1)
@@ -56,7 +55,8 @@ struct DropdownSelectorCategory: View {
                .overlay(
                    VStack {
                        if self.shouldShowDropdown  {
-                           Spacer(minLength: buttonHeight )  //+10
+                           Spacer()
+                               .frame(height: self.buttonHeight)
                            DropdownCategory(options: self.options, onOptionSelected: { option in
                                shouldShowDropdown = false
                                selectedOption = option

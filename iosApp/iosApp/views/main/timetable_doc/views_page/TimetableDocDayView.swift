@@ -6,18 +6,25 @@
 //
 
 import SwiftUI
+import shared
 
 struct TimetableDocDayView: View {
     
     @ObservedObject var mainPresenter : TimetableDocPresenter
     
     var body: some View {
-        ScrollView {
+        ScrollView{
+            //костыль для обновления
+            PullToRefresh(coordinateSpaceName: "pullToRefresh") {
+                if(self.mainPresenter.currentDateForRequest != nil && self.mainPresenter.selectBrtanch != nil && self.mainPresenter.selectBrtanch!.id_filial != nil){
+                    self.mainPresenter.getAllReceptionDoc(self.mainPresenter.selectBrtanch!.id_filial!, self.mainPresenter.currentDateForRequest!)
+                }
+            }
+            .padding(.top, -40)
+            //.background(Color.blue)
             
             ZStack{
-                
                 VStack(spacing: 0){
-              
                     CalendarScheduleView( currentDateResponce: self.$mainPresenter.currentDateResponce, listSchedule: self.$mainPresenter.scheduleAll, clickNextWeek: {(i: String) -> Void in
                         self.mainPresenter.selectDate = ""
                         self.mainPresenter.msgCalendar = ""
@@ -47,7 +54,9 @@ struct TimetableDocDayView: View {
                         }
                     }else{
                         ForEach(self.mainPresenter.scheduleForDate, id: \.self ){itemR in
-                            TimetableDocDayItem(item: itemR)
+                            TimetableDocDayItem(dbName: mainPresenter.dbName, item: itemR, appointmentConfirm: {(i: VisitResponse.VisitItem) -> Void in
+                                self.mainPresenter.appointmentConfirm(i)
+                            })
                         }
                         Spacer()
                     }
@@ -60,16 +69,24 @@ struct TimetableDocDayView: View {
                         self.mainPresenter.msgCalendar = ""
                         self.mainPresenter.scheduleForDate = []
                         self.mainPresenter.scheduleAll = []
-                        
+
                         let strN = String(option.id_filial!)
                         self.mainPresenter.sharePreferenses.doctorSelectBranch = strN
                         self.mainPresenter.selectNeqBranch()
-                        
+
                     })
                     Spacer()
                 }
             }
+            .padding(.top, -8)
+            //.background(Color.red)
         }
+//        .refreshable {
+//            if(self.mainPresenter.currentDateForRequest != nil && self.mainPresenter.selectBrtanch != nil && self.mainPresenter.selectBrtanch!.id_filial != nil){
+//                self.mainPresenter.getAllReceptionDoc(self.mainPresenter.selectBrtanch!.id_filial!, self.mainPresenter.currentDateForRequest!)
+//            }
+//        }
+        //.background(Color.green)
         
     }
 }

@@ -34,11 +34,14 @@ class TimetableDocPresenter: ObservableObject{
     @Published var docMonthHourWork = "0"
     @Published var docMonthError = ""
     
+    let dbName: String?
+    var currentDateForRequest: String?
     
     init(){
         sdk=NetworkManagerIos()
         sharePreferenses = SharedPreferenses()
-        //netConnection.startMonitoring()
+        
+        dbName = sharePreferenses.currentCenterInfo?.db_name
         
         
         let currentDate = Date.now
@@ -228,7 +231,8 @@ class TimetableDocPresenter: ObservableObject{
             if let res : DateResponse = response {
                 DispatchQueue.main.async {
                     self.currentDateResponce = res.response
-                    self.getAllReceptionDoc(branch, res.response!.today!)
+                    self.currentDateForRequest = res.response!.today!
+                    self.getAllReceptionDoc(branch, self.currentDateForRequest!)
                 }
             } else {
                 DispatchQueue.main.async {
@@ -279,7 +283,10 @@ class TimetableDocPresenter: ObservableObject{
                     if(date == self.currentDateResponce!.today){
                         self.selectDate(date)
                     }
+                
                 }
+                
+               
             } else {
                 DispatchQueue.main.async {
                     if let t=error{
@@ -289,8 +296,7 @@ class TimetableDocPresenter: ObservableObject{
                     self.showDialogLoading = false
                 }
             }
-        }
-        )
+        })
     }
     
     
@@ -328,7 +334,8 @@ class TimetableDocPresenter: ObservableObject{
     
     func clickLoadNewWeek(_ dateMonday : String){
         currentDateResponce?.lastMonday = dateMonday
-        self.getAllReceptionDoc(selectBrtanch!.id_filial!, dateMonday)
+        self.currentDateForRequest = dateMonday
+        self.getAllReceptionDoc(selectBrtanch!.id_filial!, currentDateForRequest!)
     }
     
     func showStandartAlert(_ title: String, _ text: String){
@@ -337,4 +344,48 @@ class TimetableDocPresenter: ObservableObject{
         }, someFuncCancel: {() -> Void in})
     }
     
+    func appointmentConfirm(_ item: VisitResponse.VisitItem){
+        if(sharePreferenses.currentUserInfo == nil){
+            return
+        }
+        
+        let brInt = selectBrtanch?.id_filial
+        if(brInt == nil){
+            return
+        }
+        
+        self.showDialogLoading = true
+        
+        let brString = String(brInt!)
+        
+        let idDoc = String(sharePreferenses.currentDocInfo?.id_doctor ?? 0)
+        let dbName = sharePreferenses.currentCenterInfo?.db_name ?? ""
+        let accessToken = sharePreferenses.currentUserInfo?.apiKey ?? ""
+        
+        let idZap = String(Int.init(truncating:item.id_zap!))
+        
+        sdkKMM.visitsConfirm(idVisit: idZap, idCentr: brString,
+                                      h_Auth: accessToken, h_dbName: dbName,  h_idDoc: idDoc,  completionHandler: { response, error in
+            if let res : SimpleResponseBoolean2 = response {
+                DispatchQueue.main.async {
+                    item.statPriem = "p"
+                    self.showDialogLoading = false
+                    self.objectWillChange.send()
+                }
+            } else {
+                DispatchQueue.main.async {
+                    if let t=error{
+                        LoggingTree.INSTANCE.e("TimetableDocPresenter/appointmentConfirm \(t)")
+                    }
+                
+                    self.showDialogLoading = false
+                    self.showStandartAlert("Ошибка!","Что-то пошло не так.")
+                    
+                    if(self.currentDateForRequest != nil && self.selectBrtanch != nil && self.selectBrtanch!.id_filial != nil){
+                        self.getAllReceptionDoc(self.selectBrtanch!.id_filial!, self.currentDateForRequest!)
+                    }
+                }
+            }
+        })
+    }
 }

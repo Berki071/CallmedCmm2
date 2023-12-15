@@ -1,27 +1,27 @@
 package com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.model.timetable.SettingsAllBranchHospitalResponse
 import com.medhelp.callmed2.databinding.FragmentTimetableOnDayBinding
+import com.medhelp.callmed2.ui._main_page.fragment_telemedicine.t1_list_of_entries.T1ListOfEntriesFragment
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.decorators.DayDecorator
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.decorators.SelectDecorator
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.recy_branch.BranchSpinnerAdapter
 import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.resyAppointment.AppointmentAdapter
+import com.medhelp.callmed2.ui._main_page.fragment_timetable_doc.on_day_fragment.resyAppointment.AppointmentHolder
 import com.medhelp.callmed2.ui.base.BaseFragment
 import com.medhelp.callmed2.utils.main.TimesUtils
-import com.medhelp.callmedcmm2.model.VisitResponse
 import com.medhelp.callmedcmm2.model.VisitResponse.*
 import com.prolificinteractive.materialcalendarview.*
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
-import timber.log.Timber
 import java.util.*
 
 class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthChangedListener {
@@ -31,8 +31,9 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
 
     private var selectedBranch = -1
     private val visitList: MutableList<VisitItem> = mutableListOf()
-    var appointmentResy: AppointmentAdapter? = null
+    var appointmentAdapter: AppointmentAdapter? = null
 
+    var currentDateForRequest: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //Timber.i("Расписание доктора yна день")
@@ -50,14 +51,35 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
             binding.rvSchedule!!.adapter = null
             val ss = binding.calendarSchedule!!.currentDate.date
             val dateMon = TimesUtils.dateToString(ss, TimesUtils.DATE_FORMAT_ddMMyyyy)
-            presenter.getAllReceptionApiCall(selectedBranch, dateMon)
+            currentDateForRequest = dateMon
+            presenter.getAllReceptionApiCall(selectedBranch, currentDateForRequest!!)
         }
     }
 
     override fun setUp(view: View) {
         setupCalendarView()
         presenter.allHospitalBranch()
+        setupRefresh()
     }
+
+    private fun setupRefresh() {
+        binding.swipeProfile!!.setOnRefreshListener(object : SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                if(currentDateForRequest != null) {
+                    presenter.getAllReceptionApiCall(selectedBranch, currentDateForRequest!!)
+                }else{
+                    binding?.swipeProfile?.isRefreshing = false
+                }
+            }
+        })
+        binding.swipeProfile!!.setColorSchemeColors(
+            getResources().getColor(android.R.color.holo_blue_bright),
+            getResources().getColor(android.R.color.holo_green_light),
+            getResources().getColor(android.R.color.holo_orange_light),
+            getResources().getColor(android.R.color.holo_red_light)
+        )
+    }
+
     override fun onDestroyB() {
         presenter.onDetachView()
     }
@@ -91,7 +113,7 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
                 if (spinnerAdapter.getListItem(position).idBranch == selectedBranch) return
                 selectedBranch = spinnerAdapter.getListItem(position).idBranch
                 presenter.getDataFrom(selectedBranch)
-                if (appointmentResy != null) appointmentResy?.clear()
+                if (appointmentAdapter != null) appointmentAdapter?.clear()
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
@@ -223,21 +245,30 @@ class TimetableOnDayFragment: BaseFragment(), OnDateSelectedListener, OnMonthCha
                 listSelected[0].kab + " (" + listSelected[0].start + " - " + listSelected[0].end + ")"
         }
         binding.rvSchedule!!.visibility = View.VISIBLE
-        appointmentResy =
+        appointmentAdapter =
             AppointmentAdapter(
                 requireContext(),
-                listSelected
+                listSelected, listener = object : AppointmentHolder.AppointmentHolderListener{
+                    override fun appointmentConfirmed(item: VisitItem) {
+                        presenter.appointmentConfirm(item, selectedBranch, currentDateForRequest)
+                    }
+
+                }
             )
         binding.rvSchedule!!.layoutManager = LinearLayoutManager(context)
-        binding.rvSchedule!!.adapter = appointmentResy
+        binding.rvSchedule!!.adapter = appointmentAdapter
     }
-
 
     override fun onMonthChanged(widget: MaterialCalendarView?, date: CalendarDay) {
         binding.cabinetName!!.visibility = View.GONE
         val sData = TimesUtils.dateToString(date.date, TimesUtils.DATE_FORMAT_ddMMyyyy)
-        presenter.getAllReceptionApiCall(selectedBranch, sData)
-        if (appointmentResy != null) appointmentResy?.clear()
+        currentDateForRequest = sData
+        presenter.getAllReceptionApiCall(selectedBranch, currentDateForRequest!!)
+        if (appointmentAdapter != null) appointmentAdapter?.clear()
+    }
+
+    fun visitItemIsConfirmedNeedUpdateInRecy(item: VisitItem){
+        appointmentAdapter?.updateConfirmedItem(item)
     }
 
     fun showErrorScreen() {}

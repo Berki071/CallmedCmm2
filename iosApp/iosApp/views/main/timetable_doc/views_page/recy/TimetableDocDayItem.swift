@@ -9,14 +9,19 @@ import SwiftUI
 import shared
 
 struct TimetableDocDayItem: View {
+    private let INDIVIDUAL_DB_NAME = "msoli"
+    
     @State var showDopIngo = false
     
+    var dbName: String?
     var item : VisitResponse.VisitItem
+    var appointmentConfirm: (VisitResponse.VisitItem) -> Void
     
     var body: some View {
         ZStack{
             let isRecord = item.naim != nil && !item.naim!.isEmpty
-            let colorbg = isRecord ? Color("bg_record") : Color.black
+            //let colorbg = isRecord ? Color("bg_record") : Color.black
+            
        
             
             VStack(spacing: 0){
@@ -33,9 +38,22 @@ struct TimetableDocDayItem: View {
                         .frame(width: 6.0)
                     
                     if(isRecord){
-                        Text(title)
-                            .font(.headline)
-                            .foregroundColor(colorbg)
+                        if(dbName != nil && dbName! == INDIVIDUAL_DB_NAME){
+                            if(item.statPriem == "p"){
+                                Text(title)
+                                    .font(.headline)
+                                    .foregroundColor(Color("bg_record"))
+                            }else{
+                                Text(title)
+                                    .font(.headline)
+                                    .foregroundColor(Color("red"))
+                            }
+                        }else{
+                            Text(title)
+                                .font(.headline)
+                                .foregroundColor(Color("bg_record"))
+                        }
+                        
                     }else{
                         Text(title)
                             .font(.system(size: 16))
@@ -69,6 +87,13 @@ struct TimetableDocDayItem: View {
             .onTapGesture {
                 self.showDopIngo = !showDopIngo
             }
+            .contextMenu {
+                if(dbName != nil && dbName! == INDIVIDUAL_DB_NAME){
+                    if(item.statPriem != "p"){
+                        menuItems
+                    }
+                }
+            }
         }
         .overlay(
             RoundedRectangle(cornerRadius: 0)
@@ -77,10 +102,17 @@ struct TimetableDocDayItem: View {
     }
     
     
+    var menuItems: some View {
+         Group {
+             Button("Подтвердить прием", action: {self.appointmentConfirm(self.item)})
+         }
+     }
+    
 }
 
 struct TimetableDocItem_Previews: PreviewProvider {
     static var previews: some View {
-        TimetableDocDayItem(item: VisitResponse.VisitItem(time:"18:00", am_kl: "Ivanov", name_kl:"Ivan", otch_kl:"Ivanovich", naim:"priem tatata tata", komment:"ku ku epta"))
+        TimetableDocDayItem(item: VisitResponse.VisitItem(time:"18:00", am_kl: "Ivanov", name_kl:"Ivan", otch_kl:"Ivanovich", naim:"priem tatata tata", komment:"ku ku epta"),
+                            appointmentConfirm: {(VisitItem) -> Void in })
     }
 }

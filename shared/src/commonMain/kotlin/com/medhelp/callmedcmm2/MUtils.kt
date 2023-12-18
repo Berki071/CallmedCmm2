@@ -1,5 +1,6 @@
 package com.medhelp.callmedcmm2
 
+import com.medhelp.callmedcmm2.model.CenterResponse
 import com.medhelp.callmedcmm2.model.UserResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -33,15 +34,15 @@ class MUtils {
             return Json.decodeFromString(str)
         }
 
-//        @Throws(Exception::class)
-//        fun  centerResponseToString (cl : CenterResponse) : String {
-//            val json = Json.encodeToString(cl)
-//            return json
-//        }
-//        @Throws(Exception::class)
-//        fun  stringToCenterResponse (str : String) : CenterResponse {
-//            return Json.decodeFromString(str)
-//        }
+        @Throws(Exception::class)
+        fun  centerResponseToString (cl : CenterResponse.CenterItem) : String {
+            val json = Json.encodeToString(cl)
+            return json
+        }
+        @Throws(Exception::class)
+        fun  stringToCenterResponse (str : String) : CenterResponse.CenterItem {
+            return Json.decodeFromString(str)
+        }
 
         @Throws(Exception::class)
         fun usersLoginToString (cl : List<UserResponse.UserItem>) : String {

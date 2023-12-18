@@ -1,10 +1,6 @@
 package com.medhelp.callmed2.data.model.timetable;
 
 import com.google.gson.annotations.SerializedName;
-import com.medhelp.callmed2.data.model.CenterResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SimpleBooleanList {
     @SerializedName("error")

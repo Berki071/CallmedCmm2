@@ -99,7 +99,7 @@ class TimetableOnDayPresenter() {
         mainView?.viewLifecycleOwner?.lifecycleScope?.launch {
 
             val idDoc = prefManager!!.currentUserId.toString()
-            val dbName = prefManager!!.centerInfo!!.db_name
+            val dbName = prefManager!!.centerInfo!!.db_name!!
             val token = prefManager!!.accessToken!!
 
             kotlin.runCatching {
@@ -127,7 +127,7 @@ class TimetableOnDayPresenter() {
         mainView?.viewLifecycleOwner?.lifecycleScope?.launch {
 
             val token = prefManager!!.accessToken!!
-            val dbName = prefManager!!.centerInfo!!.db_name
+            val dbName = prefManager!!.centerInfo!!.db_name!!
             val idDoc = prefManager!!.currentUserId.toString()
 
             kotlin.runCatching {

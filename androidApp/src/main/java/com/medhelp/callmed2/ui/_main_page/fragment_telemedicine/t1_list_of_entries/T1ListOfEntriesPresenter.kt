@@ -48,7 +48,7 @@ class T1ListOfEntriesPresenter{
 
         Different.showLoadingDialog(mainView?.requireContext())
         val idDoc = prefManager!!.currentUserId.toString()
-        val dbName = prefManager!!.centerInfo!!.db_name
+        val dbName = prefManager!!.centerInfo!!.db_name!!
         val token = prefManager!!.accessToken!!
 
 

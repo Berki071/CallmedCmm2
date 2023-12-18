@@ -99,45 +99,45 @@ class NetworkManagerIos{
         webTask.resume()
     }
     
-    func getCenterApiCall(idCenter: String,
-                          responseF: @escaping (([CenterItem]) -> Void), errorM: @escaping ((String) -> Void)){
-        
-        // Create the session object
-        let session = URLSession.shared
-        // Create url object
-        guard let url = URL(string: "http://188.225.25.133/medhelp_main/v1/centres/\(idCenter)") else {return}
-        // Create the URLRequest object using the url object
-        var request = URLRequest(url: url)
-        // Set the request method. Important Do not set any other headers, like Content-Type
-        request.httpMethod = "GET" //set http method
-        
-        //HTTP Headers
-        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
-        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
-        
-        // Create a task using the session object, to run and return completion handler
-        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
-            guard let data = data, error == nil else {
-                let str = error?.localizedDescription ?? "error centres/"
-                errorM(str)
-                return
-            }
-            
-            //let tttr = String(data: data, encoding: .utf8)
-            let respData = try? JSONDecoder().decode(CenterResponse.self, from: data)
-            
-            if let prespData = respData {
-                responseF(prespData.response!)
-            }
-            else{
-                let tttr = String(data: data, encoding: .utf8)
-                errorM("pars errpr \(String(describing: tttr))")
-            }
-        })
-        
-        // Run the task
-        webTask.resume()
-    }
+//    func getCenterApiCall(idCenter: String,
+//                          responseF: @escaping (([CenterItem]) -> Void), errorM: @escaping ((String) -> Void)){
+//
+//        // Create the session object
+//        let session = URLSession.shared
+//        // Create url object
+//        guard let url = URL(string: "http://188.225.25.133/medhelp_main/v1/centres/\(idCenter)") else {return}
+//        // Create the URLRequest object using the url object
+//        var request = URLRequest(url: url)
+//        // Set the request method. Important Do not set any other headers, like Content-Type
+//        request.httpMethod = "GET" //set http method
+//
+//        //HTTP Headers
+//        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+//        request.setValue("oneclick.tmweb.ru", forHTTPHeaderField: "host")
+//
+//        // Create a task using the session object, to run and return completion handler
+//        let webTask = session.dataTask(with: request, completionHandler: {data, response, error in
+//            guard let data = data, error == nil else {
+//                let str = error?.localizedDescription ?? "error centres/"
+//                errorM(str)
+//                return
+//            }
+//
+//            //let tttr = String(data: data, encoding: .utf8)
+//            let respData = try? JSONDecoder().decode(CenterResponse.self, from: data)
+//
+//            if let prespData = respData {
+//                responseF(prespData.response!)
+//            }
+//            else{
+//                let tttr = String(data: data, encoding: .utf8)
+//                errorM("pars errpr \(String(describing: tttr))")
+//            }
+//        })
+//
+//        // Run the task
+//        webTask.resume()
+//    }
     
     func getDoctorById(dbName: String, accessToken: String, docId: String,
                        responseF: @escaping ((DoctorItem) -> Void), errorM: @escaping ((String) -> Void)){

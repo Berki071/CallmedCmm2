@@ -148,14 +148,29 @@ class LoginPresenter: ObservableObject{
     }
     
     func getCenterInfo(){
-        sdk.getCenterApiCall(idCenter: String(Int(truncating: self.sharePreferenses.currentUserInfo!.idCenter!)), responseF: {(l: [CenterItem]) -> Void in
-            DispatchQueue.main.async {
-                self.sharePreferenses.currentCenterInfo = l[0]
+//        sdk.getCenterApiCall(idCenter: String(Int(truncating: self.sharePreferenses.currentUserInfo!.idCenter!)), responseF: {(l: [CenterItem]) -> Void in
+//            DispatchQueue.main.async {
+//                self.sharePreferenses.currentCenterInfo = l[0]
+//                self.getCurrentDocInfo()
+//            }
+//        }, errorM: {(e: String) -> Void in
+//            DispatchQueue.main.async {
+//                LoggingTree.INSTANCE.e("LoginPresenter/updateHeaderInfo \(e)")
+//                self.showLoading = false
+//                self.showStandartAlert("Внимание!", "Ошибка загрузки информации о центре")
+//            }
+//        })
+        
+        let idCent=String(Int.init(truncating: self.sharePreferenses.currentUserInfo!.idCenter!))
+        
+        sdkKMM.centerApiCall(currentCenterId: idCent, completionHandler: { response, error in
+            if let res : CenterResponse = response {
+                self.sharePreferenses.currentCenterInfo = res.response[0]
                 self.getCurrentDocInfo()
-            }
-        }, errorM: {(e: String) -> Void in
-            DispatchQueue.main.async {
-                LoggingTree.INSTANCE.e("LoginPresenter/updateHeaderInfo \(e)")
+            } else {
+                if let t=error{
+                    LoggingTree.INSTANCE.e("LoginPresenter/updateHeaderInfo", t)
+                }
                 self.showLoading = false
                 self.showStandartAlert("Внимание!", "Ошибка загрузки информации о центре")
             }

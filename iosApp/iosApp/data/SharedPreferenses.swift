@@ -98,34 +98,59 @@ class SharedPreferenses{
         }
     }
     
-    var currentCenterInfo : CenterItem?{
+    var currentCenterInfo : CenterResponse.CenterItem?{
         get{
-            if let data = defaults.data(forKey: PREF_KEY_CENTER_INFO) {
-                do {
-                    // Create JSON Decoder
-                    let decoder = JSONDecoder()
-                    // Decode Note
-                    let note = try decoder.decode(CenterItem.self, from: data)
-                    return note
-                } catch {
+//            if let data = defaults.data(forKey: PREF_KEY_CENTER_INFO) {
+//                do {
+//                    // Create JSON Decoder
+//                    let decoder = JSONDecoder()
+//                    // Decode Note
+//                    let note = try decoder.decode(CenterItem.self, from: data)
+//                    return note
+//                } catch {
+//                    return nil
+//                }
+//            }else{
+//                return nil
+//            }
+            
+            let res : String? = defaults.string(forKey: PREF_KEY_CENTER_INFO)
+            
+            if res == nil {
+                return nil
+            }else{
+                do{
+                    let tmp = try MUtils.companion.stringToCenterResponse(str: res!) as CenterResponse.CenterItem
+                    return tmp
+                }catch{
+                    print("Неожиданная ошибка: \(error).")
                     return nil
                 }
-            }else{
-                return nil
             }
         }
         
         set ( nVal){
+//            if nVal != nil{
+//                do {
+//                    // Create JSON Encoder
+//                    let encoder = JSONEncoder()
+//                    // Encode Note
+//                    let data = try encoder.encode(nVal)
+//                    // Write/Set Data
+//                    defaults.set(data, forKey: PREF_KEY_CENTER_INFO)
+//                } catch {
+//                    print("Unable to Encode Note (\(error))")
+//                }
+//            }else{
+//                defaults.set(nil, forKey: PREF_KEY_CENTER_INFO)
+//            }
+            
             if nVal != nil{
-                do {
-                    // Create JSON Encoder
-                    let encoder = JSONEncoder()
-                    // Encode Note
-                    let data = try encoder.encode(nVal)
-                    // Write/Set Data
-                    defaults.set(data, forKey: PREF_KEY_CENTER_INFO)
-                } catch {
-                    print("Unable to Encode Note (\(error))")
+                do{
+                    let str : String? = try MUtils.companion.centerResponseToString(cl: nVal!)
+                    defaults.set(str, forKey: PREF_KEY_CENTER_INFO)
+                }catch{
+                    print("Неожиданная ошибка: \(error).")
                 }
             }else{
                 defaults.set(nil, forKey: PREF_KEY_CENTER_INFO)

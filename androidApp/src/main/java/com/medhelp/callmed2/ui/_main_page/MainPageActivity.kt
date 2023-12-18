@@ -24,11 +24,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.messaging.FirebaseMessagingService
 import com.medhelp.callmed2.R
 import com.medhelp.callmed2.data.Constants
-import com.medhelp.callmed2.data.bg.Notification.SimpleNotificationForFCM
-import com.medhelp.callmed2.data.model.CenterResponse
 import com.medhelp.callmed2.data.model.timetable.Doctor
 import com.medhelp.callmed2.ui._main_page.fragment_call.CallFragment
 import com.medhelp.callmed2.ui._main_page.fragment_call.call_center_new.CallCenterService
@@ -47,6 +44,7 @@ import com.medhelp.callmed2.utils.Different.AlertInfoListener
 import com.medhelp.callmed2.utils.WorkTofFile.show_file.ShowFile2
 import com.medhelp.callmed2.utils.WorkTofFile.show_file.ShowFile2.BuilderImage
 import com.medhelp.callmed2.utils.WorkTofFile.show_file.ShowFile2.ShowListener
+import com.medhelp.callmedcmm2.model.CenterResponse
 import timber.log.Timber
 import java.io.File
 
@@ -230,7 +228,7 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
         navView!!.invalidate()
     }
 
-    fun updateHeader(response: CenterResponse?) {
+    fun updateHeader(response: CenterResponse.CenterItem?) {
         if(response==null)
             return
 
@@ -577,6 +575,7 @@ class MainPageActivity : BaseActivity(), NavigationView.OnNavigationItemSelected
     //endregion
     //region android override
     override fun onBackPressed() {
+        super.onBackPressed()
         if (drawer!!.isDrawerOpen(GravityCompat.START)) {
             drawer!!.closeDrawer(GravityCompat.START)
         } else {

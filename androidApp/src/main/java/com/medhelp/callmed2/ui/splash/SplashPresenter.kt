@@ -1,8 +1,6 @@
 package com.medhelp.callmed2.ui.splash
 
-import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import com.androidnetworking.error.ANError
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.medhelp.callmed2.data.model.*
@@ -11,6 +9,7 @@ import com.medhelp.callmedcmm2.network.NetworkManagerCompatibleKMM
 import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.utils.main.NetworkUtils
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
+import com.medhelp.callmedcmm2.model.CenterResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -77,30 +76,46 @@ class SplashPresenter(private val mainView: SplashActivity) {
     }
 
     private fun updateHeaderInfo() {
-        val cd = CompositeDisposable()
-        cd.add(networkManager
-            .centerApiCall
-            .map { obj: CenterList -> obj.response }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response: List<CenterResponse> ->
-                preferencesManager.centerInfo = response[0]
-                // getTestServer(getDataHelper().getCenterInfo().getIpAddressLan(),true);
-                if (preferencesManager.isShowPartMessenger) {
-                    mainView!!.startBGService()
+//        val cd = CompositeDisposable()
+//        cd.add(networkManager
+//            .centerApiCall
+//            .map { obj: CenterResponse -> obj.response }
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({ response: List<CenterResponse.CenterItem> ->
+//                preferencesManager.centerInfo = response[0]
+//                // getTestServer(getDataHelper().getCenterInfo().getIpAddressLan(),true);
+//                if (preferencesManager.isShowPartMessenger) {
+//                    mainView!!.startBGService()
+//                }
+//                fBToken
+//                cd.dispose()
+//            }) { throwable: Throwable? ->
+//                Timber.e(
+//                    LoggingTree.getMessageForError(
+//                        throwable,
+//                        "SplashPresenter/updateHeaderInfo "
+//                    )
+//                )
+//                mainView!!.openLoginActivity()
+//                cd.dispose()
+//            })
+
+        mainView.lifecycleScope.launch {
+            kotlin.runCatching {
+                networkManager2.centerApiCall(preferencesManager.currentCenterId.toString())
+            }
+                .onSuccess {
+                    preferencesManager.centerInfo = it.response[0]
+                    if (preferencesManager.isShowPartMessenger) {
+                        mainView!!.startBGService()
+                    }
+                    fBToken
+                }.onFailure {
+                    Timber.e(LoggingTree.getMessageForError(it, "SplashPresenter/updateHeaderInfo "))
+                    mainView!!.openLoginActivity()
                 }
-                fBToken
-                cd.dispose()
-            }) { throwable: Throwable? ->
-                Timber.e(
-                    LoggingTree.getMessageForError(
-                        throwable,
-                        "SplashPresenter/updateHeaderInfo "
-                    )
-                )
-                mainView!!.openLoginActivity()
-                cd.dispose()
-            })
+        }
     }
 
     private val fBToken: Unit

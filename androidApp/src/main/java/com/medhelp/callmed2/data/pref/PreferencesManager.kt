@@ -3,9 +3,9 @@ package com.medhelp.callmed2.data.pref
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.medhelp.callmed2.data.model.CenterResponse
 import com.medhelp.callmed2.data.model.LogData
 import com.medhelp.callmed2.utils.main.AppConstants
+import com.medhelp.callmedcmm2.model.CenterResponse
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.TreeSet
@@ -19,12 +19,12 @@ class PreferencesManager @Inject constructor(context: Context) {
         preferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
     }
 
-    var centerInfo: CenterResponse?
+    var centerInfo: CenterResponse.CenterItem?
         get() {
             val tmp = preferences.getString(PREF_KEY_CENTER_INFO, "")
             if (tmp == "") return null
             val gson = Gson()
-            return gson.fromJson(tmp, CenterResponse::class.java)
+            return gson.fromJson(tmp, CenterResponse.CenterItem::class.java)
         }
         set(info) {
             val gson = Gson()

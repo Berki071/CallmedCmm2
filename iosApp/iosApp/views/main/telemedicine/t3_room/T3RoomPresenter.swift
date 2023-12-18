@@ -888,7 +888,7 @@ class T3RoomPresenter: ObservableObject {
     
     
     func saveImageByUrl(_ url: URL){
-        let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
+        let idCenter: String = String(Int.init(truncating: self.sharePreferenses.currentCenterInfo!.idCenter ?? -1))
         let idRoom: String = String(Int.init(truncating: recordTItem!.idRoom!))
         let curentTimeMils = String(MDate.getCurrentDate1970())
         
@@ -901,7 +901,7 @@ class T3RoomPresenter: ObservableObject {
         })
     }
     func saveFileByUrl(_ url: URL){
-        let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
+        let idCenter: String = String(Int.init(truncating: self.sharePreferenses.currentCenterInfo!.idCenter ?? -1))
         let idRoom: String = String(Int.init(truncating: recordTItem!.idRoom!))
         let curentTimeMils = String(MDate.getCurrentDate1970())
         

@@ -1,9 +1,7 @@
 package com.medhelp.callmed2.data.network
 
-import android.content.Context
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.OkHttpResponseListener
-import com.medhelp.callmed2.data.model.CenterList
 import com.medhelp.callmed2.data.model.FilialResponse
 import com.medhelp.callmed2.data.model.IPDataResponse
 import com.medhelp.callmed2.data.model.LoadStatMkbResponse
@@ -57,14 +55,13 @@ class NetworkManager @Inject constructor(private val prefManager: PreferencesMan
  //           .addHeaders(AUTH, AppConstants.API_KEY)
 //            .build()
 //            .getObjectObservable(DateList::class.java)
-
-    val centerApiCall: Observable<CenterList>
-        get() = Rx2AndroidNetworking.get(LocalEndPoint.CENTER)
-            .addHeaders("host", "oneclick.tmweb.ru")
-            .addHeaders(AUTH, AppConstants.API_KEY)
-            .addPathParameter(ID_CENTER, prefManager.currentCenterId.toString())
-            .build()
-            .getObjectObservable(CenterList::class.java)
+//    val centerApiCall: Observable<CenterResponse>
+//        get() = Rx2AndroidNetworking.get(LocalEndPoint.CENTER)
+//            .addHeaders("host", "oneclick.tmweb.ru")
+//            .addHeaders(AUTH, AppConstants.API_KEY)
+//            .addPathParameter(ID_CENTER, prefManager.currentCenterId.toString())
+//            .build()
+//            .getObjectObservable(CenterResponse::class.java)
 
     fun sendLogToServer(item: LogData): Observable<SimpleResponseBoolean> {
         return Rx2AndroidNetworking.post(LocalEndPoint.SEND_LOG_TO_SERVER)

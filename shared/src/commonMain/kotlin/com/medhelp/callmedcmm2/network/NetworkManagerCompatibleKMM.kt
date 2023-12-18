@@ -1,5 +1,6 @@
 package com.medhelp.callmedcmm2.network
 
+import com.medhelp.callmedcmm2.model.CenterResponse
 import com.medhelp.callmedcmm2.model.DateResponse
 import com.medhelp.callmedcmm2.model.SimpleResponseBoolean2
 import com.medhelp.callmedcmm2.model.SimpleString2
@@ -49,6 +50,18 @@ class NetworkManagerCompatibleKMM {
             setBody(tmp)
         }
             .body()
+    }
+
+    @Throws(Exception::class)
+    suspend fun centerApiCall(currentCenterId: String) : CenterResponse {
+        return httpClient.get( BASE_URL_LOCAL + "centres/${currentCenterId}")  {
+            headers {
+                append("host", "oneclick.tmweb.ru")
+                append(AUTH, API_KEY)
+            }
+        }
+            .body()
+
     }
 
     @Throws(Exception::class)

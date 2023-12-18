@@ -13,7 +13,7 @@ import shared
 struct TopBar: View {
     var sharePreferenses : SharedPreferenses
     
-    @State var curentCenterInfo : CenterItem
+    @State var curentCenterInfo : CenterResponse.CenterItem
     @State var currenDocInfo: DoctorItem
     @State var currentUserInfo: UserResponse.UserItem
     
@@ -21,7 +21,7 @@ struct TopBar: View {
 
     init(){
         sharePreferenses = SharedPreferenses()
-        curentCenterInfo = sharePreferenses.currentCenterInfo ?? CenterItem()
+        curentCenterInfo = sharePreferenses.currentCenterInfo ?? CenterResponse.CenterItem()
         currenDocInfo = sharePreferenses.currentDocInfo ?? DoctorItem()
         currentUserInfo = sharePreferenses.currentUserInfo ?? UserResponse.UserItem()
     }

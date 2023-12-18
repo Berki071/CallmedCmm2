@@ -14,6 +14,7 @@ import com.medhelp.callmed2.data.pref.PreferencesManager
 import com.medhelp.callmed2.utils.IpUtils
 import com.medhelp.callmed2.utils.main.NetworkUtils
 import com.medhelp.callmed2.utils.timber_log.LoggingTree
+import com.medhelp.callmedcmm2.model.CenterResponse
 import com.medhelp.callmedcmm2.model.UserResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -147,7 +148,7 @@ class LoginPresenter (private val mainView: LoginActivity) {
                         Timber.v("Вход в приложение VERSION_SDK " + Build.VERSION.SDK_INT)
                         savePrivateData(username, password)
 
-                        centerInfo
+                        getCenterInfo()
                     } else {
                         mainView.showError(R.string.err_authorize)
                     }
@@ -249,35 +250,50 @@ class LoginPresenter (private val mainView: LoginActivity) {
     // getTestServer(getDataHelper().getCenterInfo().getIpAddressLan(), true);
 
     //mainView.startBGService();
-    private val centerInfo: Unit
-        private get() {
-            mainView!!.showLoading()
-            val cd = CompositeDisposable()
-            cd.add(networkManager
-                .centerApiCall
-                .map { obj: CenterList -> obj.response }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .debounce(1000, TimeUnit.MILLISECONDS)
-                .subscribe({ centerResponses: List<CenterResponse> ->
-                    preferencesManager.centerInfo = centerResponses[0]
+    private fun getCenterInfo(){
 
+//            val cd = CompositeDisposable()
+//            cd.add(networkManager
+//                .centerApiCall
+//                .map { obj: CenterResponse -> obj.response }
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .debounce(1000, TimeUnit.MILLISECONDS)
+//                .subscribe({ centerResponses: List<CenterResponse.CenterItem> ->
+//                    preferencesManager.centerInfo = centerResponses[0]
+//
+//                    fBToken
+//
+//                    cd.dispose()
+//                }
+//                ) { throwable: Throwable? ->
+//                    Timber.e(
+//                        LoggingTree.getMessageForError(
+//                            throwable,
+//                            "LoginPresenter\$getCenterInfo "
+//                        )
+//                    )
+//                    mainView.hideLoading()
+//                    mainView.showError("Ошибка загрузки информации о центре")
+//                    cd.dispose()
+//                })
+
+
+        mainView.lifecycleScope.launch {
+            kotlin.runCatching {
+                networkManager2.centerApiCall(preferencesManager.currentCenterId.toString())
+            }
+                .onSuccess {
+                    preferencesManager.centerInfo = it.response[0]
                     fBToken
-
-                    cd.dispose()
-                }
-                ) { throwable: Throwable? ->
-                    Timber.e(
-                        LoggingTree.getMessageForError(
-                            throwable,
-                            "LoginPresenter\$getCenterInfo "
-                        )
-                    )
+                }.onFailure {
+                    Timber.e(LoggingTree.getMessageForError(it, "LoginPresenter\$getCenterInfo "))
                     mainView.hideLoading()
                     mainView.showError("Ошибка загрузки информации о центре")
-                    cd.dispose()
-                })
+                }
         }
+
+    }
     private val fBToken: Unit
         private get() {
             if (preferencesManager.isShowNotifications) {

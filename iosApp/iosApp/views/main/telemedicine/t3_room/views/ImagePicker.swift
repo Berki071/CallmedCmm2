@@ -43,8 +43,8 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     
     func saveUIImage(_ imgIn: UIImage){
-        let idCenter: String = String(self.sharePreferenses.currentCenterInfo!.id_center ?? -1)
-        let idRoom: String = String(Int.init(item!.idRoom!))
+        let idCenter: String = String(Int.init(truncating: self.sharePreferenses.currentCenterInfo!.idCenter ?? -1))
+        let idRoom: String = String(Int.init(truncating: item!.idRoom!))
         let curentTimeMils = String(MDate.getCurrentDate1970())
         
         let path = getDocumentsDirectory()
